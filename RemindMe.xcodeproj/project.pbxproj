@@ -7,6 +7,8 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		66DD0DDD182EE903000098D4 /* DCNewReminderViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 66DD0DDC182EE903000098D4 /* DCNewReminderViewController.m */; };
+		66DD0DE0182EEB4C000098D4 /* DCReminder.m in Sources */ = {isa = PBXBuildFile; fileRef = 66DD0DDF182EEB4C000098D4 /* DCReminder.m */; };
 		66FE495C182EC0F0001E5950 /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 66FE495B182EC0F0001E5950 /* Foundation.framework */; };
 		66FE495E182EC0F0001E5950 /* CoreGraphics.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 66FE495D182EC0F0001E5950 /* CoreGraphics.framework */; };
 		66FE4960182EC0F0001E5950 /* UIKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 66FE495F182EC0F0001E5950 /* UIKit.framework */; };
@@ -21,6 +23,7 @@
 		66FE497D182EC0F0001E5950 /* UIKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 66FE495F182EC0F0001E5950 /* UIKit.framework */; };
 		66FE4985182EC0F0001E5950 /* InfoPlist.strings in Resources */ = {isa = PBXBuildFile; fileRef = 66FE4983182EC0F0001E5950 /* InfoPlist.strings */; };
 		66FE4987182EC0F0001E5950 /* RemindMeTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 66FE4986182EC0F0001E5950 /* RemindMeTests.m */; };
+		66FE499E182EC5CB001E5950 /* DataModel.m in Sources */ = {isa = PBXBuildFile; fileRef = 66FE499D182EC5CB001E5950 /* DataModel.m */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -34,6 +37,10 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
+		66DD0DDB182EE903000098D4 /* DCNewReminderViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DCNewReminderViewController.h; sourceTree = "<group>"; };
+		66DD0DDC182EE903000098D4 /* DCNewReminderViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = DCNewReminderViewController.m; sourceTree = "<group>"; };
+		66DD0DDE182EEB4C000098D4 /* DCReminder.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DCReminder.h; sourceTree = "<group>"; };
+		66DD0DDF182EEB4C000098D4 /* DCReminder.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = DCReminder.m; sourceTree = "<group>"; };
 		66FE4958182EC0F0001E5950 /* RemindMe.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = RemindMe.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		66FE495B182EC0F0001E5950 /* Foundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Foundation.framework; path = System/Library/Frameworks/Foundation.framework; sourceTree = SDKROOT; };
 		66FE495D182EC0F0001E5950 /* CoreGraphics.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreGraphics.framework; path = System/Library/Frameworks/CoreGraphics.framework; sourceTree = SDKROOT; };
@@ -53,6 +60,8 @@
 		66FE4982182EC0F0001E5950 /* RemindMeTests-Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = "RemindMeTests-Info.plist"; sourceTree = "<group>"; };
 		66FE4984182EC0F0001E5950 /* en */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = en; path = en.lproj/InfoPlist.strings; sourceTree = "<group>"; };
 		66FE4986182EC0F0001E5950 /* RemindMeTests.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = RemindMeTests.m; sourceTree = "<group>"; };
+		66FE499C182EC5CB001E5950 /* DataModel.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DataModel.h; sourceTree = "<group>"; };
+		66FE499D182EC5CB001E5950 /* DataModel.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = DataModel.m; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -112,11 +121,12 @@
 		66FE4961182EC0F0001E5950 /* RemindMe */ = {
 			isa = PBXGroup;
 			children = (
+				66FE4990182EC270001E5950 /* Models */,
+				66FE4991182EC27D001E5950 /* Views */,
+				66FE4992182EC284001E5950 /* Controllers */,
 				66FE496A182EC0F0001E5950 /* DCAppDelegate.h */,
 				66FE496B182EC0F0001E5950 /* DCAppDelegate.m */,
 				66FE496D182EC0F0001E5950 /* Main.storyboard */,
-				66FE4970182EC0F0001E5950 /* DCViewController.h */,
-				66FE4971182EC0F0001E5950 /* DCViewController.m */,
 				66FE4973182EC0F0001E5950 /* Images.xcassets */,
 				66FE4962182EC0F0001E5950 /* Supporting Files */,
 			);
@@ -150,6 +160,35 @@
 				66FE4983182EC0F0001E5950 /* InfoPlist.strings */,
 			);
 			name = "Supporting Files";
+			sourceTree = "<group>";
+		};
+		66FE4990182EC270001E5950 /* Models */ = {
+			isa = PBXGroup;
+			children = (
+				66FE499C182EC5CB001E5950 /* DataModel.h */,
+				66FE499D182EC5CB001E5950 /* DataModel.m */,
+				66DD0DDE182EEB4C000098D4 /* DCReminder.h */,
+				66DD0DDF182EEB4C000098D4 /* DCReminder.m */,
+			);
+			name = Models;
+			sourceTree = "<group>";
+		};
+		66FE4991182EC27D001E5950 /* Views */ = {
+			isa = PBXGroup;
+			children = (
+			);
+			name = Views;
+			sourceTree = "<group>";
+		};
+		66FE4992182EC284001E5950 /* Controllers */ = {
+			isa = PBXGroup;
+			children = (
+				66FE4970182EC0F0001E5950 /* DCViewController.h */,
+				66FE4971182EC0F0001E5950 /* DCViewController.m */,
+				66DD0DDB182EE903000098D4 /* DCNewReminderViewController.h */,
+				66DD0DDC182EE903000098D4 /* DCNewReminderViewController.m */,
+			);
+			name = Controllers;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -251,7 +290,10 @@
 			buildActionMask = 2147483647;
 			files = (
 				66FE4968182EC0F0001E5950 /* main.m in Sources */,
+				66FE499E182EC5CB001E5950 /* DataModel.m in Sources */,
 				66FE4972182EC0F0001E5950 /* DCViewController.m in Sources */,
+				66DD0DDD182EE903000098D4 /* DCNewReminderViewController.m in Sources */,
+				66DD0DE0182EEB4C000098D4 /* DCReminder.m in Sources */,
 				66FE496C182EC0F0001E5950 /* DCAppDelegate.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -382,6 +424,7 @@
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = "RemindMe/RemindMe-Prefix.pch";
 				INFOPLIST_FILE = "RemindMe/RemindMe-Info.plist";
+				IPHONEOS_DEPLOYMENT_TARGET = 7.0;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				WRAPPER_EXTENSION = app;
 			};
@@ -395,6 +438,7 @@
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = "RemindMe/RemindMe-Prefix.pch";
 				INFOPLIST_FILE = "RemindMe/RemindMe-Info.plist";
+				IPHONEOS_DEPLOYMENT_TARGET = 7.0;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				WRAPPER_EXTENSION = app;
 			};
@@ -461,6 +505,7 @@
 				66FE498C182EC0F0001E5950 /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
 		};
 		66FE498D182EC0F0001E5950 /* Build configuration list for PBXNativeTarget "RemindMeTests" */ = {
 			isa = XCConfigurationList;
@@ -469,6 +514,7 @@
 				66FE498F182EC0F0001E5950 /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
 		};
 /* End XCConfigurationList section */
 	};
