@@ -12,5 +12,6 @@
 
 @property (nonatomic, strong) NSString *name;
 @property (nonatomic, strong) NSDate *nextDueDate;
+@property (nonatomic, readonly) BOOL dueSoon;
 
 @end

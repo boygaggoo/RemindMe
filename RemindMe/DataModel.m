@@ -10,6 +10,7 @@
 
 @interface DataModel ()
 @property (nonatomic, strong) NSMutableArray *reminderList;
+@property (nonatomic, assign) NSInteger numDueSoon;
 @end
 
 @implementation DataModel
@@ -32,7 +33,26 @@
 
 - (void)addReminder:(DCReminder *)reminder
 {
-    [self.reminderList addObject:reminder];
+    NSUInteger insertIndex = [self.reminderList indexOfObject:reminder
+                                                inSortedRange:(NSRange){0, self.reminderList.count}
+                                                      options:NSBinarySearchingInsertionIndex
+                                              usingComparator:^NSComparisonResult(id obj1, id obj2) {
+                                                  DCReminder *r1 = (DCReminder *)obj1;
+                                                  DCReminder *r2 = (DCReminder *)obj2;
+                                                  NSDate *date1 = r1.nextDueDate;
+                                                  NSDate *date2 = r2.nextDueDate;
+                                                  if ( [date2 timeIntervalSinceDate:date1] > 0 )
+                                                      return NSOrderedAscending;
+                                                  return NSOrderedDescending;
+                                              }];
+    
+    if ( reminder.dueSoon )
+    {
+        self.numDueSoon++;
+    }
+    
+    [self.reminderList insertObject:reminder atIndex:insertIndex];
+    [self.delegate dataModelInsertedObject:reminder atIndex:insertIndex];
 }
 
 - (DCReminder *)reminderAtIndex:(NSInteger)index
@@ -46,7 +66,19 @@
 - (void)removeReminderAtIndex:(NSInteger)index
 {
     if ( index < [self numItems] )
+    {
+        DCReminder *reminder = [self.reminderList objectAtIndex:index];
+        if ( reminder.dueSoon )
+        {
+            self.numDueSoon--;
+        }
         [self.reminderList removeObjectAtIndex:index];
+    }
 }
+
+//- (NSInteger)numDueSoon
+//{
+//    return self.numDueSoon;
+//}
 
 @end

@@ -11,8 +11,7 @@
 #import "DataModel.h"
 #import "DCReminder.h"
 
-@interface DCTableViewController () <NewReminderProtocol> {
-    NSInteger dueSoon;
+@interface DCTableViewController () <NewReminderProtocol, DataModelProtocol> {
 }
 
 @property (nonatomic, strong) DataModel *data;
@@ -26,7 +25,7 @@
     if (self) {
         // Custom initialization
         _data = [[DataModel alloc] init];
-        dueSoon = 0;
+        _data.delegate = self;
     }
     return self;
 }
@@ -59,26 +58,76 @@
     }
 }
 
+#pragma mark - DataModelProtocol
+
+- (void)dataModelInsertedObject:(DCReminder *)reminder atIndex:(NSUInteger)index
+{
+    // Create section for due soon
+    if ( reminder.dueSoon && [self.data numDueSoon] == 1 )
+    {
+        [self.tableView insertSections:[NSIndexSet indexSetWithIndex:0] withRowAnimation:UITableViewRowAnimationTop];
+    }
+    // Create section for future
+    else if ( !reminder.dueSoon && [self.data numItems] - [self.data numDueSoon] == 1 )
+    {
+        if ( [self.data numDueSoon] == 0 )
+            index = 0;
+        else
+            index = 1;
+        [self.tableView insertSections:[NSIndexSet indexSetWithIndex:index] withRowAnimation:UITableViewRowAnimationTop];
+    }
+    // Insert a single row
+    else
+    {
+        NSInteger section = 0;
+        if ( !reminder.dueSoon && [self.data numDueSoon] > 0 )
+        {
+            section = 1;
+            index -= [self.data numDueSoon];
+        }
+        [self.tableView insertRowsAtIndexPaths:@[ [NSIndexPath indexPathForRow:index inSection:section] ] withRowAnimation:UITableViewRowAnimationTop];
+    }
+}
+
 #pragma mark - NewReminderProtocol
 
 - (void)didAddNewReminder:(DCReminder *)newReminder
 {
     [self.data addReminder:newReminder];
-    [self.tableView reloadData];
 }
 
 #pragma mark - Table view data source
 
 - (NSInteger)numberOfSectionsInTableView:(UITableView *)tableView
 {
-    return 1;
+    NSInteger total = [self.data numItems];
+    NSInteger dueSoon = [self.data numDueSoon];
+    NSInteger sections = 0;
+    
+    if ( dueSoon > 0 )
+        sections++;
+    if ( total - dueSoon > 0 )
+        sections++;
+    
+    return sections;
 }
 
 - (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section
 {
+    NSInteger total = [self.data numItems];
+    NSInteger dueSoon = [self.data numDueSoon];
+
     if ( section == 0 )
     {
-        return [self.data numItems];
+        if ( dueSoon > 0 )
+        {
+            return dueSoon;
+        }
+        return total;
+    }
+    else if ( section == 1 )
+    {
+        return total - dueSoon;
     }
     return 0;
 }
@@ -87,8 +136,12 @@
 {
     static NSString *CellIdentifier = @"ReminderItem";
     UITableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:CellIdentifier forIndexPath:indexPath];
+    NSInteger index = indexPath.row;
     
-    DCReminder *reminder = [self.data reminderAtIndex:indexPath.row];
+    if ( indexPath.section == 1 )
+        index += [self.data numDueSoon];
+    
+    DCReminder *reminder = [self.data reminderAtIndex:index];
     
     // Configure the cell...
     cell.textLabel.text = reminder.name;
@@ -99,10 +152,11 @@
 
 - (NSString *)tableView:(UITableView *)tableView titleForHeaderInSection:(NSInteger)section
 {
-    if ( [self.data numItems] == 0 )
-        return nil;
     if ( section == 0 )
-        return @"Due soon";
+    {
+        if ( [self.data numDueSoon] > 0 )
+            return @"Due soon";
+    }
     return @"Future";
 }
 
@@ -121,14 +175,32 @@
 {
     if (editingStyle == UITableViewCellEditingStyleDelete)
     {
-        // Delete the row from the data source
+        NSInteger oldNumDueSoon = [self.data numDueSoon];
         NSInteger index = indexPath.row;
+        
         if ( indexPath.section == 1 )
-        {
-            index += 1; // TODO: Change to number due soon
-        }
+            index += [self.data numDueSoon];
         [self.data removeReminderAtIndex:index];
-        [tableView deleteRowsAtIndexPaths:@[indexPath] withRowAnimation:UITableViewRowAnimationFade];
+        
+        // Remove section 0 if no more due soon
+        if ( oldNumDueSoon > 0 && [self.data numDueSoon] == 0  )
+        {
+            [tableView deleteSections:[NSIndexSet indexSetWithIndex:0] withRowAnimation:UITableViewRowAnimationTop];
+        }
+        // Remove section 0 if no more reminders at all
+        else if ( [self.data numItems] == 0 )
+        {
+            [tableView deleteSections:[NSIndexSet indexSetWithIndex:0] withRowAnimation:UITableViewRowAnimationTop];
+        }
+        // Remove section 1 if no more future dues
+        else if ( indexPath.section == 1 && [self.data numItems] - [self.data numDueSoon] == 0 )
+        {
+            [tableView deleteSections:[NSIndexSet indexSetWithIndex:1] withRowAnimation:UITableViewRowAnimationTop];
+        }
+        else
+        {
+            [tableView deleteRowsAtIndexPaths:@[indexPath] withRowAnimation:UITableViewRowAnimationFade];
+        }
     }
 //    else if (editingStyle == UITableViewCellEditingStyleInsert) {
 //        // Create a new instance of the appropriate class, insert it into the array, and add a new row to the table view
