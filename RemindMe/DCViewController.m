@@ -15,6 +15,8 @@
 }
 
 @property (nonatomic, strong) DataModel *data;
+@property (weak, nonatomic) IBOutlet UIButton *noItemsButton;
+
 @end
 
 @implementation DCTableViewController
@@ -43,6 +45,21 @@
     self.navigationItem.title = @"Reminders";
 }
 
+
+- (void)viewWillAppear:(BOOL)animated
+{
+    [super viewWillAppear:animated];
+    if ( [self.data numItems] == 0 )
+    {
+        self.noItemsButton.hidden = NO;
+    }
+    else
+    {
+        self.noItemsButton.hidden = YES;
+    }
+
+}
+
 - (void)didReceiveMemoryWarning
 {
     [super didReceiveMemoryWarning];
@@ -56,6 +73,11 @@
         DCNewReminderViewController *destination = segue.destinationViewController;
         destination.delegate = self;
     }
+}
+
+- (IBAction)createReminder:(id)sender
+{
+    [self performSegueWithIdentifier:@"newReminder" sender:self];
 }
 
 #pragma mark - DataModelProtocol
