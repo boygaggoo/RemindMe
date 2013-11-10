@@ -16,6 +16,7 @@
 
 @property (nonatomic, strong) DataModel *data;
 @property (weak, nonatomic) IBOutlet UIButton *noItemsButton;
+@property (nonatomic, strong) NSDateFormatter *dateFormatter;
 
 @end
 
@@ -160,6 +161,13 @@
     UITableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:CellIdentifier forIndexPath:indexPath];
     NSInteger index = indexPath.row;
     
+    if ( self.dateFormatter == nil )
+    {
+        NSLog( @"Creating date formatter" );
+        self.dateFormatter = [[NSDateFormatter alloc] init];
+        [self.dateFormatter setDateFormat:@"MMM dd, yyyy"];
+    }
+    
     if ( indexPath.section == 1 )
         index += [self.data numDueSoon];
     
@@ -167,8 +175,13 @@
     
     // Configure the cell...
     cell.textLabel.text = reminder.name;
-    cell.detailTextLabel.text = reminder.nextDueDate.description;
+    cell.detailTextLabel.text = [self.dateFormatter stringFromDate:reminder.nextDueDate];
     
+    if ( reminder.dueSoon )
+        cell.detailTextLabel.textColor = [UIColor redColor];
+    else
+        cell.detailTextLabel.textColor = [UIColor blackColor];
+
     return cell;
 }
 
