@@ -90,6 +90,7 @@
     
     // Configure the cell...
     cell.textLabel.text = reminder.name;
+    cell.detailTextLabel.text = reminder.nextDueDate.description;
     
     return cell;
 }

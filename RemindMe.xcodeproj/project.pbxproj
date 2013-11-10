@@ -9,6 +9,8 @@
 /* Begin PBXBuildFile section */
 		66DD0DDD182EE903000098D4 /* DCNewReminderViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 66DD0DDC182EE903000098D4 /* DCNewReminderViewController.m */; };
 		66DD0DE0182EEB4C000098D4 /* DCReminder.m in Sources */ = {isa = PBXBuildFile; fileRef = 66DD0DDF182EEB4C000098D4 /* DCReminder.m */; };
+		66DD0DE3182F0255000098D4 /* DCReminderInfoTextCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 66DD0DE2182F0255000098D4 /* DCReminderInfoTextCell.m */; };
+		66DD0DE6182F0312000098D4 /* DCReminderInfoLabelCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 66DD0DE5182F0312000098D4 /* DCReminderInfoLabelCell.m */; };
 		66FE495C182EC0F0001E5950 /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 66FE495B182EC0F0001E5950 /* Foundation.framework */; };
 		66FE495E182EC0F0001E5950 /* CoreGraphics.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 66FE495D182EC0F0001E5950 /* CoreGraphics.framework */; };
 		66FE4960182EC0F0001E5950 /* UIKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 66FE495F182EC0F0001E5950 /* UIKit.framework */; };
@@ -41,6 +43,10 @@
 		66DD0DDC182EE903000098D4 /* DCNewReminderViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = DCNewReminderViewController.m; sourceTree = "<group>"; };
 		66DD0DDE182EEB4C000098D4 /* DCReminder.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DCReminder.h; sourceTree = "<group>"; };
 		66DD0DDF182EEB4C000098D4 /* DCReminder.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = DCReminder.m; sourceTree = "<group>"; };
+		66DD0DE1182F0255000098D4 /* DCReminderInfoTextCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DCReminderInfoTextCell.h; sourceTree = "<group>"; };
+		66DD0DE2182F0255000098D4 /* DCReminderInfoTextCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = DCReminderInfoTextCell.m; sourceTree = "<group>"; };
+		66DD0DE4182F0312000098D4 /* DCReminderInfoLabelCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DCReminderInfoLabelCell.h; sourceTree = "<group>"; };
+		66DD0DE5182F0312000098D4 /* DCReminderInfoLabelCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = DCReminderInfoLabelCell.m; sourceTree = "<group>"; };
 		66FE4958182EC0F0001E5950 /* RemindMe.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = RemindMe.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		66FE495B182EC0F0001E5950 /* Foundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Foundation.framework; path = System/Library/Frameworks/Foundation.framework; sourceTree = SDKROOT; };
 		66FE495D182EC0F0001E5950 /* CoreGraphics.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreGraphics.framework; path = System/Library/Frameworks/CoreGraphics.framework; sourceTree = SDKROOT; };
@@ -176,6 +182,10 @@
 		66FE4991182EC27D001E5950 /* Views */ = {
 			isa = PBXGroup;
 			children = (
+				66DD0DE1182F0255000098D4 /* DCReminderInfoTextCell.h */,
+				66DD0DE2182F0255000098D4 /* DCReminderInfoTextCell.m */,
+				66DD0DE4182F0312000098D4 /* DCReminderInfoLabelCell.h */,
+				66DD0DE5182F0312000098D4 /* DCReminderInfoLabelCell.m */,
 			);
 			name = Views;
 			sourceTree = "<group>";
@@ -293,6 +303,8 @@
 				66FE499E182EC5CB001E5950 /* DataModel.m in Sources */,
 				66FE4972182EC0F0001E5950 /* DCViewController.m in Sources */,
 				66DD0DDD182EE903000098D4 /* DCNewReminderViewController.m in Sources */,
+				66DD0DE3182F0255000098D4 /* DCReminderInfoTextCell.m in Sources */,
+				66DD0DE6182F0312000098D4 /* DCReminderInfoLabelCell.m in Sources */,
 				66DD0DE0182EEB4C000098D4 /* DCReminder.m in Sources */,
 				66FE496C182EC0F0001E5950 /* DCAppDelegate.m in Sources */,
 			);

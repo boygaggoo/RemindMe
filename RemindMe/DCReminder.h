@@ -11,5 +11,6 @@
 @interface DCReminder : NSObject
 
 @property (nonatomic, strong) NSString *name;
+@property (nonatomic, strong) NSDate *nextDueDate;
 
 @end
