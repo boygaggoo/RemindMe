@@ -10,11 +10,12 @@
 #import "DCReminderInfoTextCell.h"
 #import "DCReminderInfoLabelCell.h"
 
-@interface DCNewReminderViewController () {
+@interface DCNewReminderViewController () <UITextFieldDelegate> {
     BOOL editingDate;
     DCReminderInfoLabelCell *dateCell;
     UIDatePicker *picker;
     DCReminder *newReminder;
+    BOOL datePicked;
 }
 
 @property (nonatomic, strong) UITextField *nameTextField;
@@ -39,9 +40,9 @@
     // Uncomment the following line to preserve selection between presentations.
     // self.clearsSelectionOnViewWillAppear = NO;
  
-    // Uncomment the following line to display an Edit button in the navigation bar for this view controller.
-    // self.navigationItem.rightBarButtonItem = self.editButtonItem;
+    self.navigationItem.rightBarButtonItem.enabled = NO;
     editingDate = NO;
+    datePicked = NO;
 }
 
 - (void)didReceiveMemoryWarning
@@ -61,6 +62,24 @@
 - (IBAction)cancel:(id)sender
 {
     [self.navigationController popViewControllerAnimated:YES];
+}
+
+#pragma mark - UITextFieldDelegate
+
+- (BOOL)textField:(UITextField *)textField shouldChangeCharactersInRange:(NSRange)range replacementString:(NSString *)string
+{
+    NSString *newText = [textField.text stringByReplacingCharactersInRange:range withString:string];
+
+    if ( datePicked && ![newText isEqualToString:@""] )
+    {
+        self.navigationItem.rightBarButtonItem.enabled = YES;
+    }
+    else
+    {
+        self.navigationItem.rightBarButtonItem.enabled = NO;
+    }
+    
+    return YES;
 }
 
 #pragma mark - Table view data source
@@ -91,6 +110,7 @@
         cell.valueTextField.placeholder = @"Reminder Name";
         cell.selectionStyle = UITableViewCellSelectionStyleNone;
         self.nameTextField = cell.valueTextField;
+        cell.valueTextField.delegate = self;
         return cell;
     }
     
@@ -120,6 +140,12 @@
 
         [cell addSubview:picker];
         [self dateChanged];
+        datePicked = YES;
+        
+        if ( ![self.nameTextField.text isEqualToString:@""] )
+        {
+            self.navigationItem.rightBarButtonItem.enabled = YES;
+        }
 
         cell.selectionStyle = UITableViewCellSelectionStyleNone;
         return cell;

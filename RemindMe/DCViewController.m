@@ -11,10 +11,11 @@
 #import "DataModel.h"
 #import "DCReminder.h"
 
-@interface DCTableViewController () <NewReminderProtocol>
+@interface DCTableViewController () <NewReminderProtocol> {
+    NSInteger dueSoon;
+}
 
 @property (nonatomic, strong) DataModel *data;
-
 @end
 
 @implementation DCTableViewController
@@ -25,6 +26,7 @@
     if (self) {
         // Custom initialization
         _data = [[DataModel alloc] init];
+        dueSoon = 0;
     }
     return self;
 }
@@ -95,6 +97,15 @@
     return cell;
 }
 
+- (NSString *)tableView:(UITableView *)tableView titleForHeaderInSection:(NSInteger)section
+{
+    if ( [self.data numItems] == 0 )
+        return nil;
+    if ( section == 0 )
+        return @"Due soon";
+    return @"Future";
+}
+
 /*
  // Override to support conditional editing of the table view.
  - (BOOL)tableView:(UITableView *)tableView canEditRowAtIndexPath:(NSIndexPath *)indexPath
@@ -104,19 +115,26 @@
  }
  */
 
-/*
- // Override to support editing the table view.
- - (void)tableView:(UITableView *)tableView commitEditingStyle:(UITableViewCellEditingStyle)editingStyle forRowAtIndexPath:(NSIndexPath *)indexPath
- {
- if (editingStyle == UITableViewCellEditingStyleDelete) {
- // Delete the row from the data source
- [tableView deleteRowsAtIndexPaths:@[indexPath] withRowAnimation:UITableViewRowAnimationFade];
- }
- else if (editingStyle == UITableViewCellEditingStyleInsert) {
- // Create a new instance of the appropriate class, insert it into the array, and add a new row to the table view
- }
- }
- */
+
+// Override to support editing the table view.
+- (void)tableView:(UITableView *)tableView commitEditingStyle:(UITableViewCellEditingStyle)editingStyle forRowAtIndexPath:(NSIndexPath *)indexPath
+{
+    if (editingStyle == UITableViewCellEditingStyleDelete)
+    {
+        // Delete the row from the data source
+        NSInteger index = indexPath.row;
+        if ( indexPath.section == 1 )
+        {
+            index += 1; // TODO: Change to number due soon
+        }
+        [self.data removeReminderAtIndex:index];
+        [tableView deleteRowsAtIndexPaths:@[indexPath] withRowAnimation:UITableViewRowAnimationFade];
+    }
+//    else if (editingStyle == UITableViewCellEditingStyleInsert) {
+//        // Create a new instance of the appropriate class, insert it into the array, and add a new row to the table view
+//    }
+}
+
 
 /*
  // Override to support rearranging the table view.

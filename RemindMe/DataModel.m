@@ -43,4 +43,10 @@
     return self.reminderList[index];
 }
 
+- (void)removeReminderAtIndex:(NSInteger)index
+{
+    if ( index < [self numItems] )
+        [self.reminderList removeObjectAtIndex:index];
+}
+
 @end

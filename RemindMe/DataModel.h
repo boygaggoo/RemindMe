@@ -14,5 +14,6 @@
 - (NSInteger)numItems;
 - (void)addReminder:(DCReminder *)reminder;
 - (DCReminder *)reminderAtIndex:(NSInteger)index;
+- (void)removeReminderAtIndex:(NSInteger)index;
 
 @end
