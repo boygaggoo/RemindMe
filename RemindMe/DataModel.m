@@ -100,9 +100,8 @@
     {
         [self.database open];
         [self.database executeUpdate:@"insert into reminders (reminderName, nextDueDate) values (?, ?)", reminder.name, reminder.nextDueDate];
-        [self.database close];
-        
         reminder.uid = [NSNumber numberWithLongLong:[self.database lastInsertRowId]];
+        [self.database close];
     
         [self.delegate dataModelInsertedObject:reminder atIndex:insertIndex];
     }
