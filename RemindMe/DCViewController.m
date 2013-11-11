@@ -44,6 +44,9 @@
     // self.navigationItem.rightBarButtonItem = self.editButtonItem;
     
     self.navigationItem.title = @"Reminders";
+    
+    // Needs to be called after the data delegate has been set
+    [self.data loadData];
 }
 
 
@@ -119,6 +122,15 @@
     [self.data addReminder:newReminder];
 }
 
+- (BOOL)dataModelIsReminderDueSoon:(DCReminder *)reminder
+{
+    if ( [reminder.nextDueDate timeIntervalSinceDate:[NSDate dateWithTimeIntervalSinceNow:60*60*24*3]] < 0 )
+    {
+        return YES;
+    }
+    return NO;
+}
+
 #pragma mark - Table view data source
 
 - (NSInteger)numberOfSectionsInTableView:(UITableView *)tableView
@@ -157,13 +169,13 @@
 
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath
 {
+    NSLog( @"   ***   %s  %d:%d ***", __FUNCTION__, indexPath.section, indexPath.row );
     static NSString *CellIdentifier = @"ReminderItem";
     UITableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:CellIdentifier forIndexPath:indexPath];
     NSInteger index = indexPath.row;
     
     if ( self.dateFormatter == nil )
     {
-        NSLog( @"Creating date formatter" );
         self.dateFormatter = [[NSDateFormatter alloc] init];
         [self.dateFormatter setDateFormat:@"MMM dd, yyyy"];
     }

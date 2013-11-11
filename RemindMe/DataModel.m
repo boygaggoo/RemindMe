@@ -7,10 +7,12 @@
 //
 
 #import "DataModel.h"
+#import <FMDatabase.h>
 
 @interface DataModel ()
 @property (nonatomic, strong) NSMutableArray *reminderList;
 @property (nonatomic, assign) NSInteger numDueSoon;
+@property (nonatomic, strong) FMDatabase *database;
 @end
 
 @implementation DataModel
@@ -26,12 +28,51 @@
     return self;
 }
 
+- (void)createTables
+{
+    [self.database open];
+    [self.database executeUpdate:@"CREATE TABLE reminders (id integer primary key autoincrement, reminderName text not null, nextDueDate date not null);"];
+    [self.database close];
+}
+
+- (void)loadData
+{
+    if ( self.database )
+        return;
+
+    NSArray *docPaths = NSSearchPathForDirectoriesInDomains(NSDocumentDirectory, NSUserDomainMask, YES);
+    NSString *documentsDir = [docPaths objectAtIndex:0];
+    NSString *dbPath = [documentsDir stringByAppendingPathComponent:@"reminders.sql"];
+
+    self.database = [[FMDatabase alloc] initWithPath:dbPath];
+    [self createTables];
+    [self loadDatabase];
+    
+}
+
+- (void)loadDatabase
+{
+    [self.database open];
+    FMResultSet *results = [self.database executeQuery:@"select * from reminders;"];
+    
+    while( [results next] )
+    {
+        DCReminder *reminder = [[DCReminder alloc] init];
+        reminder.name = [results stringForColumn:@"reminderName"];
+        reminder.nextDueDate = [results dateForColumn:@"nextDueDate"];
+        reminder.uid = [NSNumber numberWithLongLong:[results intForColumn:@"id"]];
+        [self addReminder:reminder fromDatabase:YES];
+    }
+    
+    [self.database close];
+}
+
 - (NSInteger)numItems
 {
     return self.reminderList.count;
 }
 
-- (void)addReminder:(DCReminder *)reminder
+- (void)addReminder:(DCReminder *)reminder fromDatabase:(BOOL)fromdb
 {
     NSUInteger insertIndex = [self.reminderList indexOfObject:reminder
                                                 inSortedRange:(NSRange){0, self.reminderList.count}
@@ -46,13 +87,30 @@
                                                   return NSOrderedDescending;
                                               }];
     
+    reminder.dueSoon = [self.delegate dataModelIsReminderDueSoon:reminder];
+    
     if ( reminder.dueSoon )
     {
         self.numDueSoon++;
     }
     
     [self.reminderList insertObject:reminder atIndex:insertIndex];
-    [self.delegate dataModelInsertedObject:reminder atIndex:insertIndex];
+
+    if ( !fromdb )
+    {
+        [self.database open];
+        [self.database executeUpdate:@"insert into reminders (reminderName, nextDueDate) values (?, ?)", reminder.name, reminder.nextDueDate];
+        [self.database close];
+        
+        reminder.uid = [NSNumber numberWithLongLong:[self.database lastInsertRowId]];
+    
+        [self.delegate dataModelInsertedObject:reminder atIndex:insertIndex];
+    }
+}
+
+- (void)addReminder:(DCReminder *)reminder
+{
+    [self addReminder:reminder fromDatabase:NO];
 }
 
 - (DCReminder *)reminderAtIndex:(NSInteger)index
@@ -73,12 +131,12 @@
             self.numDueSoon--;
         }
         [self.reminderList removeObjectAtIndex:index];
+        
+        [self.database open];
+        [self.database executeUpdate:@"delete from reminders where id = ?", reminder.uid];
+        [self.database close];
+
     }
 }
-
-//- (NSInteger)numDueSoon
-//{
-//    return self.numDueSoon;
-//}
 
 @end
