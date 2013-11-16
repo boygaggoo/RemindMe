@@ -24,7 +24,7 @@
                             </connections>
                         </button>
                         <prototypes>
-                            <tableViewCell contentMode="scaleToFill" selectionStyle="blue" accessoryType="disclosureIndicator" hidesAccessoryWhenEditing="NO" indentationLevel="1" indentationWidth="0.0" reuseIdentifier="ReminderItem" textLabel="h9G-QN-H6D" detailTextLabel="6TY-D2-vbc" style="IBUITableViewCellStyleSubtitle" id="BgF-9Y-a3D">
+                            <tableViewCell contentMode="scaleToFill" selectionStyle="blue" accessoryType="disclosureIndicator" hidesAccessoryWhenEditing="NO" indentationLevel="1" indentationWidth="0.0" reuseIdentifier="ReminderItem" textLabel="h9G-QN-H6D" detailTextLabel="6TY-D2-vbc" style="IBUITableViewCellStyleSubtitle" id="BgF-9Y-a3D" customClass="DCReminderTableViewCell">
                                 <rect key="frame" x="0.0" y="119" width="320" height="44"/>
                                 <autoresizingMask key="autoresizingMask"/>
                                 <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" tableViewCell="BgF-9Y-a3D" id="BKe-VX-bpE">

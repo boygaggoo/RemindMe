@@ -10,6 +10,7 @@
 #import "DCNewReminderViewController.h"
 #import "DataModel.h"
 #import "DCReminder.h"
+#import "DCReminderTableViewCell.h"
 
 @interface DCTableViewController () <NewReminderProtocol, DataModelProtocol> {
 }
@@ -171,7 +172,7 @@
 {
     NSLog( @"   ***   %s  %d:%d ***", __FUNCTION__, indexPath.section, indexPath.row );
     static NSString *CellIdentifier = @"ReminderItem";
-    UITableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:CellIdentifier forIndexPath:indexPath];
+    DCReminderTableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:CellIdentifier forIndexPath:indexPath];
     NSInteger index = indexPath.row;
     
     if ( self.dateFormatter == nil )
@@ -218,41 +219,41 @@
 
 
 // Override to support editing the table view.
-- (void)tableView:(UITableView *)tableView commitEditingStyle:(UITableViewCellEditingStyle)editingStyle forRowAtIndexPath:(NSIndexPath *)indexPath
-{
-    if (editingStyle == UITableViewCellEditingStyleDelete)
-    {
-        NSInteger oldNumDueSoon = [self.data numDueSoon];
-        NSInteger index = indexPath.row;
-        
-        if ( indexPath.section == 1 )
-            index += [self.data numDueSoon];
-        [self.data removeReminderAtIndex:index];
-        
-        // Remove section 0 if no more due soon
-        if ( oldNumDueSoon > 0 && [self.data numDueSoon] == 0  )
-        {
-            [tableView deleteSections:[NSIndexSet indexSetWithIndex:0] withRowAnimation:UITableViewRowAnimationTop];
-        }
-        // Remove section 0 if no more reminders at all
-        else if ( [self.data numItems] == 0 )
-        {
-            [tableView deleteSections:[NSIndexSet indexSetWithIndex:0] withRowAnimation:UITableViewRowAnimationTop];
-        }
-        // Remove section 1 if no more future dues
-        else if ( indexPath.section == 1 && [self.data numItems] - [self.data numDueSoon] == 0 )
-        {
-            [tableView deleteSections:[NSIndexSet indexSetWithIndex:1] withRowAnimation:UITableViewRowAnimationTop];
-        }
-        else
-        {
-            [tableView deleteRowsAtIndexPaths:@[indexPath] withRowAnimation:UITableViewRowAnimationFade];
-        }
-    }
+//- (void)tableView:(UITableView *)tableView commitEditingStyle:(UITableViewCellEditingStyle)editingStyle forRowAtIndexPath:(NSIndexPath *)indexPath
+//{
+//    if (editingStyle == UITableViewCellEditingStyleDelete)
+//    {
+//        NSInteger oldNumDueSoon = [self.data numDueSoon];
+//        NSInteger index = indexPath.row;
+//        
+//        if ( indexPath.section == 1 )
+//            index += [self.data numDueSoon];
+//        [self.data removeReminderAtIndex:index];
+//        
+//        // Remove section 0 if no more due soon
+//        if ( oldNumDueSoon > 0 && [self.data numDueSoon] == 0  )
+//        {
+//            [tableView deleteSections:[NSIndexSet indexSetWithIndex:0] withRowAnimation:UITableViewRowAnimationTop];
+//        }
+//        // Remove section 0 if no more reminders at all
+//        else if ( [self.data numItems] == 0 )
+//        {
+//            [tableView deleteSections:[NSIndexSet indexSetWithIndex:0] withRowAnimation:UITableViewRowAnimationTop];
+//        }
+//        // Remove section 1 if no more future dues
+//        else if ( indexPath.section == 1 && [self.data numItems] - [self.data numDueSoon] == 0 )
+//        {
+//            [tableView deleteSections:[NSIndexSet indexSetWithIndex:1] withRowAnimation:UITableViewRowAnimationTop];
+//        }
+//        else
+//        {
+//            [tableView deleteRowsAtIndexPaths:@[indexPath] withRowAnimation:UITableViewRowAnimationFade];
+//        }
+//    }
 //    else if (editingStyle == UITableViewCellEditingStyleInsert) {
 //        // Create a new instance of the appropriate class, insert it into the array, and add a new row to the table view
 //    }
-}
+//}
 
 
 /*
