@@ -13,6 +13,7 @@
 		66DD0DE6182F0312000098D4 /* DCReminderInfoLabelCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 66DD0DE5182F0312000098D4 /* DCReminderInfoLabelCell.m */; };
 		66DD0DEA18319B33000098D4 /* DCSlidingTableViewCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 66DD0DE918319B33000098D4 /* DCSlidingTableViewCell.m */; };
 		66DD0DED18319C6A000098D4 /* DCReminderTableViewCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 66DD0DEC18319C6A000098D4 /* DCReminderTableViewCell.m */; };
+		66DD0DF118383726000098D4 /* NSDate+Helpers.m in Sources */ = {isa = PBXBuildFile; fileRef = 66DD0DF018383726000098D4 /* NSDate+Helpers.m */; };
 		66FE495C182EC0F0001E5950 /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 66FE495B182EC0F0001E5950 /* Foundation.framework */; };
 		66FE495E182EC0F0001E5950 /* CoreGraphics.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 66FE495D182EC0F0001E5950 /* CoreGraphics.framework */; };
 		66FE4960182EC0F0001E5950 /* UIKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 66FE495F182EC0F0001E5950 /* UIKit.framework */; };
@@ -55,6 +56,8 @@
 		66DD0DE918319B33000098D4 /* DCSlidingTableViewCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = DCSlidingTableViewCell.m; sourceTree = "<group>"; };
 		66DD0DEB18319C6A000098D4 /* DCReminderTableViewCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DCReminderTableViewCell.h; sourceTree = "<group>"; };
 		66DD0DEC18319C6A000098D4 /* DCReminderTableViewCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = DCReminderTableViewCell.m; sourceTree = "<group>"; };
+		66DD0DEF18383726000098D4 /* NSDate+Helpers.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "NSDate+Helpers.h"; sourceTree = "<group>"; };
+		66DD0DF018383726000098D4 /* NSDate+Helpers.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "NSDate+Helpers.m"; sourceTree = "<group>"; };
 		66FE4958182EC0F0001E5950 /* RemindMe.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = RemindMe.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		66FE495B182EC0F0001E5950 /* Foundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Foundation.framework; path = System/Library/Frameworks/Foundation.framework; sourceTree = SDKROOT; };
 		66FE495D182EC0F0001E5950 /* CoreGraphics.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreGraphics.framework; path = System/Library/Frameworks/CoreGraphics.framework; sourceTree = SDKROOT; };
@@ -104,6 +107,15 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
+		66DD0DEE18383709000098D4 /* Categories */ = {
+			isa = PBXGroup;
+			children = (
+				66DD0DEF18383726000098D4 /* NSDate+Helpers.h */,
+				66DD0DF018383726000098D4 /* NSDate+Helpers.m */,
+			);
+			name = Categories;
+			sourceTree = "<group>";
+		};
 		66FE494F182EC0F0001E5950 = {
 			isa = PBXGroup;
 			children = (
@@ -139,6 +151,7 @@
 		66FE4961182EC0F0001E5950 /* RemindMe */ = {
 			isa = PBXGroup;
 			children = (
+				66DD0DEE18383709000098D4 /* Categories */,
 				66FE4990182EC270001E5950 /* Models */,
 				66FE4991182EC27D001E5950 /* Views */,
 				66FE4992182EC284001E5950 /* Controllers */,
@@ -356,6 +369,7 @@
 				66DD0DDD182EE903000098D4 /* DCNewReminderViewController.m in Sources */,
 				66DD0DE3182F0255000098D4 /* DCReminderInfoTextCell.m in Sources */,
 				66DD0DE6182F0312000098D4 /* DCReminderInfoLabelCell.m in Sources */,
+				66DD0DF118383726000098D4 /* NSDate+Helpers.m in Sources */,
 				66DD0DED18319C6A000098D4 /* DCReminderTableViewCell.m in Sources */,
 				66DD0DE0182EEB4C000098D4 /* DCReminder.m in Sources */,
 				66FE496C182EC0F0001E5950 /* DCAppDelegate.m in Sources */,

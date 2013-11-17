@@ -11,8 +11,14 @@
 #import "DataModel.h"
 #import "DCReminder.h"
 #import "DCReminderTableViewCell.h"
+#import "NSDate+Helpers.h"
 
 @interface DCTableViewController () <NewReminderProtocol, DataModelProtocol> {
+    NSInteger _totalItems;
+    NSInteger _dueSoon;
+    NSInteger _overDue;
+    NSDate *_now;
+    NSDate *_soon;
 }
 
 @property (nonatomic, strong) DataModel *data;
@@ -53,8 +59,11 @@
 
 - (void)viewWillAppear:(BOOL)animated
 {
-    [super viewWillAppear:animated];
-    if ( [self.data numItems] == 0 )
+    NSLog( @"   ***   %s   ***", __FUNCTION__ );
+
+    [self updateCounts];
+
+    if ( _totalItems == 0 )
     {
         self.noItemsButton.hidden = NO;
     }
@@ -62,7 +71,8 @@
     {
         self.noItemsButton.hidden = YES;
     }
-
+    
+    [super viewWillAppear:animated];
 }
 
 - (void)didReceiveMemoryWarning
@@ -80,6 +90,17 @@
     }
 }
 
+- (void)updateCounts
+{
+    NSLog( @"   ***   %s   ***", __FUNCTION__ );
+    _now = [NSDate date];
+    _soon = [NSDate dateWithTimeIntervalSinceNow:60*60*24*3];
+    
+    _totalItems = [self.data numItems];
+    _dueSoon = [self.data numDueAfter:_now andBefore:_soon];
+    _overDue = [self.data numDueBefore:_now];
+}
+
 - (IBAction)createReminder:(id)sender
 {
     [self performSegueWithIdentifier:@"newReminder" sender:self];
@@ -89,28 +110,64 @@
 
 - (void)dataModelInsertedObject:(DCReminder *)reminder atIndex:(NSUInteger)index
 {
-    // Create section for due soon
-    if ( reminder.dueSoon && [self.data numDueSoon] == 1 )
+    NSLog( @"   ***   %s   ***", __FUNCTION__ );
+
+    [self updateCounts];
+    
+    // Create section for over due
+    if ( _overDue == 1 && [reminder.nextDueDate dc_isDateBefore:_now] )
     {
         [self.tableView insertSections:[NSIndexSet indexSetWithIndex:0] withRowAnimation:UITableViewRowAnimationTop];
     }
-    // Create section for future
-    else if ( !reminder.dueSoon && [self.data numItems] - [self.data numDueSoon] == 1 )
+    // Create section for due soon
+    else if ( _dueSoon == 1 && [reminder.nextDueDate dc_isDateAfter:_now andBefore:_soon] )
     {
-        if ( [self.data numDueSoon] == 0 )
-            index = 0;
-        else
-            index = 1;
+        index = 0;
+        if ( _overDue > 0 )
+            index++;
+        [self.tableView insertSections:[NSIndexSet indexSetWithIndex:1] withRowAnimation:UITableViewRowAnimationTop];
+    }
+    // Create section for future
+    else if ( _totalItems - _dueSoon - _overDue == 1 && [reminder.nextDueDate dc_isDateAfter:_soon] )
+    {
+        index = 0;
+        if ( _overDue > 0 )
+            index++;
+        if ( _dueSoon > 0 )
+            index++;
         [self.tableView insertSections:[NSIndexSet indexSetWithIndex:index] withRowAnimation:UITableViewRowAnimationTop];
     }
     // Insert a single row
     else
     {
         NSInteger section = 0;
-        if ( !reminder.dueSoon && [self.data numDueSoon] > 0 )
+        // Add to overdue section
+        if ( [reminder.nextDueDate dc_isDateBefore:_now] )
         {
-            section = 1;
-            index -= [self.data numDueSoon];
+            // index and section are correct
+        }
+        // Add to due soon section
+        else if ( [reminder.nextDueDate dc_isDateAfter:_now andBefore:_soon] )
+        {
+            if ( _overDue > 0 )
+            {
+                section++;
+                index -= _overDue;
+            }
+        }
+        // Add to future section
+        else
+        {
+            if ( _overDue > 0 )
+            {
+                section++;
+                index -= _overDue;
+            }
+            if ( _dueSoon > 0 )
+            {
+                section++;
+                index -= _dueSoon;
+            }
         }
         [self.tableView insertRowsAtIndexPaths:@[ [NSIndexPath indexPathForRow:index inSection:section] ] withRowAnimation:UITableViewRowAnimationTop];
     }
@@ -136,13 +193,14 @@
 
 - (NSInteger)numberOfSectionsInTableView:(UITableView *)tableView
 {
-    NSInteger total = [self.data numItems];
-    NSInteger dueSoon = [self.data numDueSoon];
+    NSLog( @"   ***   %s   ***", __FUNCTION__ );
     NSInteger sections = 0;
     
-    if ( dueSoon > 0 )
+    if ( _overDue > 0 )
         sections++;
-    if ( total - dueSoon > 0 )
+    if ( _dueSoon > 0 )
+        sections++;
+    if ( _totalItems - _dueSoon - _overDue > 0 )
         sections++;
     
     return sections;
@@ -150,21 +208,31 @@
 
 - (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section
 {
-    NSInteger total = [self.data numItems];
-    NSInteger dueSoon = [self.data numDueSoon];
-
     if ( section == 0 )
     {
-        if ( dueSoon > 0 )
+        if ( _overDue > 0 )
         {
-            return dueSoon;
+            return _overDue;
         }
-        return total;
+        if ( _dueSoon > 0 )
+        {
+            return _dueSoon;
+        }
+        return _totalItems;
     }
     else if ( section == 1 )
     {
-        return total - dueSoon;
+        if ( _dueSoon > 0 )
+        {
+            return _dueSoon;
+        }
+        return _totalItems - _dueSoon - _overDue;
     }
+    else if ( section == 2 )
+    {
+        return _totalItems - _dueSoon - _overDue;
+    }
+    
     return 0;
 }
 
@@ -182,7 +250,13 @@
     }
     
     if ( indexPath.section == 1 )
-        index += [self.data numDueSoon];
+    {
+        index += _overDue;
+    }
+    else if ( indexPath.section == 2 )
+    {
+        index += _overDue + _dueSoon;
+    }
     
     DCReminder *reminder = [self.data reminderAtIndex:index];
     
@@ -190,8 +264,13 @@
     cell.textLabel.text = reminder.name;
     cell.detailTextLabel.text = [self.dateFormatter stringFromDate:reminder.nextDueDate];
     
-    if ( reminder.dueSoon )
+    // If overdue
+    if ( indexPath.section == 0 && _overDue )
         cell.detailTextLabel.textColor = [UIColor redColor];
+    // If due soon
+    else if ( (indexPath.section == 0 && _overDue == 0) || (indexPath.section == 1 && _overDue > 0 ) )
+        cell.detailTextLabel.textColor = [UIColor blueColor];
+    // If future
     else
         cell.detailTextLabel.textColor = [UIColor blackColor];
 
@@ -202,7 +281,16 @@
 {
     if ( section == 0 )
     {
-        if ( [self.data numDueSoon] > 0 )
+        if ( _overDue > 0 )
+            return @"Overdue";
+        if ( _dueSoon > 0 )
+            return @"Due soon";
+    }
+    if ( section == 1 )
+    {
+        if ( _overDue == 0 )
+            return @"Future";
+        if ( _dueSoon > 0 )
             return @"Due soon";
     }
     return @"Future";

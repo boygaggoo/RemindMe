@@ -11,7 +11,7 @@
 
 @interface DataModel ()
 @property (nonatomic, strong) NSMutableArray *reminderList;
-@property (nonatomic, assign) NSInteger numDueSoon;
+//@property (nonatomic, assign) NSInteger numDueSoon;
 @property (nonatomic, strong) FMDatabase *database;
 @end
 
@@ -87,12 +87,12 @@
                                                   return NSOrderedDescending;
                                               }];
     
-    reminder.dueSoon = [self.delegate dataModelIsReminderDueSoon:reminder];
+//    reminder.dueSoon = [self.delegate dataModelIsReminderDueSoon:reminder];
     
-    if ( reminder.dueSoon )
-    {
-        self.numDueSoon++;
-    }
+//    if ( reminder.dueSoon )
+//    {
+//        self.numDueSoon++;
+//    }
     
     [self.reminderList insertObject:reminder atIndex:insertIndex];
 
@@ -125,10 +125,10 @@
     if ( index < [self numItems] )
     {
         DCReminder *reminder = [self.reminderList objectAtIndex:index];
-        if ( reminder.dueSoon )
-        {
-            self.numDueSoon--;
-        }
+//        if ( reminder.dueSoon )
+//        {
+//            self.numDueSoon--;
+//        }
         [self.reminderList removeObjectAtIndex:index];
         
         [self.database open];
@@ -136,6 +136,39 @@
         [self.database close];
 
     }
+}
+
+- (NSInteger)numDueBefore:(NSDate *)date
+{
+    [self.database open];
+    FMResultSet *results = [self.database executeQuery:@"select count(*) from reminders where nextDueDate < (?);", date];
+    [results next];
+    NSInteger count = [results intForColumnIndex:0];
+    [self.database close];
+    
+    return count;
+}
+
+- (NSInteger)numDueAfter:(NSDate *)date1 andBefore:(NSDate *)date2
+{
+    [self.database open];
+    FMResultSet *results = [self.database executeQuery:@"select count(*) from reminders where nextDueDate > (?) and nextDueDate < (?);", date1, date2];
+    [results next];
+    NSInteger count = [results intForColumnIndex:0];
+    [self.database close];
+    
+    return count;
+}
+
+- (NSInteger)numDueAfter:(NSDate *)date
+{
+    [self.database open];
+    FMResultSet *results = [self.database executeQuery:@"select count(*) from reminders where nextDueDate > (?);", date];
+    [results next];
+    NSInteger count = [results intForColumnIndex:0];
+    [self.database close];
+    
+    return count;
 }
 
 @end

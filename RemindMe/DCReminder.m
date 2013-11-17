@@ -18,7 +18,7 @@
     self = [super init];
     if ( self )
     {
-        _dueSoon = NO;
+//        _dueSoon = NO;
     }
     
     return self;

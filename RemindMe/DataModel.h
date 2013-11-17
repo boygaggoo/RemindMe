@@ -24,7 +24,11 @@
 - (void)addReminder:(DCReminder *)reminder;
 - (DCReminder *)reminderAtIndex:(NSInteger)index;
 - (void)removeReminderAtIndex:(NSInteger)index;
-- (NSInteger)numDueSoon;
 - (void)loadData;
+
+
+- (NSInteger)numDueBefore:(NSDate *)date;
+- (NSInteger)numDueAfter:(NSDate *)date1 andBefore:(NSDate *)date2;
+- (NSInteger)numDueAfter:(NSDate *)date;
 
 @end
