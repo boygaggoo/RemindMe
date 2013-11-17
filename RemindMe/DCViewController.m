@@ -24,7 +24,7 @@
 @property (nonatomic, strong) DataModel *data;
 @property (weak, nonatomic) IBOutlet UIButton *noItemsButton;
 @property (nonatomic, strong) NSDateFormatter *dateFormatter;
-
+@property (nonatomic, assign) NSUInteger dueSoonThreshold;
 @end
 
 @implementation DCTableViewController
@@ -36,6 +36,7 @@
         // Custom initialization
         _data = [[DataModel alloc] init];
         _data.delegate = self;
+        _dueSoonThreshold = 60*60*24*3;
     }
     return self;
 }
@@ -59,8 +60,6 @@
 
 - (void)viewWillAppear:(BOOL)animated
 {
-    NSLog( @"   ***   %s   ***", __FUNCTION__ );
-
     [self updateCounts];
 
     if ( _totalItems == 0 )
@@ -92,9 +91,9 @@
 
 - (void)updateCounts
 {
-    NSLog( @"   ***   %s   ***", __FUNCTION__ );
+    // Get information from the datastore about the number of tasks due soon and over due
     _now = [NSDate date];
-    _soon = [NSDate dateWithTimeIntervalSinceNow:60*60*24*3];
+    _soon = [NSDate dateWithTimeIntervalSinceNow:self.dueSoonThreshold];
     
     _totalItems = [self.data numItems];
     _dueSoon = [self.data numDueAfter:_now andBefore:_soon];
@@ -110,8 +109,6 @@
 
 - (void)dataModelInsertedObject:(DCReminder *)reminder atIndex:(NSUInteger)index
 {
-    NSLog( @"   ***   %s   ***", __FUNCTION__ );
-
     [self updateCounts];
     
     // Create section for over due
@@ -180,20 +177,10 @@
     [self.data addReminder:newReminder];
 }
 
-- (BOOL)dataModelIsReminderDueSoon:(DCReminder *)reminder
-{
-    if ( [reminder.nextDueDate timeIntervalSinceDate:[NSDate dateWithTimeIntervalSinceNow:60*60*24*3]] < 0 )
-    {
-        return YES;
-    }
-    return NO;
-}
-
 #pragma mark - Table view data source
 
 - (NSInteger)numberOfSectionsInTableView:(UITableView *)tableView
 {
-    NSLog( @"   ***   %s   ***", __FUNCTION__ );
     NSInteger sections = 0;
     
     if ( _overDue > 0 )
@@ -238,7 +225,6 @@
 
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath
 {
-    NSLog( @"   ***   %s  %d:%d ***", __FUNCTION__, indexPath.section, indexPath.row );
     static NSString *CellIdentifier = @"ReminderItem";
     DCReminderTableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:CellIdentifier forIndexPath:indexPath];
     NSInteger index = indexPath.row;

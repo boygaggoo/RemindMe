@@ -11,7 +11,6 @@
 
 @interface DataModel ()
 @property (nonatomic, strong) NSMutableArray *reminderList;
-//@property (nonatomic, assign) NSInteger numDueSoon;
 @property (nonatomic, strong) FMDatabase *database;
 @end
 
@@ -87,13 +86,6 @@
                                                   return NSOrderedDescending;
                                               }];
     
-//    reminder.dueSoon = [self.delegate dataModelIsReminderDueSoon:reminder];
-    
-//    if ( reminder.dueSoon )
-//    {
-//        self.numDueSoon++;
-//    }
-    
     [self.reminderList insertObject:reminder atIndex:insertIndex];
 
     if ( !fromdb )
@@ -125,10 +117,7 @@
     if ( index < [self numItems] )
     {
         DCReminder *reminder = [self.reminderList objectAtIndex:index];
-//        if ( reminder.dueSoon )
-//        {
-//            self.numDueSoon--;
-//        }
+
         [self.reminderList removeObjectAtIndex:index];
         
         [self.database open];
