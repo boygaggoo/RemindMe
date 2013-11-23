@@ -293,41 +293,78 @@
 
 
 // Override to support editing the table view.
-//- (void)tableView:(UITableView *)tableView commitEditingStyle:(UITableViewCellEditingStyle)editingStyle forRowAtIndexPath:(NSIndexPath *)indexPath
-//{
-//    if (editingStyle == UITableViewCellEditingStyleDelete)
-//    {
-//        NSInteger oldNumDueSoon = [self.data numDueSoon];
-//        NSInteger index = indexPath.row;
-//        
-//        if ( indexPath.section == 1 )
-//            index += [self.data numDueSoon];
-//        [self.data removeReminderAtIndex:index];
-//        
-//        // Remove section 0 if no more due soon
-//        if ( oldNumDueSoon > 0 && [self.data numDueSoon] == 0  )
-//        {
-//            [tableView deleteSections:[NSIndexSet indexSetWithIndex:0] withRowAnimation:UITableViewRowAnimationTop];
-//        }
-//        // Remove section 0 if no more reminders at all
-//        else if ( [self.data numItems] == 0 )
-//        {
-//            [tableView deleteSections:[NSIndexSet indexSetWithIndex:0] withRowAnimation:UITableViewRowAnimationTop];
-//        }
-//        // Remove section 1 if no more future dues
-//        else if ( indexPath.section == 1 && [self.data numItems] - [self.data numDueSoon] == 0 )
-//        {
-//            [tableView deleteSections:[NSIndexSet indexSetWithIndex:1] withRowAnimation:UITableViewRowAnimationTop];
-//        }
-//        else
-//        {
-//            [tableView deleteRowsAtIndexPaths:@[indexPath] withRowAnimation:UITableViewRowAnimationFade];
-//        }
-//    }
-//    else if (editingStyle == UITableViewCellEditingStyleInsert) {
-//        // Create a new instance of the appropriate class, insert it into the array, and add a new row to the table view
-//    }
-//}
+- (void)tableView:(UITableView *)tableView commitEditingStyle:(UITableViewCellEditingStyle)editingStyle forRowAtIndexPath:(NSIndexPath *)indexPath
+{
+    if (editingStyle == UITableViewCellEditingStyleDelete)
+    {
+        NSInteger index = indexPath.row;
+        
+        if ( indexPath.section == 1 )
+        {
+            if ( _overDue == 0 )
+                index += _dueSoon;
+            else
+                index += _overDue;
+        }
+
+        if ( indexPath.section == 2 )
+            index += _overDue + _dueSoon;
+        
+        [self.data removeReminderAtIndex:index];
+        
+        // Remove section 0
+        if ( indexPath.section == 0 &&
+            ((_overDue == 1 || (_overDue == 0 && _dueSoon == 1)) || (_totalItems == 1)) )
+        {
+            if ( _overDue > 0 )
+                _overDue--;
+            else if ( _dueSoon > 0 )
+                _dueSoon--;
+            _totalItems--;
+            [tableView deleteSections:[NSIndexSet indexSetWithIndex:0] withRowAnimation:UITableViewRowAnimationTop];
+        }
+        // Remove section 1
+        else if ( (indexPath.section == 1) &&
+                 (( _overDue > 0 && ((_dueSoon == 1) || ((_dueSoon == 0) && (_totalItems - _overDue == 1)))) ||
+                 ( (_overDue == 0) && (_totalItems - _dueSoon == 1))) )
+        {
+            if ( _overDue > 0 && _dueSoon > 0)
+                _dueSoon--;
+            _totalItems--;
+            [tableView deleteSections:[NSIndexSet indexSetWithIndex:1] withRowAnimation:UITableViewRowAnimationTop];
+        }
+        // Remove section 2
+        else if ( indexPath.section == 2 && _totalItems - _overDue - _dueSoon == 1)
+        {
+            _totalItems--;
+            [tableView deleteSections:[NSIndexSet indexSetWithIndex:2] withRowAnimation:UITableViewRowAnimationTop];
+        }
+        else
+        {
+            if ( indexPath.section == 0 )
+            {
+                if ( _overDue > 0 )
+                    _overDue--;
+                else if ( _dueSoon > 0 )
+                    _dueSoon--;
+            }
+            else if ( indexPath.section == 1 )
+            {
+                if ( _overDue == 0 )
+                {
+                    if ( _dueSoon > 0 )
+                        _dueSoon--;
+                }
+            }
+            _totalItems--;
+            [tableView deleteRowsAtIndexPaths:@[indexPath] withRowAnimation:UITableViewRowAnimationFade];
+        }
+        
+    }
+    else if (editingStyle == UITableViewCellEditingStyleInsert) {
+        // Create a new instance of the appropriate class, insert it into the array, and add a new row to the table view
+    }
+}
 
 
 /*

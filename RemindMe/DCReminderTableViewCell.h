@@ -8,6 +8,6 @@
 
 #import "DCSlidingTableViewCell.h"
 
-@interface DCReminderTableViewCell : DCSlidingTableViewCell
+@interface DCReminderTableViewCell : UITableViewCell
 
 @end
