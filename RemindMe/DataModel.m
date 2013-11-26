@@ -104,6 +104,15 @@
     [self addReminder:reminder fromDatabase:NO];
 }
 
+- (void)updateReminder:(DCReminder *)reminder
+{
+    NSUInteger originalIndex = [self.reminderList indexOfObject:reminder];
+    [self.reminderList removeObjectAtIndex:originalIndex];
+    [self addReminder:reminder fromDatabase:YES];
+    NSUInteger newIndex = [self.reminderList indexOfObject:reminder];
+    [self.delegate dataModelMovedObjectFrom:originalIndex toIndex:newIndex];
+}
+
 - (DCReminder *)reminderAtIndex:(NSInteger)index
 {
     if ( index >= [self numItems] )

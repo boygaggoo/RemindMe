@@ -12,6 +12,7 @@
 @protocol DataModelProtocol <NSObject>
 
 - (void)dataModelInsertedObject:(DCReminder *)reminder atIndex:(NSUInteger)index;
+- (void)dataModelMovedObjectFrom:(NSUInteger)from toIndex:(NSUInteger)to;
 
 @end
 
@@ -21,6 +22,7 @@
 
 - (NSInteger)numItems;
 - (void)addReminder:(DCReminder *)reminder;
+- (void)updateReminder:(DCReminder *)reminder;
 - (DCReminder *)reminderAtIndex:(NSInteger)index;
 - (void)removeReminderAtIndex:(NSInteger)index;
 - (void)loadData;

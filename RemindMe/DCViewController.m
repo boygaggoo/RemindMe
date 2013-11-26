@@ -13,7 +13,7 @@
 #import "DCReminderTableViewCell.h"
 #import "NSDate+Helpers.h"
 
-@interface DCTableViewController () <NewReminderProtocol, DataModelProtocol> {
+@interface DCTableViewController () <NewReminderProtocol, DataModelProtocol, UIGestureRecognizerDelegate> {
     NSInteger _totalItems;
     NSInteger _dueSoon;
     NSInteger _overDue;
@@ -55,8 +55,13 @@
     
     // Needs to be called after the data delegate has been set
     [self.data loadData];
+    
+    // Gesture recognizer for long taps
+    UILongPressGestureRecognizer *lpgr = [[UILongPressGestureRecognizer alloc] initWithTarget:self action:@selector(taskCompleted:)];
+    lpgr.minimumPressDuration = 1.5; //seconds
+    lpgr.delegate = self;
+    [self.tableView addGestureRecognizer:lpgr];
 }
-
 
 - (void)viewWillAppear:(BOOL)animated
 {
@@ -105,6 +110,67 @@
     [self performSegueWithIdentifier:@"newReminder" sender:self];
 }
 
+- (void)taskCompleted:(UILongPressGestureRecognizer *)gestureRecognizer
+{
+    if (gestureRecognizer.state == UIGestureRecognizerStateBegan)
+    {
+        
+        CGPoint p = [gestureRecognizer locationInView:self.tableView];
+        
+        NSIndexPath *indexPath = [self.tableView indexPathForRowAtPoint:p];
+        if (indexPath == nil)
+        {
+            NSLog(@"long press on table view but not on a row");
+        }
+        else
+        {
+            UITableViewCell *cell = [self.tableView cellForRowAtIndexPath:indexPath];
+            if (cell.isHighlighted)
+            {
+                NSInteger index = indexPath.row;
+                
+                if ( indexPath.section == 1 )
+                {
+                    if ( _overDue == 0 )
+                        index += _dueSoon;
+                    else
+                        index += _overDue;
+                }
+                
+                if ( indexPath.section == 2 )
+                    index += _overDue + _dueSoon;
+                
+                NSLog(@"long press on table view at section %d row %d", indexPath.section, indexPath.row);
+                DCReminder *reminder = [self.data reminderAtIndex:index];
+                reminder.name = [reminder.name stringByAppendingString:@"updated"];
+                [self.data updateReminder:reminder];
+            }
+        }
+    }
+}
+
+- (NSIndexPath *)indexPathForIndex:(NSUInteger)index
+{
+    NSInteger section = 0;
+    NSInteger row = index;
+
+    
+    if ( [self.tableView numberOfRowsInSection:0] < index+1 )
+    {
+        section++;
+        row -= [self.tableView numberOfRowsInSection:0];
+    }
+    if ( [self.tableView numberOfRowsInSection:0] + [self.tableView numberOfRowsInSection:1] < index+1 )
+    {
+        section++;
+        row -= [self.tableView numberOfRowsInSection:1];
+    }
+    
+    NSIndexPath *indexPath = [NSIndexPath indexPathForRow:row inSection:section];
+
+    return indexPath;
+}
+
 #pragma mark - DataModelProtocol
 
 - (void)dataModelInsertedObject:(DCReminder *)reminder atIndex:(NSUInteger)index
@@ -114,7 +180,8 @@
     // Create section for over due
     if ( _overDue == 1 && [reminder.nextDueDate dc_isDateBefore:_now] )
     {
-        [self.tableView insertSections:[NSIndexSet indexSetWithIndex:0] withRowAnimation:UITableViewRowAnimationTop];
+        index = 0;
+        [self.tableView insertSections:[NSIndexSet indexSetWithIndex:index] withRowAnimation:UITableViewRowAnimationTop];
     }
     // Create section for due soon
     else if ( _dueSoon == 1 && [reminder.nextDueDate dc_isDateAfter:_now andBefore:_soon] )
@@ -122,7 +189,7 @@
         index = 0;
         if ( _overDue > 0 )
             index++;
-        [self.tableView insertSections:[NSIndexSet indexSetWithIndex:1] withRowAnimation:UITableViewRowAnimationTop];
+        [self.tableView insertSections:[NSIndexSet indexSetWithIndex:index] withRowAnimation:UITableViewRowAnimationTop];
     }
     // Create section for future
     else if ( _totalItems - _dueSoon - _overDue == 1 && [reminder.nextDueDate dc_isDateAfter:_soon] )
@@ -169,6 +236,17 @@
         [self.tableView insertRowsAtIndexPaths:@[ [NSIndexPath indexPathForRow:index inSection:section] ] withRowAnimation:UITableViewRowAnimationTop];
     }
 }
+
+
+
+- (void)dataModelMovedObjectFrom:(NSUInteger)from toIndex:(NSUInteger)to
+{
+    NSIndexPath *originalIndexPath = [self indexPathForIndex:from];
+    NSIndexPath *newIndexPath = [self indexPathForIndex:to];
+    _dueSoon = 0;
+    [self.tableView moveRowAtIndexPath:originalIndexPath toIndexPath:newIndexPath];
+}
+
 
 #pragma mark - NewReminderProtocol
 
