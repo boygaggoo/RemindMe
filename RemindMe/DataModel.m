@@ -110,7 +110,7 @@
     [self.reminderList removeObjectAtIndex:originalIndex];
     [self addReminder:reminder fromDatabase:YES];
     NSUInteger newIndex = [self.reminderList indexOfObject:reminder];
-    [self.delegate dataModelMovedObjectFrom:originalIndex toIndex:newIndex];
+    [self.delegate dataModelMovedObject:reminder from:originalIndex toIndex:newIndex];
 }
 
 - (DCReminder *)reminderAtIndex:(NSInteger)index
