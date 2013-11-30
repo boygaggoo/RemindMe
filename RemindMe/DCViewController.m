@@ -123,6 +123,14 @@ typedef NS_ENUM(NSInteger, DCReminderDue) {
     [self performSegueWithIdentifier:@"newReminder" sender:self];
 }
 
+- (void)reminderCompletedAtIndexPath:(NSIndexPath *)indexPath
+{
+    DCReminder *reminder = [self reminderAtIndexPath:indexPath];
+    reminder.nextDueDate = [reminder.nextDueDate dateByAddingTimeInterval:24*60*60];
+    [self.data addCompletionDateForReminder:reminder date:[NSDate date]];
+    [self.data updateReminder:reminder];
+}
+
 - (void)taskCompleted:(UILongPressGestureRecognizer *)gestureRecognizer
 {
     if (gestureRecognizer.state == UIGestureRecognizerStateBegan)
@@ -140,9 +148,7 @@ typedef NS_ENUM(NSInteger, DCReminderDue) {
             UITableViewCell *cell = [self.tableView cellForRowAtIndexPath:indexPath];
             if (cell.isHighlighted)
             {
-                DCReminder *reminder = [self reminderAtIndexPath:indexPath];
-                reminder.nextDueDate = [reminder.nextDueDate dateByAddingTimeInterval:24*60*60];
-                [self.data updateReminder:reminder];
+                [self reminderCompletedAtIndexPath:indexPath];
             }
         }
     }

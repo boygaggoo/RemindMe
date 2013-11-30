@@ -23,6 +23,7 @@
 - (NSInteger)numItems;
 - (void)addReminder:(DCReminder *)reminder;
 - (void)updateReminder:(DCReminder *)reminder;
+- (void)addCompletionDateForReminder:(DCReminder *)reminder date:(NSDate *)date;
 - (DCReminder *)reminderAtIndex:(NSInteger)index;
 - (void)removeReminderAtIndex:(NSInteger)index;
 - (void)loadData;
