@@ -8,6 +8,7 @@
 
 #import "DCViewController.h"
 #import "DCNewReminderViewController.h"
+#import "DCReminderDetailViewController.h"
 #import "DataModel.h"
 #import "DCReminder.h"
 #import "DCReminderTableViewCell.h"
@@ -19,7 +20,7 @@ typedef NS_ENUM(NSInteger, DCReminderDue) {
     DCReminderDueFuture
 };
 
-@interface DCTableViewController () <NewReminderProtocol, DataModelProtocol, UIGestureRecognizerDelegate> {
+@interface DCTableViewController () <NewReminderProtocol, ReminderDetailProtocol, DataModelProtocol, UIGestureRecognizerDelegate> {
     NSInteger _totalItems;
     NSInteger _dueSoon;
     NSInteger _overDue;
@@ -98,6 +99,12 @@ typedef NS_ENUM(NSInteger, DCReminderDue) {
         DCNewReminderViewController *destination = segue.destinationViewController;
         destination.delegate = self;
     }
+    else if ( [segue.identifier isEqualToString:@"reminderDetail"] )
+    {
+        DCReminderDetailViewController *destination = segue.destinationViewController;
+        destination.delegate = self;
+        destination.reminder = [self reminderAtIndexPath:[self.tableView indexPathForSelectedRow]];
+    }
 }
 
 - (void)updateCounts
@@ -133,21 +140,7 @@ typedef NS_ENUM(NSInteger, DCReminderDue) {
             UITableViewCell *cell = [self.tableView cellForRowAtIndexPath:indexPath];
             if (cell.isHighlighted)
             {
-                NSInteger index = indexPath.row;
-
-                if ( indexPath.section == 1 )
-                {
-                    if ( _overDue == 0 )
-                        index += _dueSoon;
-                    else
-                        index += _overDue;
-                }
-                
-                if ( indexPath.section == 2 )
-                    index += _overDue + _dueSoon;
-                
-                NSLog(@"long press on table view at section %d row %d", indexPath.section, indexPath.row);
-                DCReminder *reminder = [self.data reminderAtIndex:index];
+                DCReminder *reminder = [self reminderAtIndexPath:indexPath];
                 reminder.nextDueDate = [reminder.nextDueDate dateByAddingTimeInterval:24*60*60];
                 [self.data updateReminder:reminder];
             }
@@ -206,6 +199,24 @@ typedef NS_ENUM(NSInteger, DCReminderDue) {
         return DCReminderDueSoon;
 
     return DCReminderDueFuture;
+}
+
+- (DCReminder *)reminderAtIndexPath:(NSIndexPath *)indexPath
+{
+    NSInteger index = indexPath.row;
+    
+    if ( indexPath.section == 1 )
+    {
+        if ( _overDue == 0 )
+            index += _dueSoon;
+        else
+            index += _overDue;
+    }
+    
+    if ( indexPath.section == 2 )
+        index += _overDue + _dueSoon;
+    
+    return [self.data reminderAtIndex:index];
 }
 
 #pragma mark - DataModelProtocol
@@ -595,33 +606,5 @@ typedef NS_ENUM(NSInteger, DCReminderDue) {
     }
 }
 
-
-/*
- // Override to support rearranging the table view.
- - (void)tableView:(UITableView *)tableView moveRowAtIndexPath:(NSIndexPath *)fromIndexPath toIndexPath:(NSIndexPath *)toIndexPath
- {
- }
- */
-
-/*
- // Override to support conditional rearranging of the table view.
- - (BOOL)tableView:(UITableView *)tableView canMoveRowAtIndexPath:(NSIndexPath *)indexPath
- {
- // Return NO if you do not want the item to be re-orderable.
- return YES;
- }
- */
-
-/*
- #pragma mark - Navigation
- 
- // In a story board-based application, you will often want to do a little preparation before navigation
- - (void)prepareForSegue:(UIStoryboardSegue *)segue sender:(id)sender
- {
- // Get the new view controller using [segue destinationViewController].
- // Pass the selected object to the new view controller.
- }
- 
- */
 
 @end
