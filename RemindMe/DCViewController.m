@@ -278,10 +278,17 @@ typedef NS_ENUM(NSInteger, DCReminderDue) {
 
 - (void)dataModelMovedObject:(DCReminder *)reminder from:(NSUInteger)from toIndex:(NSUInteger)to
 {
-    NSIndexPath *originalIndexPath = [self indexPathForIndex:from];
+//    NSIndexPath *originalIndexPath = [self indexPathForIndex:from];
     DCReminderDue originalSection = [self sectionForIndex:from];
+    DCReminderDue newSection = [self reminderDue:reminder];
+//    NSInteger section = originalIndexPath.section;
+//    NSInteger row = to;
+//    NSIndexPath *newIndexPath;
+    
 
-    switch (originalSection) {
+    // Remove old task from counts
+    switch (originalSection)
+    {
         case DCReminderDueOverdue:
             _overDue--;
             break;
@@ -291,81 +298,101 @@ typedef NS_ENUM(NSInteger, DCReminderDue) {
         case DCReminderDueFuture:
             break;
     }
-
-
-    NSIndexPath *newIndexPath = [self indexPathForIndex:to];
-
-    DCReminderDue due = [self reminderDue:reminder];
-
-    if ( originalSection == due )
+    
+    // Add updated task to counts
+    switch (newSection)
     {
-        switch (originalSection) {
-            case DCReminderDueOverdue:
-                _overDue++;
-                break;
-            case DCReminderDueSoon:
-                _dueSoon++;
-                break;
-            case DCReminderDueFuture:
-                break;
-        }
-        [self.tableView moveRowAtIndexPath:originalIndexPath toIndexPath:newIndexPath];
-        [self.tableView reloadRowsAtIndexPaths:@[newIndexPath] withRowAnimation:UITableViewRowAnimationNone];
-        return;
-    }
-
-    [self.tableView beginUpdates];
-
-    // Delete old section if necessary
-    if ( (originalSection == DCReminderDueOverdue && _overDue == 0) ||
-        (originalSection == DCReminderDueSoon && _dueSoon == 0) ||
-        (originalSection == DCReminderDueFuture && (_totalItems - _overDue - _dueSoon == 0)) )
-    {
-        newIndexPath = [NSIndexPath indexPathForRow:newIndexPath.row inSection:newIndexPath.section-1];
-        [self.tableView deleteSections:[NSIndexSet indexSetWithIndex:originalIndexPath.section] withRowAnimation:UITableViewRowAnimationTop];
-    }
-    // Delete single row
-    else
-    {
-        [self.tableView deleteRowsAtIndexPaths:@[originalIndexPath] withRowAnimation:UITableViewRowAnimationTop];
-    }
-
-    Boolean addedSection = NO;
-    // Add new section if necessary
-    switch (due) {
         case DCReminderDueOverdue:
             _overDue++;
-            if ( _overDue == 1 )
-            {
-                [self.tableView insertSections:[NSIndexSet indexSetWithIndex:newIndexPath.section] withRowAnimation:UITableViewRowAnimationTop];
-                addedSection = YES;
-            }
             break;
         case DCReminderDueSoon:
             _dueSoon++;
-            if ( _dueSoon == 1 )
-            {
-                [self.tableView insertSections:[NSIndexSet indexSetWithIndex:newIndexPath.section] withRowAnimation:UITableViewRowAnimationTop];
-                addedSection = YES;
-            }
             break;
         case DCReminderDueFuture:
-            if ( _totalItems - _overDue - _dueSoon == 1 )
-            {
-                [self.tableView insertSections:[NSIndexSet indexSetWithIndex:newIndexPath.section] withRowAnimation:UITableViewRowAnimationTop];
-                addedSection = YES;
-            }
             break;
     }
 
-    if ( !addedSection )
-    {
-        [self.tableView insertRowsAtIndexPaths:@[newIndexPath] withRowAnimation:UITableViewRowAnimationTop];
-    }
 
-    [self.tableView endUpdates];
-
-    [self.tableView reloadRowsAtIndexPaths:@[newIndexPath] withRowAnimation:UITableViewRowAnimationNone];
+    // Too complicated to figure out which individual rows to update for now. Just update everything!
+    [self.tableView reloadData];
+    
+//    // Figure out index path for updated task
+//    switch ( newSection )
+//    {
+//        case DCReminderDueOverdue:
+//            section = 0;
+//            row = to;
+//            break;
+//        case DCReminderDueSoon:
+//            if ( _overDue > 0 )
+//            {
+//                section++;
+//                row -= _overDue;
+//            }
+//            break;
+//        case DCReminderDueFuture:
+//            if ( _overDue > 0 )
+//            {
+//                section++;
+//                row -= _overDue;
+//            }
+//            if ( _dueSoon > 0 )
+//            {
+//                section++;
+//                row -= _dueSoon;
+//            }
+//            break;
+//    }
+//    
+//    // Finally create the new index path
+//    newIndexPath = [NSIndexPath indexPathForRow:row inSection:section];
+//
+//    // Start with easy move if sections are equal
+//    if ( newIndexPath.section == originalIndexPath.section && newIndexPath.row != originalIndexPath.row )
+//    {
+//        [self.tableView moveRowAtIndexPath:originalIndexPath toIndexPath:newIndexPath];
+//    }
+//    // Move task to new section
+//    else
+//    {
+//        
+//        [self.tableView beginUpdates];
+//        
+//        // Delete old section if necessary
+//        if ( (originalSection == DCReminderDueOverdue && _overDue == 0) ||
+//            (originalSection == DCReminderDueSoon && _dueSoon == 0) ||
+//            (originalSection == DCReminderDueFuture && (_totalItems - _overDue - _dueSoon == 0)) )
+//        {
+//            NSLog( @"Going to delete section %d", originalIndexPath.section );
+//            [self.tableView deleteSections:[NSIndexSet indexSetWithIndex:originalIndexPath.section] withRowAnimation:UITableViewRowAnimationTop];
+//        }
+//        // Delete single row
+//        else
+//        {
+//            NSLog( @"Going to delete row %d-%d", originalIndexPath.section, originalIndexPath.row );
+//            [self.tableView deleteRowsAtIndexPaths:@[originalIndexPath] withRowAnimation:UITableViewRowAnimationTop];
+//        }
+//
+//        // Add new section
+//        if ( (newSection == DCReminderDueOverdue && _overDue == 1) ||
+//            (newSection == DCReminderDueSoon && _dueSoon == 1) ||
+//            (newSection == DCReminderDueFuture && (_totalItems - _overDue - _dueSoon == 1)) )
+//        {
+//            NSLog( @"Going to add section %d", newIndexPath.section );
+//            [self.tableView insertSections:[NSIndexSet indexSetWithIndex:newIndexPath.section] withRowAnimation:UITableViewRowAnimationTop];
+//        }
+//        // Add single row
+//        else
+//        {
+//            NSLog( @"Going to add row %d-%d", newIndexPath.section, newIndexPath.row );
+//            [self.tableView insertRowsAtIndexPaths:@[newIndexPath] withRowAnimation:UITableViewRowAnimationTop];
+//        }
+//        
+//        [self.tableView endUpdates];
+//    }
+//
+//
+//    [self.tableView reloadRowsAtIndexPaths:@[newIndexPath] withRowAnimation:UITableViewRowAnimationNone];
 }
 
 
@@ -408,7 +435,7 @@ typedef NS_ENUM(NSInteger, DCReminderDue) {
     }
     else if ( section == 1 )
     {
-        if ( _dueSoon > 0 )
+        if ( _overDue > 0 && _dueSoon > 0 )
         {
             return _dueSoon;
         }
@@ -436,7 +463,10 @@ typedef NS_ENUM(NSInteger, DCReminderDue) {
     
     if ( indexPath.section == 1 )
     {
-        index += _overDue;
+        if ( _overDue == 0 )
+            index += _dueSoon;
+        else
+            index += _overDue;
     }
     else if ( indexPath.section == 2 )
     {
