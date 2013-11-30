@@ -109,6 +109,11 @@
     NSUInteger originalIndex = [self.reminderList indexOfObject:reminder];
     [self.reminderList removeObjectAtIndex:originalIndex];
     [self addReminder:reminder fromDatabase:YES];
+
+    [self.database open];
+    [self.database executeUpdate:@"update reminders set reminderName = (?), nextDueDate = (?) where id = (?)", reminder.name, reminder.nextDueDate, reminder.uid];
+    [self.database close];
+
     NSUInteger newIndex = [self.reminderList indexOfObject:reminder];
     [self.delegate dataModelMovedObject:reminder from:originalIndex toIndex:newIndex];
 }
