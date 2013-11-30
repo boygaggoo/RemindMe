@@ -104,6 +104,8 @@ typedef NS_ENUM(NSInteger, DCReminderDue) {
         DCReminderDetailViewController *destination = segue.destinationViewController;
         destination.delegate = self;
         destination.reminder = [self reminderAtIndexPath:[self.tableView indexPathForSelectedRow]];
+        destination.data = self.data;
+        destination.dateFormatter = self.dateFormatter;
     }
 }
 

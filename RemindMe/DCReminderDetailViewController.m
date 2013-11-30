@@ -9,7 +9,7 @@
 #import "DCReminderDetailViewController.h"
 
 @interface DCReminderDetailViewController ()
-
+@property (nonatomic, strong) NSArray *completedDates;
 @end
 
 @implementation DCReminderDetailViewController
@@ -31,6 +31,7 @@
     self.navigationItem.rightBarButtonItem = self.editButtonItem;
     
     self.navigationItem.title = self.reminder.name;
+    self.completedDates = [self.data completionDatesForReminder:self.reminder];
 }
 
 - (void)didReceiveMemoryWarning
@@ -44,23 +45,35 @@
 - (NSInteger)numberOfSectionsInTableView:(UITableView *)tableView
 {
     // Return the number of sections.
-    return 0;
+    return 1;
 }
 
 - (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section
 {
     // Return the number of rows in the section.
+    if ( section == 0 )
+    {
+        return self.completedDates.count;
+    }
     return 0;
 }
 
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath
 {
-    static NSString *CellIdentifier = @"Cell";
+    static NSString *CellIdentifier = @"ReminderDateCell";
     UITableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:CellIdentifier forIndexPath:indexPath];
     
     // Configure the cell...
-    
+    cell.textLabel.text = [self.dateFormatter stringFromDate:self.completedDates[indexPath.row]];
+
     return cell;
+}
+
+- (NSString *)tableView:(UITableView *)tableView titleForHeaderInSection:(NSInteger)section
+{
+    if ( section == 0 )
+        return @"Completed";
+    return @"";
 }
 
 /*

@@ -182,4 +182,27 @@
     return count;
 }
 
+- (NSArray *)completionDatesForReminder:(DCReminder *)reminder
+{
+    NSMutableArray *dates = [[NSMutableArray alloc] init];
+
+    [self.database open];
+    FMResultSet *results = [self.database executeQuery:@"select * from completed where reminderId == (?);", reminder.uid];
+    while ( [results next] )
+    {
+        NSDate *date = [results dateForColumn:@"doneDate"];
+        [dates addObject:date];
+    }
+    [self.database close];
+
+    [dates sortUsingComparator:^NSComparisonResult(id obj1, id obj2) {
+        NSDate *d1 = obj1;
+        NSDate *d2 = obj2;
+
+        return [d1 compare:d2];
+    }];
+
+    return dates;
+}
+
 @end

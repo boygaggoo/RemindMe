@@ -8,6 +8,7 @@
 
 #import <UIKit/UIKit.h>
 #import "DCReminder.h"
+#import "DataModel.h"
 
 @protocol ReminderDetailProtocol <NSObject>
 @end
@@ -16,5 +17,7 @@
 
 @property (nonatomic, weak) id<ReminderDetailProtocol> delegate;
 @property (nonatomic, strong) DCReminder *reminder;
+@property (nonatomic, strong) DataModel *data;
+@property (nonatomic, strong) NSDateFormatter *dateFormatter;
 
 @end
