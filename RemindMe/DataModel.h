@@ -8,6 +8,7 @@
 
 #import <Foundation/Foundation.h>
 #import "DCReminder.h"
+#import "DCRecurringInfo.h"
 
 @protocol DataModelProtocol <NSObject>
 

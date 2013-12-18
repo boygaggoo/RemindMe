@@ -32,6 +32,7 @@
     [self.database open];
     [self.database executeUpdate:@"CREATE TABLE reminders (id integer primary key autoincrement, reminderName text not null, nextDueDate date not null);"];
     [self.database executeUpdate:@"CREATE TABLE completed (id integer primary key autoincrement, reminderId integer not null, doneDate not null, foreign key(reminderId) references reminders(id) );"];
+    [self.database executeUpdate:@"CREATE TABLE repeats (id integer primary key autoincrement, reminderId integer not null, repeats integer not null, repeatIncrement not null, repeateFromLastCompletion integer not null, daysToRepeat text not null, dayOfMonth integer not null, nthWeekOfMonth integer not null, foreign key(reminderId) references reminders(id) );"];
     [self.database close];
 }
 
@@ -187,7 +188,7 @@
     NSMutableArray *dates = [[NSMutableArray alloc] init];
 
     [self.database open];
-    FMResultSet *results = [self.database executeQuery:@"select * from completed where reminderId == (?);", reminder.uid];
+    FMResultSet *results = [self.database executeQuery:@"select * from completed where reminderId == (?) order by doneDate;", reminder.uid];
     while ( [results next] )
     {
         NSDate *date = [results dateForColumn:@"doneDate"];

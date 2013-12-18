@@ -8,19 +8,6 @@
 
 #import "DCReminder.h"
 
-@interface DCReminder ()
-@end
-
 @implementation DCReminder
-
-- (id)init
-{
-    self = [super init];
-    if ( self )
-    {
-    }
-    
-    return self;
-}
 
 @end

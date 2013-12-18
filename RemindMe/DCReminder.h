@@ -7,10 +7,13 @@
 //
 
 #import <Foundation/Foundation.h>
+#import "DCRecurringInfo.h"
 
 @interface DCReminder : NSObject
 
 @property (nonatomic, strong) NSString *name;
 @property (nonatomic, strong) NSDate *nextDueDate;
 @property (nonatomic, strong) NSNumber *uid;
+@property (nonatomic, strong) DCRecurringInfo *repeatingInfo;
+
 @end
