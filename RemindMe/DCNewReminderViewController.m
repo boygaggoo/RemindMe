@@ -9,6 +9,7 @@
 #import "DCNewReminderViewController.h"
 #import "DCReminderInfoTextCell.h"
 #import "DCReminderInfoLabelCell.h"
+#import "DCReminderInfoSwitchCell.h"
 
 @interface DCNewReminderViewController () <UITextFieldDelegate> {
     BOOL editingDate;
@@ -16,6 +17,7 @@
     UIDatePicker *picker;
     DCReminder *newReminder;
     BOOL datePicked;
+    __weak IBOutlet UISwitch *repeatSwitch;
 }
 
 @property (nonatomic, strong) UITextField *nameTextField;
@@ -94,8 +96,8 @@
 {
     // Return the number of rows in the section.
     if ( editingDate )
-        return 3;
-    return 2;
+        return 4;
+    return 3;
 }
 
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath
@@ -128,7 +130,21 @@
         return cell;
     }
     
-    if ( indexPath.row == 2 && editingDate )
+    if ( indexPath.row == 2 )
+    {
+        static NSString *CellIdentifier = @"repeatsSwitchCell";
+        DCReminderInfoSwitchCell *cell = [tableView dequeueReusableCellWithIdentifier:CellIdentifier forIndexPath:indexPath];
+        
+        // Configure the cell...
+        cell.cellLabel.text = @"Repeat";
+        cell.cellSwitch.on = NO;
+        
+        cell.selectionStyle = UITableViewCellSelectionStyleNone;
+        
+        return cell;
+    }
+    
+    if ( indexPath.row == 3 && editingDate )
     {
         static NSString *CellIdentifier = @"DatePickerCell";
         UITableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:CellIdentifier forIndexPath:indexPath];
@@ -170,7 +186,7 @@
 
 - (CGFloat)tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath
 {
-    if ( editingDate && indexPath.row == 2 )
+    if ( editingDate && indexPath.row == 3 )
     {
         return 216;
     }
@@ -251,7 +267,7 @@
 }
 */
 
-/*
+
 #pragma mark - Navigation
 
 // In a story board-based application, you will often want to do a little preparation before navigation
@@ -261,6 +277,18 @@
     // Pass the selected object to the new view controller.
 }
 
- */
+- (BOOL)shouldPerformSegueWithIdentifier:(NSString *)identifier sender:(id)sender
+{
+    if ( [identifier isEqualToString:@"createRepeatInfo"] )
+    {
+        UISwitch *s = (UISwitch *)sender;
+        if ( !s.on )
+        {
+            return NO;
+        }
+    }
+    
+    return YES;
+}
 
 @end

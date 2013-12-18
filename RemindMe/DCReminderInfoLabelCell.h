@@ -9,7 +9,6 @@
 #import <UIKit/UIKit.h>
 
 @interface DCReminderInfoLabelCell : UITableViewCell
-@property (weak, nonatomic) IBOutlet UILabel
-*cellLabel;
+@property (weak, nonatomic) IBOutlet UILabel *cellLabel;
 @property (weak, nonatomic) IBOutlet UILabel *valueLabel;
 @end
