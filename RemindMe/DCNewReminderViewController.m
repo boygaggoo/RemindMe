@@ -97,6 +97,12 @@
 
     self.dueLabel.text = [self.dateFormatter stringFromDate:sender.date];
     newReminder.nextDueDate = sender.date;
+    datePicked = true;
+
+    if ( ![self.reminderNameText.text isEqualToString:@""] )
+    {
+        self.navigationItem.rightBarButtonItem.enabled = YES;
+    }
 }
 
 - (CGFloat)tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath
@@ -106,6 +112,10 @@
         if ( !editingDate )
         {
             return 0;
+        }
+        else
+        {
+            [self dateChanged:self.picker];
         }
     }
 
