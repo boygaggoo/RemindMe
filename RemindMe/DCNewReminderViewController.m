@@ -14,14 +14,16 @@
 @interface DCNewReminderViewController () <UITextFieldDelegate> {
     BOOL editingDate;
     DCReminderInfoLabelCell *dateCell;
-    UIDatePicker *picker;
     DCReminder *newReminder;
     BOOL datePicked;
-    __weak IBOutlet UISwitch *repeatSwitch;
 }
 
-@property (nonatomic, strong) UITextField *nameTextField;
+//@property (nonatomic, strong) UITextField *nameTextField;
 @property (nonatomic, strong) NSDateFormatter *dateFormatter;
+@property (weak, nonatomic) IBOutlet UIDatePicker *picker;
+@property (weak, nonatomic) IBOutlet UISwitch *repeatSwitch;
+@property (weak, nonatomic) IBOutlet UILabel *dueLabel;
+@property (weak, nonatomic) IBOutlet UITextField *reminderNameText;
 @end
 
 @implementation DCNewReminderViewController
@@ -55,8 +57,8 @@
 
 - (IBAction)saveNewReminder:(id)sender
 {
-    NSLog( @"   ***   %s  - %@ ***", __FUNCTION__, self.nameTextField.text );
-    newReminder.name = self.nameTextField.text;
+    NSLog( @"   ***   %s  - %@ ***", __FUNCTION__, self.reminderNameText.text );
+    newReminder.name = self.reminderNameText.text;
     [self.delegate didAddNewReminder:newReminder];
     [self.navigationController popViewControllerAnimated:YES];
 }
@@ -84,94 +86,7 @@
     return YES;
 }
 
-#pragma mark - Table view data source
-
-- (NSInteger)numberOfSectionsInTableView:(UITableView *)tableView
-{
-    // Return the number of sections.
-    return 1;
-}
-
-- (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section
-{
-    // Return the number of rows in the section.
-    if ( editingDate )
-        return 4;
-    return 3;
-}
-
-- (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath
-{
-    if ( indexPath.row == 0 )
-    {
-        static NSString *CellIdentifier = @"infoTextCell";
-        DCReminderInfoTextCell *cell = [tableView dequeueReusableCellWithIdentifier:CellIdentifier forIndexPath:indexPath];
-        
-        // Configure the cell...
-        cell.cellLabel.text = @"Name";
-        cell.valueTextField.placeholder = @"Reminder Name";
-        cell.selectionStyle = UITableViewCellSelectionStyleNone;
-        self.nameTextField = cell.valueTextField;
-        cell.valueTextField.delegate = self;
-        return cell;
-    }
-    
-    if ( indexPath.row == 1 )
-    {
-        static NSString *CellIdentifier = @"infoLabelCell";
-        DCReminderInfoLabelCell *cell = [tableView dequeueReusableCellWithIdentifier:CellIdentifier forIndexPath:indexPath];
-        
-        // Configure the cell...
-        cell.cellLabel.text = @"Date";
-        cell.valueLabel.text = @"Select Date";
-        dateCell = cell;
-        cell.selectionStyle = UITableViewCellSelectionStyleNone;
-
-        return cell;
-    }
-    
-    if ( indexPath.row == 2 )
-    {
-        static NSString *CellIdentifier = @"repeatsSwitchCell";
-        DCReminderInfoSwitchCell *cell = [tableView dequeueReusableCellWithIdentifier:CellIdentifier forIndexPath:indexPath];
-        
-        // Configure the cell...
-        cell.cellLabel.text = @"Repeat";
-        cell.cellSwitch.on = NO;
-        
-        cell.selectionStyle = UITableViewCellSelectionStyleNone;
-        
-        return cell;
-    }
-    
-    if ( indexPath.row == 3 && editingDate )
-    {
-        static NSString *CellIdentifier = @"DatePickerCell";
-        UITableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:CellIdentifier forIndexPath:indexPath];
-        
-        picker = [[UIDatePicker alloc] initWithFrame:CGRectMake(0, 0, 320, 216)];
-        picker.datePickerMode = UIDatePickerModeDate;
-        picker.date = [NSDate dateWithTimeIntervalSinceNow:60*60*24];
-        [picker addTarget:self action:@selector(dateChanged) forControlEvents:UIControlEventValueChanged];
-
-        [cell addSubview:picker];
-        [self dateChanged];
-        datePicked = YES;
-        
-        if ( ![self.nameTextField.text isEqualToString:@""] )
-        {
-            self.navigationItem.rightBarButtonItem.enabled = YES;
-        }
-
-        cell.selectionStyle = UITableViewCellSelectionStyleNone;
-        return cell;
-    }
-    
-    NSLog( @" row: %d, section: %d", indexPath.row, indexPath.section );
-    return nil;
-}
-
-- (void)dateChanged
+- (IBAction)dateChanged:(UIDatePicker *)sender
 {
     if ( self.dateFormatter == nil )
     {
@@ -179,52 +94,37 @@
         self.dateFormatter = [[NSDateFormatter alloc] init];
         [self.dateFormatter setDateFormat:@"MMM dd, yyyy"];
     }
-    
-    dateCell.valueLabel.text = [self.dateFormatter stringFromDate:picker.date];
-    newReminder.nextDueDate = picker.date;
+
+    self.dueLabel.text = [self.dateFormatter stringFromDate:sender.date];
+    newReminder.nextDueDate = sender.date;
 }
 
 - (CGFloat)tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath
 {
-    if ( editingDate && indexPath.row == 3 )
+    if ( indexPath.section == 0 && indexPath.row == 2 )
     {
-        return 216;
+        if ( !editingDate )
+        {
+            return 0;
+        }
     }
-    else
-    {
-        return [super tableView:tableView heightForRowAtIndexPath:indexPath];
-    }
-}
 
-- (NSString *)tableView:(UITableView *)tableView titleForHeaderInSection:(NSInteger)section
-{
-    if ( section == 1 )
-    {
-        return @"Reminder Information";
-    }
-    else
-    {
-        return nil;
-    }
+    return [super tableView:tableView heightForRowAtIndexPath:indexPath];
 }
 
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath
 {
-    NSLog( @"   ***   %s   ***", __FUNCTION__ );
-    if ( !editingDate && indexPath.row == 1 )
+    if ( indexPath.section == 0 && indexPath.row == 1 )
     {
-        NSLog( @"   ***   adding row   ***" );
-        [self.view endEditing:YES];
-        editingDate = YES;
-        [tableView insertRowsAtIndexPaths:@[[NSIndexPath indexPathForRow:2 inSection:0]] withRowAnimation:UITableViewRowAnimationTop];
+        editingDate = !editingDate;
         [tableView deselectRowAtIndexPath:indexPath animated:NO];
-    }
-    
-    else if ( editingDate && indexPath.row == 1 )
-    {
-        editingDate = NO;
-        [tableView deleteRowsAtIndexPaths:@[[NSIndexPath indexPathForRow:2 inSection:0]] withRowAnimation:UITableViewRowAnimationTop];
-        [tableView deselectRowAtIndexPath:indexPath animated:NO];
+
+        [UIView animateWithDuration:.4 animations:^{
+            [self.tableView reloadRowsAtIndexPaths:@[[NSIndexPath indexPathForRow:2 inSection:0]] withRowAnimation:UITableViewRowAnimationFade];
+            [self.tableView reloadData];
+        }];
+
+
     }
 }
 
