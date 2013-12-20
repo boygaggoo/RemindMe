@@ -45,6 +45,7 @@
     // self.clearsSelectionOnViewWillAppear = NO;
  
     self.navigationItem.rightBarButtonItem.enabled = NO;
+    self.picker.date = [NSDate dateWithTimeIntervalSinceNow:60*60*24];
     editingDate = NO;
     datePicked = NO;
 }
@@ -57,7 +58,6 @@
 
 - (IBAction)saveNewReminder:(id)sender
 {
-    NSLog( @"   ***   %s  - %@ ***", __FUNCTION__, self.reminderNameText.text );
     newReminder.name = self.reminderNameText.text;
     [self.delegate didAddNewReminder:newReminder];
     [self.navigationController popViewControllerAnimated:YES];
@@ -66,6 +66,24 @@
 - (IBAction)cancel:(id)sender
 {
     [self.navigationController popViewControllerAnimated:YES];
+}
+
+- (IBAction)dateChanged:(UIDatePicker *)sender
+{
+    if ( self.dateFormatter == nil )
+    {
+        self.dateFormatter = [[NSDateFormatter alloc] init];
+        [self.dateFormatter setDateFormat:@"MMM dd, yyyy"];
+    }
+
+    self.dueLabel.text = [self.dateFormatter stringFromDate:sender.date];
+    newReminder.nextDueDate = sender.date;
+    datePicked = true;
+
+    if ( ![self.reminderNameText.text isEqualToString:@""] )
+    {
+        self.navigationItem.rightBarButtonItem.enabled = YES;
+    }
 }
 
 #pragma mark - UITextFieldDelegate
@@ -86,24 +104,6 @@
     return YES;
 }
 
-- (IBAction)dateChanged:(UIDatePicker *)sender
-{
-    if ( self.dateFormatter == nil )
-    {
-        NSLog( @"Creating date formatter" );
-        self.dateFormatter = [[NSDateFormatter alloc] init];
-        [self.dateFormatter setDateFormat:@"MMM dd, yyyy"];
-    }
-
-    self.dueLabel.text = [self.dateFormatter stringFromDate:sender.date];
-    newReminder.nextDueDate = sender.date;
-    datePicked = true;
-
-    if ( ![self.reminderNameText.text isEqualToString:@""] )
-    {
-        self.navigationItem.rightBarButtonItem.enabled = YES;
-    }
-}
 
 - (CGFloat)tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath
 {
@@ -133,49 +133,8 @@
             [self.tableView reloadRowsAtIndexPaths:@[[NSIndexPath indexPathForRow:2 inSection:0]] withRowAnimation:UITableViewRowAnimationFade];
             [self.tableView reloadData];
         }];
-
-
     }
 }
-
-/*
-// Override to support conditional editing of the table view.
-- (BOOL)tableView:(UITableView *)tableView canEditRowAtIndexPath:(NSIndexPath *)indexPath
-{
-    // Return NO if you do not want the specified item to be editable.
-    return YES;
-}
-*/
-
-/*
-// Override to support editing the table view.
-- (void)tableView:(UITableView *)tableView commitEditingStyle:(UITableViewCellEditingStyle)editingStyle forRowAtIndexPath:(NSIndexPath *)indexPath
-{
-    if (editingStyle == UITableViewCellEditingStyleDelete) {
-        // Delete the row from the data source
-        [tableView deleteRowsAtIndexPaths:@[indexPath] withRowAnimation:UITableViewRowAnimationFade];
-    }   
-    else if (editingStyle == UITableViewCellEditingStyleInsert) {
-        // Create a new instance of the appropriate class, insert it into the array, and add a new row to the table view
-    }   
-}
-*/
-
-/*
-// Override to support rearranging the table view.
-- (void)tableView:(UITableView *)tableView moveRowAtIndexPath:(NSIndexPath *)fromIndexPath toIndexPath:(NSIndexPath *)toIndexPath
-{
-}
-*/
-
-/*
-// Override to support conditional rearranging of the table view.
-- (BOOL)tableView:(UITableView *)tableView canMoveRowAtIndexPath:(NSIndexPath *)indexPath
-{
-    // Return NO if you do not want the item to be re-orderable.
-    return YES;
-}
-*/
 
 
 #pragma mark - Navigation
