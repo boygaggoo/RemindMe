@@ -17,13 +17,13 @@ typedef NS_ENUM(NSInteger, DCRecurringInfoRepeats) {
 };
 
 typedef NS_ENUM(NSInteger, DCRecurringInfoWeekDays) {
-    DCRecurringInfoRepeatsSunday,
-    DCRecurringInfoRepeatsMonday,
-    DCRecurringInfoRepeatsTuesday,
-    DCRecurringInfoRepeatsWednesday,
-    DCRecurringInfoRepeatsThursday,
-    DCRecurringInfoRepeatsFriday,
-    DCRecurringInfoRepeatsSaturday
+    DCRecurringInfoWeekDaysSunday,
+    DCRecurringInfoWeekDaysMonday,
+    DCRecurringInfoWeekDaysTuesday,
+    DCRecurringInfoWeekDaysWednesday,
+    DCRecurringInfoWeekDaysThursday,
+    DCRecurringInfoWeekDaysFriday,
+    DCRecurringInfoWeekDaysSaturday
 };
 
 @interface DCRecurringInfo : NSObject

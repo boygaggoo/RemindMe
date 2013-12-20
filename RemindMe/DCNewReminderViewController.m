@@ -10,6 +10,8 @@
 #import "DCReminderInfoTextCell.h"
 #import "DCReminderInfoLabelCell.h"
 #import "DCReminderInfoSwitchCell.h"
+#import "DCRepeatViewController.h"
+#import "DCRecurringInfo.h"
 
 @interface DCNewReminderViewController () <UITextFieldDelegate> {
     BOOL editingDate;
@@ -144,6 +146,13 @@
 {
     // Get the new view controller using [segue destinationViewController].
     // Pass the selected object to the new view controller.
+    if ( [segue.identifier isEqualToString:@"createRepeatInfo"] )
+    {
+        DCRepeatViewController *controller = segue.destinationViewController;
+        if ( newReminder.repeatingInfo == nil )
+            newReminder.repeatingInfo = [[DCRecurringInfo alloc] init];
+        controller.recurringInfo = newReminder.repeatingInfo;
+    }
 }
 
 - (BOOL)shouldPerformSegueWithIdentifier:(NSString *)identifier sender:(id)sender

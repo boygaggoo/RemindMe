@@ -7,7 +7,10 @@
 //
 
 #import <UIKit/UIKit.h>
+#import "DCRecurringInfo.h"
 
 @interface DCRepeatViewController : UIViewController
+
+@property (nonatomic, strong) DCRecurringInfo *recurringInfo;
 
 @end
