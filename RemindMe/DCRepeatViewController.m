@@ -11,9 +11,25 @@
 @interface DCRepeatViewController ()
 
 @property (weak, nonatomic) IBOutlet UISegmentedControl *repeatControl;
-@property (weak, nonatomic) IBOutlet UIStepper *repeatStepper;
-@property (weak, nonatomic) IBOutlet UILabel *repeatLabel;
-@property (weak, nonatomic) IBOutlet UISegmentedControl *startFromControl;
+
+// Daily controls
+@property (weak, nonatomic) IBOutlet UIView *dailyMainView;
+@property (weak, nonatomic) IBOutlet UIStepper *dailyRepeatStepper;
+@property (weak, nonatomic) IBOutlet UILabel *dailyRepeatLabel;
+@property (weak, nonatomic) IBOutlet UISegmentedControl *dailyStartFromControl;
+
+// Weekly controls
+@property (weak, nonatomic) IBOutlet UIView *weeklyMainView;
+@property (weak, nonatomic) IBOutlet UIStepper *weeklyRepeatStepper;
+@property (weak, nonatomic) IBOutlet UILabel *weeklyRepeatLabel;
+@property (weak, nonatomic) IBOutlet UISegmentedControl *weeklyStartFromControl;
+
+// Monthly controls
+@property (weak, nonatomic) IBOutlet UIView *monthlyMainView;
+@property (weak, nonatomic) IBOutlet UIStepper *monthlyRepeatStepper;
+@property (weak, nonatomic) IBOutlet UILabel *monthlyRepeatLabel;
+@property (weak, nonatomic) IBOutlet UISegmentedControl *monthlyStartFromControl;
+
 
 @end
 
@@ -33,13 +49,12 @@
     [super viewDidLoad];
 	// Do any additional setup after loading the view.
 
-    self.repeatStepper.minimumValue = 1;
     self.repeatControl.selectedSegmentIndex = self.recurringInfo.repeats;
-    self.startFromControl.selectedSegmentIndex = self.recurringInfo.repeatFromLastCompletion ? 0 : 1;
-    self.repeatStepper.value = self.recurringInfo.repeatIncrement;
+    self.dailyStartFromControl.selectedSegmentIndex = self.recurringInfo.repeatFromLastCompletion ? 0 : 1;
+    self.dailyRepeatStepper.value = self.recurringInfo.repeatIncrement;
 
     // Reset repeatIncrement in case the original value was outside the allowed range
-    self.recurringInfo.repeatIncrement = self.repeatStepper.value;
+    self.recurringInfo.repeatIncrement = self.dailyRepeatStepper.value;
 }
 
 - (void)didReceiveMemoryWarning
@@ -55,22 +70,22 @@
     {
         case DCRecurringInfoRepeatsDaily:
             text = [NSString stringWithFormat:@"Repeat every %d day%s", self.recurringInfo.repeatIncrement, self.recurringInfo.repeatIncrement == 1 ? "" : "s" ];
-            self.repeatLabel.text = text;
+            self.dailyRepeatLabel.text = text;
             break;
 
         case DCRecurringInfoRepeatsWeekly:
             text = [NSString stringWithFormat:@"Repeat every %d week%s", self.recurringInfo.repeatIncrement, self.recurringInfo.repeatIncrement == 1 ? "" : "s" ];
-            self.repeatLabel.text = text;
+            self.dailyRepeatLabel.text = text;
             break;
 
         case DCRecurringInfoRepeatsMonthly:
             text = [NSString stringWithFormat:@"Repeat every %d month%s", self.recurringInfo.repeatIncrement, self.recurringInfo.repeatIncrement == 1 ? "" : "s" ];
-            self.repeatLabel.text = text;
+            self.dailyRepeatLabel.text = text;
             break;
             
         case DCRecurringInfoRepeatsYearly:
             text = [NSString stringWithFormat:@"Repeat every %d year%s", self.recurringInfo.repeatIncrement, self.recurringInfo.repeatIncrement== 1 ? "" : "s" ];
-            self.repeatLabel.text = text;
+            self.dailyRepeatLabel.text = text;
             break;
 
         default:

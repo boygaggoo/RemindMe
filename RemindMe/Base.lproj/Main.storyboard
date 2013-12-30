@@ -243,49 +243,134 @@ AQABAAEAAQAB//+dkAEA//+PgAAE//+dkAEI//+dkAEMUERUAFBTVABQV1QAUFBUAAAAAAEAAAABA
                                     <segment title="Daily"/>
                                     <segment title="Weekly"/>
                                     <segment title="Monthly"/>
-                                    <segment title="Yearly"/>
                                 </segments>
                                 <connections>
                                     <action selector="repeatControlChanged:" destination="BPg-eM-TFa" eventType="valueChanged" id="Wlx-0H-sML"/>
                                 </connections>
                             </segmentedControl>
-                            <stepper opaque="NO" clipsSubviews="YES" contentMode="scaleToFill" horizontalHuggingPriority="750" verticalHuggingPriority="750" fixedFrame="YES" contentHorizontalAlignment="center" contentVerticalAlignment="center" maximumValue="100" translatesAutoresizingMaskIntoConstraints="NO" id="I3j-Gx-8F7">
-                                <rect key="frame" x="206" y="152" width="94" height="29"/>
-                                <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
-                                <connections>
-                                    <action selector="stepperChanged:" destination="BPg-eM-TFa" eventType="valueChanged" id="ScR-aV-FiE"/>
-                                </connections>
-                            </stepper>
-                            <label opaque="NO" clipsSubviews="YES" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" fixedFrame="YES" text="Repeat every 1 day" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="cmn-Rq-M0T">
-                                <rect key="frame" x="20" y="152" width="178" height="29"/>
+                            <view hidden="YES" contentMode="scaleToFill" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="T34-Ax-sMd" userLabel="Weekly View">
+                                <rect key="frame" x="0.0" y="124" width="320" height="444"/>
                                 <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
-                                <fontDescription key="fontDescription" type="system" pointSize="15"/>
-                                <color key="textColor" cocoaTouchSystemColor="darkTextColor"/>
-                                <nil key="highlightedColor"/>
-                            </label>
-                            <label opaque="NO" clipsSubviews="YES" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" fixedFrame="YES" text="Start from last completion date or last due date" textAlignment="center" lineBreakMode="tailTruncation" numberOfLines="2" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" preferredMaxLayoutWidth="280" translatesAutoresizingMaskIntoConstraints="NO" id="qcf-0P-Izr">
-                                <rect key="frame" x="20" y="212" width="280" height="42"/>
+                                <subviews>
+                                    <stepper opaque="NO" clipsSubviews="YES" contentMode="scaleToFill" horizontalHuggingPriority="750" verticalHuggingPriority="750" fixedFrame="YES" contentHorizontalAlignment="center" contentVerticalAlignment="center" value="1" minimumValue="1" maximumValue="100" translatesAutoresizingMaskIntoConstraints="NO" id="xKM-xF-gKG">
+                                        <rect key="frame" x="206" y="150" width="94" height="29"/>
+                                        <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
+                                        <connections>
+                                            <action selector="stepperChanged:" destination="BPg-eM-TFa" eventType="valueChanged" id="TZ3-NQ-ZHW"/>
+                                        </connections>
+                                    </stepper>
+                                    <label opaque="NO" clipsSubviews="YES" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" fixedFrame="YES" text="Repeat every 1 week" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="zty-Hz-rTL">
+                                        <rect key="frame" x="20" y="-65" width="178" height="29"/>
+                                        <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                                        <fontDescription key="fontDescription" type="system" pointSize="15"/>
+                                        <color key="textColor" cocoaTouchSystemColor="darkTextColor"/>
+                                        <nil key="highlightedColor"/>
+                                    </label>
+                                    <label opaque="NO" clipsSubviews="YES" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" fixedFrame="YES" text="Start from last completion date or last due date" textAlignment="center" lineBreakMode="tailTruncation" numberOfLines="2" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" preferredMaxLayoutWidth="280" translatesAutoresizingMaskIntoConstraints="NO" id="xj4-vh-le2">
+                                        <rect key="frame" x="20" y="-195" width="280" height="42"/>
+                                        <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                                        <fontDescription key="fontDescription" type="system" pointSize="15"/>
+                                        <nil key="highlightedColor"/>
+                                    </label>
+                                    <segmentedControl opaque="NO" contentMode="scaleToFill" fixedFrame="YES" contentHorizontalAlignment="left" contentVerticalAlignment="top" segmentControlStyle="plain" selectedSegmentIndex="0" translatesAutoresizingMaskIntoConstraints="NO" id="Rgt-1M-vHw">
+                                        <rect key="frame" x="44" y="-145" width="233" height="29"/>
+                                        <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                                        <segments>
+                                            <segment title="Completion Date"/>
+                                            <segment title="Due Date"/>
+                                        </segments>
+                                    </segmentedControl>
+                                </subviews>
+                                <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="calibratedWhite"/>
+                            </view>
+                            <view hidden="YES" contentMode="scaleToFill" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="PeP-5E-bhw" userLabel="Monthly View">
+                                <rect key="frame" x="0.0" y="124" width="320" height="444"/>
                                 <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
-                                <fontDescription key="fontDescription" type="system" pointSize="15"/>
-                                <nil key="highlightedColor"/>
-                            </label>
-                            <segmentedControl opaque="NO" contentMode="scaleToFill" fixedFrame="YES" contentHorizontalAlignment="left" contentVerticalAlignment="top" segmentControlStyle="plain" selectedSegmentIndex="0" translatesAutoresizingMaskIntoConstraints="NO" id="k7c-IZ-qky">
-                                <rect key="frame" x="44" y="262" width="233" height="29"/>
+                                <subviews>
+                                    <stepper opaque="NO" clipsSubviews="YES" contentMode="scaleToFill" horizontalHuggingPriority="750" verticalHuggingPriority="750" fixedFrame="YES" contentHorizontalAlignment="center" contentVerticalAlignment="center" value="1" minimumValue="1" maximumValue="100" translatesAutoresizingMaskIntoConstraints="NO" id="ogA-g3-Fgk">
+                                        <rect key="frame" x="206" y="150" width="94" height="29"/>
+                                        <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
+                                        <connections>
+                                            <action selector="stepperChanged:" destination="BPg-eM-TFa" eventType="valueChanged" id="HBj-Ph-cb6"/>
+                                        </connections>
+                                    </stepper>
+                                    <label opaque="NO" clipsSubviews="YES" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" fixedFrame="YES" text="Repeat every 1 month" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="CUt-pu-nKz">
+                                        <rect key="frame" x="20" y="-65" width="178" height="29"/>
+                                        <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                                        <fontDescription key="fontDescription" type="system" pointSize="15"/>
+                                        <color key="textColor" cocoaTouchSystemColor="darkTextColor"/>
+                                        <nil key="highlightedColor"/>
+                                    </label>
+                                    <label opaque="NO" clipsSubviews="YES" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" fixedFrame="YES" text="Start from last completion date or last due date" textAlignment="center" lineBreakMode="tailTruncation" numberOfLines="2" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" preferredMaxLayoutWidth="280" translatesAutoresizingMaskIntoConstraints="NO" id="aRo-Hr-wX7">
+                                        <rect key="frame" x="20" y="-195" width="280" height="42"/>
+                                        <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                                        <fontDescription key="fontDescription" type="system" pointSize="15"/>
+                                        <nil key="highlightedColor"/>
+                                    </label>
+                                    <segmentedControl opaque="NO" contentMode="scaleToFill" fixedFrame="YES" contentHorizontalAlignment="left" contentVerticalAlignment="top" segmentControlStyle="plain" selectedSegmentIndex="0" translatesAutoresizingMaskIntoConstraints="NO" id="dkK-v9-2Kf">
+                                        <rect key="frame" x="44" y="-145" width="233" height="29"/>
+                                        <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                                        <segments>
+                                            <segment title="Completion Date"/>
+                                            <segment title="Due Date"/>
+                                        </segments>
+                                    </segmentedControl>
+                                </subviews>
+                                <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="calibratedWhite"/>
+                            </view>
+                            <view hidden="YES" contentMode="scaleToFill" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="C08-Yb-Qms" userLabel="Daily View">
+                                <rect key="frame" x="0.0" y="124" width="320" height="444"/>
                                 <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
-                                <segments>
-                                    <segment title="Completion Date"/>
-                                    <segment title="Due Date"/>
-                                </segments>
-                            </segmentedControl>
+                                <subviews>
+                                    <stepper opaque="NO" clipsSubviews="YES" contentMode="scaleToFill" horizontalHuggingPriority="750" verticalHuggingPriority="750" fixedFrame="YES" contentHorizontalAlignment="center" contentVerticalAlignment="center" value="1" minimumValue="1" maximumValue="100" translatesAutoresizingMaskIntoConstraints="NO" id="I3j-Gx-8F7">
+                                        <rect key="frame" x="206" y="150" width="94" height="29"/>
+                                        <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
+                                        <connections>
+                                            <action selector="stepperChanged:" destination="BPg-eM-TFa" eventType="valueChanged" id="ScR-aV-FiE"/>
+                                        </connections>
+                                    </stepper>
+                                    <label opaque="NO" clipsSubviews="YES" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" fixedFrame="YES" text="Repeat every 1 day" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="cmn-Rq-M0T">
+                                        <rect key="frame" x="20" y="150" width="178" height="29"/>
+                                        <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                                        <fontDescription key="fontDescription" type="system" pointSize="15"/>
+                                        <color key="textColor" cocoaTouchSystemColor="darkTextColor"/>
+                                        <nil key="highlightedColor"/>
+                                    </label>
+                                    <label opaque="NO" clipsSubviews="YES" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" fixedFrame="YES" text="Start from last completion date or last due date" textAlignment="center" lineBreakMode="tailTruncation" numberOfLines="2" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" preferredMaxLayoutWidth="280" translatesAutoresizingMaskIntoConstraints="NO" id="qcf-0P-Izr">
+                                        <rect key="frame" x="20" y="20" width="280" height="42"/>
+                                        <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                                        <fontDescription key="fontDescription" type="system" pointSize="15"/>
+                                        <nil key="highlightedColor"/>
+                                    </label>
+                                    <segmentedControl opaque="NO" contentMode="scaleToFill" fixedFrame="YES" contentHorizontalAlignment="left" contentVerticalAlignment="top" segmentControlStyle="plain" selectedSegmentIndex="0" translatesAutoresizingMaskIntoConstraints="NO" id="k7c-IZ-qky">
+                                        <rect key="frame" x="44" y="70" width="233" height="29"/>
+                                        <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                                        <segments>
+                                            <segment title="Completion Date"/>
+                                            <segment title="Due Date"/>
+                                        </segments>
+                                    </segmentedControl>
+                                </subviews>
+                                <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="calibratedWhite"/>
+                            </view>
                         </subviews>
                         <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="calibratedWhite"/>
                     </view>
                     <navigationItem key="navigationItem" title="Repeat" id="6cp-5k-zpd"/>
                     <connections>
-                        <outlet property="repeatControl" destination="amo-56-9DQ" id="nlO-1H-chJ"/>
-                        <outlet property="repeatLabel" destination="cmn-Rq-M0T" id="You-zI-cSV"/>
-                        <outlet property="repeatStepper" destination="I3j-Gx-8F7" id="Snz-5R-Ide"/>
-                        <outlet property="startFromControl" destination="k7c-IZ-qky" id="76e-NB-nMY"/>
+                        <outlet property="dailyMainView" destination="C08-Yb-Qms" id="yqM-Gb-cQS"/>
+                        <outlet property="dailyRepeatLabel" destination="cmn-Rq-M0T" id="LkX-nh-3Pn"/>
+                        <outlet property="dailyRepeatStepper" destination="I3j-Gx-8F7" id="dyT-Nn-j8N"/>
+                        <outlet property="dailyStartFromControl" destination="k7c-IZ-qky" id="PuK-6D-bfw"/>
+                        <outlet property="monthlyMainView" destination="PeP-5E-bhw" id="52c-Bc-bMS"/>
+                        <outlet property="monthlyRepeatLabel" destination="CUt-pu-nKz" id="zDJ-oY-adI"/>
+                        <outlet property="monthlyRepeatStepper" destination="ogA-g3-Fgk" id="WF1-SP-mgd"/>
+                        <outlet property="monthlyStartFromControl" destination="dkK-v9-2Kf" id="SQe-su-BE3"/>
+                        <outlet property="repeatControl" destination="amo-56-9DQ" id="NuS-e3-zWU"/>
+                        <outlet property="weeklyMainView" destination="T34-Ax-sMd" id="Ej8-0G-qD6"/>
+                        <outlet property="weeklyRepeatLabel" destination="zty-Hz-rTL" id="Y31-dD-RrY"/>
+                        <outlet property="weeklyRepeatStepper" destination="xKM-xF-gKG" id="mjl-mS-Zcl"/>
+                        <outlet property="weeklyStartFromControl" destination="Rgt-1M-vHw" id="45T-6Q-QRs"/>
                     </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="QPq-fU-3Xf" userLabel="First Responder" sceneMemberID="firstResponder"/>
