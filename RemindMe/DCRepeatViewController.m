@@ -49,18 +49,29 @@
 {
     [super viewDidLoad];
 	// Do any additional setup after loading the view.
+}
+
+- (void)viewDidLayoutSubviews
+{
+    // Put the current view into the correct location
+    self.currentMainView.frame = CGRectMake(0, 124, 320, 444);
+}
+
+- (void)viewWillAppear:(BOOL)animated
+{
+    [super viewWillAppear:animated];
 
     self.repeatControl.selectedSegmentIndex = self.recurringInfo.repeats;
+
+    self.dailyMainView.frame = CGRectMake(320, 124, 320, 444);
+    self.weeklyMainView.frame = CGRectMake(320, 124, 320, 444);
+    self.monthlyMainView.frame = CGRectMake(320, 124, 320, 444);
 
     switch (self.recurringInfo.repeats)
     {
         case DCRecurringInfoRepeatsDaily:
 
-            // Put correct view into place
-            self.dailyMainView.frame = CGRectMake(0, 124, 320, 444);
-            self.weeklyMainView.frame = CGRectMake(320, 124, 320, 444);
-            self.monthlyMainView.frame = CGRectMake(320, 124, 320, 444);
-
+            // Set the current view so we can put it into place later in viewDidLayoutSubviews
             self.currentMainView = self.dailyMainView;
 
             // Set values
@@ -74,11 +85,7 @@
 
         case DCRecurringInfoRepeatsWeekly:
 
-            // Put correct view into place
-            self.weeklyMainView.frame = CGRectMake(0, 124, 320, 444);
-            self.dailyMainView.frame = CGRectMake(320, 124, 320, 444);
-            self.monthlyMainView.frame = CGRectMake(320, 124, 320, 444);
-
+            // Set the current view so we can put it into place later in viewDidLayoutSubviews
             self.currentMainView = self.weeklyMainView;
 
             // Set values
@@ -92,11 +99,7 @@
 
         case DCRecurringInfoRepeatsMonthly:
 
-            // Put correct view into place
-            self.monthlyMainView.frame = CGRectMake(0, 124, 320, 444);
-            self.dailyMainView.frame = CGRectMake(320, 124, 320, 444);
-            self.weeklyMainView.frame = CGRectMake(320, 124, 320, 444);
-
+            // Set the current view so we can put it into place later in viewDidLayoutSubviews
             self.currentMainView = self.monthlyMainView;
 
             // Set values
@@ -105,17 +108,15 @@
 
             // Reset repeatIncrement in case the original value was outside the allowed range
             self.recurringInfo.repeatIncrement = self.monthlyRepeatStepper.value;
-
+            
             break;
-
+            
         case DCRecurringInfoRepeatsYearly:
             break;
-
+            
         default:
             break;
     }
-
-
 }
 
 - (void)didReceiveMemoryWarning
