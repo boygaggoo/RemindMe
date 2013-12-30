@@ -11,6 +11,7 @@
 @interface DCRepeatViewController ()
 
 @property (weak, nonatomic) IBOutlet UISegmentedControl *repeatControl;
+@property (weak, nonatomic) UIView *currentMainView;
 
 // Daily controls
 @property (weak, nonatomic) IBOutlet UIView *dailyMainView;
@@ -50,11 +51,71 @@
 	// Do any additional setup after loading the view.
 
     self.repeatControl.selectedSegmentIndex = self.recurringInfo.repeats;
-    self.dailyStartFromControl.selectedSegmentIndex = self.recurringInfo.repeatFromLastCompletion ? 0 : 1;
-    self.dailyRepeatStepper.value = self.recurringInfo.repeatIncrement;
 
-    // Reset repeatIncrement in case the original value was outside the allowed range
-    self.recurringInfo.repeatIncrement = self.dailyRepeatStepper.value;
+    switch (self.recurringInfo.repeats)
+    {
+        case DCRecurringInfoRepeatsDaily:
+
+            // Put correct view into place
+            self.dailyMainView.frame = CGRectMake(0, 124, 320, 444);
+            self.weeklyMainView.frame = CGRectMake(320, 124, 320, 444);
+            self.monthlyMainView.frame = CGRectMake(320, 124, 320, 444);
+
+            self.currentMainView = self.dailyMainView;
+
+            // Set values
+            self.dailyStartFromControl.selectedSegmentIndex = self.recurringInfo.repeatFromLastCompletion ? 0 : 1;
+            self.dailyRepeatStepper.value = self.recurringInfo.repeatIncrement;
+
+            // Reset repeatIncrement in case the original value was outside the allowed range
+            self.recurringInfo.repeatIncrement = self.dailyRepeatStepper.value;
+
+            break;
+
+        case DCRecurringInfoRepeatsWeekly:
+
+            // Put correct view into place
+            self.weeklyMainView.frame = CGRectMake(0, 124, 320, 444);
+            self.dailyMainView.frame = CGRectMake(320, 124, 320, 444);
+            self.monthlyMainView.frame = CGRectMake(320, 124, 320, 444);
+
+            self.currentMainView = self.weeklyMainView;
+
+            // Set values
+            self.weeklyStartFromControl.selectedSegmentIndex = self.recurringInfo.repeatFromLastCompletion ? 0 : 1;
+            self.weeklyRepeatStepper.value = self.recurringInfo.repeatIncrement;
+
+            // Reset repeatIncrement in case the original value was outside the allowed range
+            self.recurringInfo.repeatIncrement = self.weeklyRepeatStepper.value;
+
+            break;
+
+        case DCRecurringInfoRepeatsMonthly:
+
+            // Put correct view into place
+            self.monthlyMainView.frame = CGRectMake(0, 124, 320, 444);
+            self.dailyMainView.frame = CGRectMake(320, 124, 320, 444);
+            self.weeklyMainView.frame = CGRectMake(320, 124, 320, 444);
+
+            self.currentMainView = self.monthlyMainView;
+
+            // Set values
+            self.monthlyStartFromControl.selectedSegmentIndex = self.recurringInfo.repeatFromLastCompletion ? 0 : 1;
+            self.monthlyRepeatStepper.value = self.recurringInfo.repeatIncrement;
+
+            // Reset repeatIncrement in case the original value was outside the allowed range
+            self.recurringInfo.repeatIncrement = self.monthlyRepeatStepper.value;
+
+            break;
+
+        case DCRecurringInfoRepeatsYearly:
+            break;
+
+        default:
+            break;
+    }
+
+
 }
 
 - (void)didReceiveMemoryWarning
@@ -75,17 +136,15 @@
 
         case DCRecurringInfoRepeatsWeekly:
             text = [NSString stringWithFormat:@"Repeat every %d week%s", self.recurringInfo.repeatIncrement, self.recurringInfo.repeatIncrement == 1 ? "" : "s" ];
-            self.dailyRepeatLabel.text = text;
+            self.weeklyRepeatLabel.text = text;
             break;
 
         case DCRecurringInfoRepeatsMonthly:
             text = [NSString stringWithFormat:@"Repeat every %d month%s", self.recurringInfo.repeatIncrement, self.recurringInfo.repeatIncrement == 1 ? "" : "s" ];
-            self.dailyRepeatLabel.text = text;
+            self.monthlyRepeatLabel.text = text;
             break;
             
         case DCRecurringInfoRepeatsYearly:
-            text = [NSString stringWithFormat:@"Repeat every %d year%s", self.recurringInfo.repeatIncrement, self.recurringInfo.repeatIncrement== 1 ? "" : "s" ];
-            self.dailyRepeatLabel.text = text;
             break;
 
         default:
@@ -103,6 +162,45 @@
 {
     self.recurringInfo.repeats = sender.selectedSegmentIndex;
     [self updateRepeatLabel];
+
+    UIView *newMainView = nil;
+    switch ( self.recurringInfo.repeats )
+    {
+        case DCRecurringInfoRepeatsDaily:
+            newMainView = self.dailyMainView;
+            break;
+
+        case DCRecurringInfoRepeatsWeekly:
+            newMainView = self.weeklyMainView;
+            break;
+
+        case DCRecurringInfoRepeatsMonthly:
+            newMainView = self.monthlyMainView;
+            break;
+
+        case DCRecurringInfoRepeatsYearly:
+            break;
+
+        default:
+            break;
+    }
+
+    int multiplier = 1;
+
+    if ( newMainView.tag < self.currentMainView.tag )
+    {
+        multiplier = -1;
+    }
+
+    newMainView.frame = CGRectMake(320 * multiplier, 124, 320, 444);
+
+    [UIView animateWithDuration:0.2 animations:^{
+        newMainView.frame = CGRectMake(0, 124, 320, 444);
+        self.currentMainView.frame = CGRectMake(320 * multiplier * -1, 124, 320, 444);
+    } completion:^(BOOL finished) {
+        self.currentMainView = newMainView;
+    }];
+
 }
 
 @end
