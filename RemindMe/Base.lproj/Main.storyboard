@@ -365,7 +365,18 @@ AQABAAEAAQAB//+dkAEA//+PgAAE//+dkAEI//+dkAEMUERUAFBTVABQV1QAUFBUAAAAAAEAAAABA
                         </subviews>
                         <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="calibratedWhite"/>
                     </view>
-                    <navigationItem key="navigationItem" title="Repeat" id="6cp-5k-zpd"/>
+                    <navigationItem key="navigationItem" title="Repeat" id="6cp-5k-zpd">
+                        <barButtonItem key="leftBarButtonItem" title="Cancel" id="osq-qT-uie">
+                            <connections>
+                                <action selector="cancel:" destination="BPg-eM-TFa" id="gGl-tC-MWG"/>
+                            </connections>
+                        </barButtonItem>
+                        <barButtonItem key="rightBarButtonItem" title="Done" id="rLu-8j-vnw">
+                            <connections>
+                                <action selector="saveRepeatInfo:" destination="BPg-eM-TFa" id="jsv-4P-pa6"/>
+                            </connections>
+                        </barButtonItem>
+                    </navigationItem>
                     <connections>
                         <outlet property="dailyMainView" destination="C08-Yb-Qms" id="yqM-Gb-cQS"/>
                         <outlet property="dailyRepeatLabel" destination="cmn-Rq-M0T" id="LkX-nh-3Pn"/>

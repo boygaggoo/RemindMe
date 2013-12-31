@@ -13,7 +13,7 @@
 #import "DCRepeatViewController.h"
 #import "DCRecurringInfo.h"
 
-@interface DCNewReminderViewController () <UITextFieldDelegate> {
+@interface DCNewReminderViewController () <UITextFieldDelegate, NewRepeatInfoProtocol> {
     BOOL editingDate;
     DCReminderInfoLabelCell *dateCell;
     DCReminder *newReminder;
@@ -152,6 +152,7 @@
         if ( newReminder.repeatingInfo == nil )
             newReminder.repeatingInfo = [[DCRecurringInfo alloc] init];
         controller.recurringInfo = newReminder.repeatingInfo;
+        controller.delegate = self;
     }
 }
 
@@ -167,6 +168,12 @@
     }
     
     return YES;
+}
+
+#pragma mark - NewRepeatInfoProtocol
+
+- (void)didSaveRepeatInfo:(DCRecurringInfo *)repeatInfo
+{
 }
 
 @end

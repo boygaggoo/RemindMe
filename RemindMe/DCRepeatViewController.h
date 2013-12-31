@@ -9,8 +9,13 @@
 #import <UIKit/UIKit.h>
 #import "DCRecurringInfo.h"
 
+@protocol NewRepeatInfoProtocol <NSObject>
+- (void)didSaveRepeatInfo:(DCRecurringInfo *)repeatInfo;
+@end
+
 @interface DCRepeatViewController : UIViewController
 
 @property (nonatomic, strong) DCRecurringInfo *recurringInfo;
+@property (nonatomic, weak) id<NewRepeatInfoProtocol> delegate;
 
 @end
