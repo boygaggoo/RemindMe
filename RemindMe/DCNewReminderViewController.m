@@ -91,6 +91,15 @@
     }
 }
 
+- (IBAction)repeatSwitchChanged:(UISwitch *)sender
+{
+    if ( sender.selected == NO )
+    {
+        newReminder.repeatingInfo.repeats = DCRecurringInfoRepeatsNever;
+        [self updateRepeatLabel];
+    }
+}
+
 - (void)updateRepeatLabel
 {
     switch ( newReminder.repeatingInfo.repeats )
