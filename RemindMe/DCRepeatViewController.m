@@ -169,14 +169,20 @@
     {
         case DCRecurringInfoRepeatsDaily:
             newMainView = self.dailyMainView;
+            self.dailyRepeatStepper.value = self.recurringInfo.repeatIncrement;
+            self.dailyStartFromControl.selectedSegmentIndex = self.recurringInfo.repeatFromLastCompletion ? 0 : 1;
             break;
 
         case DCRecurringInfoRepeatsWeekly:
             newMainView = self.weeklyMainView;
+            self.weeklyRepeatStepper.value = self.recurringInfo.repeatIncrement;
+            self.weeklyStartFromControl.selectedSegmentIndex = self.recurringInfo.repeatFromLastCompletion ? 0 : 1;
             break;
 
         case DCRecurringInfoRepeatsMonthly:
             newMainView = self.monthlyMainView;
+            self.monthlyRepeatStepper.value = self.recurringInfo.repeatIncrement;
+            self.monthlyStartFromControl.selectedSegmentIndex = self.recurringInfo.repeatFromLastCompletion ? 0 : 1;
             break;
 
         case DCRecurringInfoRepeatsYearly:
@@ -202,6 +208,11 @@
         self.currentMainView = newMainView;
     }];
 
+}
+
+- (IBAction)startFromChanged:(UISegmentedControl *)sender
+{
+    self.recurringInfo.repeatFromLastCompletion = sender.selectedSegmentIndex == 0 ? YES : NO;
 }
 
 @end

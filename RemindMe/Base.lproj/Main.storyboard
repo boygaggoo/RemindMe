@@ -279,6 +279,9 @@ AQABAAEAAQAB//+dkAEA//+PgAAE//+dkAEI//+dkAEMUERUAFBTVABQV1QAUFBUAAAAAAEAAAABA
                                             <segment title="Completion Date"/>
                                             <segment title="Due Date"/>
                                         </segments>
+                                        <connections>
+                                            <action selector="startFromChanged:" destination="BPg-eM-TFa" eventType="valueChanged" id="BvI-A1-gqh"/>
+                                        </connections>
                                     </segmentedControl>
                                 </subviews>
                                 <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="calibratedWhite"/>
@@ -314,6 +317,9 @@ AQABAAEAAQAB//+dkAEA//+PgAAE//+dkAEI//+dkAEMUERUAFBTVABQV1QAUFBUAAAAAAEAAAABA
                                             <segment title="Completion Date"/>
                                             <segment title="Due Date"/>
                                         </segments>
+                                        <connections>
+                                            <action selector="startFromChanged:" destination="BPg-eM-TFa" eventType="valueChanged" id="PJ8-vm-2HY"/>
+                                        </connections>
                                     </segmentedControl>
                                 </subviews>
                                 <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="calibratedWhite"/>
@@ -349,6 +355,9 @@ AQABAAEAAQAB//+dkAEA//+PgAAE//+dkAEI//+dkAEMUERUAFBTVABQV1QAUFBUAAAAAAEAAAABA
                                             <segment title="Completion Date"/>
                                             <segment title="Due Date"/>
                                         </segments>
+                                        <connections>
+                                            <action selector="startFromChanged:" destination="BPg-eM-TFa" eventType="valueChanged" id="f5P-e2-Vgu"/>
+                                        </connections>
                                     </segmentedControl>
                                 </subviews>
                                 <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="calibratedWhite"/>
