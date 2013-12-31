@@ -201,7 +201,7 @@ AQABAAEAAQAB//+dkAEA//+PgAAE//+dkAEI//+dkAEMUERUAFBTVABQV1QAUFBUAAAAAAEAAAABA
                                             </subviews>
                                         </tableViewCellContentView>
                                         <connections>
-                                            <segue destination="BPg-eM-TFa" kind="push" identifier="createRepeatInfo" id="5YU-r6-xjb"/>
+                                            <segue destination="BPg-eM-TFa" kind="push" identifier="createRepeatInfo2" id="5YU-r6-xjb"/>
                                         </connections>
                                     </tableViewCell>
                                 </cells>
@@ -460,6 +460,6 @@ AQABAAEAAQAB//+dkAEA//+PgAAE//+dkAEI//+dkAEMUERUAFBTVABQV1QAUFBUAAAAAAEAAAABA
         <simulatedScreenMetrics key="destination" type="retina4"/>
     </simulatedMetricsContainer>
     <inferredMetricsTieBreakers>
-        <segue reference="mFE-9t-cMX"/>
+        <segue reference="5YU-r6-xjb"/>
     </inferredMetricsTieBreakers>
 </document>
