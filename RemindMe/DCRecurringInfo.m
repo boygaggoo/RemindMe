@@ -10,4 +10,17 @@
 
 @implementation DCRecurringInfo
 
+- (id)mutableCopyWithZone:(NSZone *)zone
+{
+    DCRecurringInfo *copy = [[DCRecurringInfo alloc] init];
+    copy.repeats = self.repeats;
+    copy.repeatIncrement = self.repeatIncrement;
+    copy.repeatFromLastCompletion = self.repeatFromLastCompletion;
+    // TODO: daysToRepeat;
+    copy.dayOfMonth = self.dayOfMonth;
+    copy.nthWeekOfMonth = self.nthWeekOfMonth;
+
+    return copy;
+}
+
 @end

@@ -26,7 +26,7 @@ typedef NS_ENUM(NSInteger, DCRecurringInfoWeekDays) {
     DCRecurringInfoWeekDaysSaturday
 };
 
-@interface DCRecurringInfo : NSObject
+@interface DCRecurringInfo : NSObject <NSMutableCopying>
 
 // How often this task repeats
 @property (nonatomic, assign) DCRecurringInfoRepeats repeats;

@@ -151,7 +151,7 @@
         DCRepeatViewController *controller = segue.destinationViewController;
         if ( newReminder.repeatingInfo == nil )
             newReminder.repeatingInfo = [[DCRecurringInfo alloc] init];
-        controller.recurringInfo = newReminder.repeatingInfo;
+        controller.recurringInfo = [newReminder.repeatingInfo mutableCopy];
         controller.delegate = self;
     }
 }
