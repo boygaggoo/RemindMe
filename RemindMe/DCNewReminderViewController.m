@@ -49,7 +49,7 @@
  
     self.navigationItem.rightBarButtonItem.enabled = NO;
     self.picker.date = [NSDate dateWithTimeIntervalSinceNow:60*60*24];
-    self.repeatSwitch.selected = (newReminder.repeatingInfo.repeats != DCRecurringInfoRepeatsNever);
+    self.repeatSwitch.on = (newReminder.repeatingInfo.repeats != DCRecurringInfoRepeatsNever);
     editingDate = NO;
     datePicked = NO;
     [self updateRepeatLabel];
@@ -93,7 +93,7 @@
 
 - (IBAction)repeatSwitchChanged:(UISwitch *)sender
 {
-    if ( sender.selected == NO )
+    if ( sender.on == NO )
     {
         newReminder.repeatingInfo.repeats = DCRecurringInfoRepeatsNever;
         [self updateRepeatLabel];
@@ -201,15 +201,6 @@
 
 - (BOOL)shouldPerformSegueWithIdentifier:(NSString *)identifier sender:(id)sender
 {
-    if ( [identifier isEqualToString:@"createRepeatInfo"] )
-    {
-        UISwitch *s = (UISwitch *)sender;
-        if ( !s.on )
-        {
-            return NO;
-        }
-    }
-    
     return YES;
 }
 
@@ -217,6 +208,7 @@
 
 - (void)didSaveRepeatInfo:(DCRecurringInfo *)repeatInfo
 {
+    self.repeatSwitch.on = YES;
     newReminder.repeatingInfo = repeatInfo;
     [self updateRepeatLabel];
 }
