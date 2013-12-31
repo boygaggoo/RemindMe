@@ -26,6 +26,7 @@
 @property (weak, nonatomic) IBOutlet UISwitch *repeatSwitch;
 @property (weak, nonatomic) IBOutlet UILabel *dueLabel;
 @property (weak, nonatomic) IBOutlet UITextField *reminderNameText;
+@property (weak, nonatomic) IBOutlet UILabel *repeatDurationLabel;
 @end
 
 @implementation DCNewReminderViewController
@@ -51,6 +52,7 @@
     self.repeatSwitch.selected = (newReminder.repeatingInfo.repeats != DCRecurringInfoRepeatsNever);
     editingDate = NO;
     datePicked = NO;
+    [self updateRepeatLabel];
 }
 
 - (void)didReceiveMemoryWarning
@@ -86,6 +88,37 @@
     if ( ![self.reminderNameText.text isEqualToString:@""] )
     {
         self.navigationItem.rightBarButtonItem.enabled = YES;
+    }
+}
+
+- (void)updateRepeatLabel
+{
+    switch ( newReminder.repeatingInfo.repeats )
+    {
+        case DCRecurringInfoRepeatsNever:
+            self.repeatDurationLabel.text = @"Never";
+            self.repeatDurationLabel.textColor = [UIColor lightGrayColor];
+            break;
+
+        case DCRecurringInfoRepeatsDaily:
+            self.repeatDurationLabel.text = [NSString stringWithFormat:@"Every %d day%s", newReminder.repeatingInfo.repeatIncrement, newReminder.repeatingInfo.repeatIncrement == 1 ? "" : "s" ];
+            self.repeatDurationLabel.textColor = [UIColor blackColor];
+            break;
+
+        case DCRecurringInfoRepeatsWeekly:
+            self.repeatDurationLabel.text = [NSString stringWithFormat:@"Every %d week%s", newReminder.repeatingInfo.repeatIncrement, newReminder.repeatingInfo.repeatIncrement == 1 ? "" : "s" ];
+            self.repeatDurationLabel.textColor = [UIColor blackColor];
+            break;
+
+        case DCRecurringInfoRepeatsMonthly:
+            self.repeatDurationLabel.text = [NSString stringWithFormat:@"Every %d month%s", newReminder.repeatingInfo.repeatIncrement, newReminder.repeatingInfo.repeatIncrement == 1 ? "" : "s" ];
+            self.repeatDurationLabel.textColor = [UIColor blackColor];
+            break;
+
+        default:
+            self.repeatDurationLabel.text = @"fix me";
+            self.repeatDurationLabel.textColor = [UIColor lightGrayColor];
+            break;
     }
 }
 
@@ -176,6 +209,7 @@
 - (void)didSaveRepeatInfo:(DCRecurringInfo *)repeatInfo
 {
     newReminder.repeatingInfo = repeatInfo;
+    [self updateRepeatLabel];
 }
 
 @end
