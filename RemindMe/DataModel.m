@@ -32,7 +32,7 @@
     [self.database open];
     [self.database executeUpdate:@"CREATE TABLE reminders (id integer primary key autoincrement, reminderName text not null, nextDueDate date not null);"];
     [self.database executeUpdate:@"CREATE TABLE completed (id integer primary key autoincrement, reminderId integer not null, doneDate not null, foreign key(reminderId) references reminders(id) );"];
-    [self.database executeUpdate:@"CREATE TABLE repeats (id integer primary key autoincrement, reminderId integer not null, repeats integer not null, repeatIncrement not null, repeateFromLastCompletion integer not null, daysToRepeat text not null, dayOfMonth integer not null, nthWeekOfMonth integer not null, foreign key(reminderId) references reminders(id) );"];
+    [self.database executeUpdate:@"CREATE TABLE repeats (id integer primary key autoincrement, reminderId integer not null, repeats integer not null, repeatIncrement not null, repeatsFromLastCompletion integer not null, daysToRepeat text not null, dayOfMonth integer not null, nthWeekOfMonth integer not null, foreign key(reminderId) references reminders(id) );"];
     [self.database close];
 }
 
@@ -95,6 +95,14 @@
         [self.database open];
         [self.database executeUpdate:@"insert into reminders (reminderName, nextDueDate) values (?, ?)", reminder.name, reminder.nextDueDate];
         reminder.uid = [NSNumber numberWithLongLong:[self.database lastInsertRowId]];
+        [self.database executeUpdate:@"insert into repeats (reminderId, repeats, repeatIncrement, repeatsFromLastCompletion, daysToRepeat, dayOfMonth, nthWeekOfMonth) values (?, ?, ?, ?, ?, ?, ?)",
+                       reminder.uid,
+                       [NSNumber numberWithInt:reminder.repeatingInfo.repeats],
+                       [NSNumber numberWithInteger:reminder.repeatingInfo.repeatIncrement],
+                       [NSNumber numberWithBool:reminder.repeatingInfo.repeatFromLastCompletion],
+                       @"days",
+                       [NSNumber numberWithInteger:reminder.repeatingInfo.dayOfMonth],
+                       [NSNumber numberWithInteger:reminder.repeatingInfo.nthWeekOfMonth] ];
         [self.database close];
     
         [self.delegate dataModelInsertedObject:reminder atIndex:insertIndex];

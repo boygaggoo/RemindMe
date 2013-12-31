@@ -48,6 +48,7 @@
  
     self.navigationItem.rightBarButtonItem.enabled = NO;
     self.picker.date = [NSDate dateWithTimeIntervalSinceNow:60*60*24];
+    self.repeatSwitch.selected = (newReminder.repeatingInfo.repeats != DCRecurringInfoRepeatsNever);
     editingDate = NO;
     datePicked = NO;
 }
@@ -174,6 +175,7 @@
 
 - (void)didSaveRepeatInfo:(DCRecurringInfo *)repeatInfo
 {
+    newReminder.repeatingInfo = repeatInfo;
 }
 
 @end

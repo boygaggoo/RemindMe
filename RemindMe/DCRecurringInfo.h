@@ -10,6 +10,7 @@
 
 
 typedef NS_ENUM(NSInteger, DCRecurringInfoRepeats) {
+    DCRecurringInfoRepeatsNever,
     DCRecurringInfoRepeatsDaily,    // repeatIncrement + repeateFromLastCompletion
     DCRecurringInfoRepeatsWeekly,   // repeatIncrement + repeateFromLastCompletion + daysToRepeat
     DCRecurringInfoRepeatsMonthly,  // repeatIncrement + repeateFromLastCompletion -or- dayOfMonth -or- nthWeekOfMonth + daysToRepeat

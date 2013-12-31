@@ -61,6 +61,11 @@
 {
     [super viewWillAppear:animated];
 
+    if ( self.recurringInfo.repeats == DCRecurringInfoRepeatsNever )
+    {
+        self.recurringInfo.repeats = DCRecurringInfoRepeatsDaily;
+    }
+
     self.repeatControl.selectedSegmentIndex = self.recurringInfo.repeats;
 
     self.dailyMainView.frame = CGRectMake(320, 124, 320, 444);
@@ -77,6 +82,7 @@
             // Set values
             self.dailyStartFromControl.selectedSegmentIndex = self.recurringInfo.repeatFromLastCompletion ? 0 : 1;
             self.dailyRepeatStepper.value = self.recurringInfo.repeatIncrement;
+            self.repeatControl.selectedSegmentIndex = 0;
 
             // Reset repeatIncrement in case the original value was outside the allowed range
             self.recurringInfo.repeatIncrement = self.dailyRepeatStepper.value;
@@ -91,6 +97,7 @@
             // Set values
             self.weeklyStartFromControl.selectedSegmentIndex = self.recurringInfo.repeatFromLastCompletion ? 0 : 1;
             self.weeklyRepeatStepper.value = self.recurringInfo.repeatIncrement;
+            self.repeatControl.selectedSegmentIndex = 1;
 
             // Reset repeatIncrement in case the original value was outside the allowed range
             self.recurringInfo.repeatIncrement = self.weeklyRepeatStepper.value;
@@ -105,6 +112,7 @@
             // Set values
             self.monthlyStartFromControl.selectedSegmentIndex = self.recurringInfo.repeatFromLastCompletion ? 0 : 1;
             self.monthlyRepeatStepper.value = self.recurringInfo.repeatIncrement;
+            self.repeatControl.selectedSegmentIndex = 2;
 
             // Reset repeatIncrement in case the original value was outside the allowed range
             self.recurringInfo.repeatIncrement = self.monthlyRepeatStepper.value;
@@ -174,37 +182,38 @@
 
 - (IBAction)repeatControlChanged:(UISegmentedControl *)sender
 {
-    self.recurringInfo.repeats = sender.selectedSegmentIndex;
-    [self updateRepeatLabel];
-
+    // Update all the UI controls on the view we're about to show
     UIView *newMainView = nil;
-    switch ( self.recurringInfo.repeats )
+    switch ( sender.selectedSegmentIndex )
     {
-        case DCRecurringInfoRepeatsDaily:
+        case 0:
             newMainView = self.dailyMainView;
             self.dailyRepeatStepper.value = self.recurringInfo.repeatIncrement;
             self.dailyStartFromControl.selectedSegmentIndex = self.recurringInfo.repeatFromLastCompletion ? 0 : 1;
+            self.recurringInfo.repeats = DCRecurringInfoRepeatsDaily;
             break;
 
-        case DCRecurringInfoRepeatsWeekly:
+        case 1:
             newMainView = self.weeklyMainView;
             self.weeklyRepeatStepper.value = self.recurringInfo.repeatIncrement;
             self.weeklyStartFromControl.selectedSegmentIndex = self.recurringInfo.repeatFromLastCompletion ? 0 : 1;
+            self.recurringInfo.repeats = DCRecurringInfoRepeatsWeekly;
             break;
 
-        case DCRecurringInfoRepeatsMonthly:
+        case 2:
             newMainView = self.monthlyMainView;
             self.monthlyRepeatStepper.value = self.recurringInfo.repeatIncrement;
             self.monthlyStartFromControl.selectedSegmentIndex = self.recurringInfo.repeatFromLastCompletion ? 0 : 1;
-            break;
-
-        case DCRecurringInfoRepeatsYearly:
+            self.recurringInfo.repeats = DCRecurringInfoRepeatsMonthly;
             break;
 
         default:
             break;
     }
 
+    [self updateRepeatLabel];
+
+    // Animage new view into place
     int multiplier = 1;
 
     if ( newMainView.tag < self.currentMainView.tag )
