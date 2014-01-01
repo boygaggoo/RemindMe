@@ -189,7 +189,7 @@
 {
     // Get the new view controller using [segue destinationViewController].
     // Pass the selected object to the new view controller.
-    if ( [segue.identifier isEqualToString:@"createRepeatInfo"] )
+    if ( [segue.identifier isEqualToString:@"createRepeatInfo"] || [segue.identifier isEqualToString:@"createRepeatInfo2"] )
     {
         DCRepeatViewController *controller = segue.destinationViewController;
         if ( newReminder.repeatingInfo == nil )
@@ -201,6 +201,13 @@
 
 - (BOOL)shouldPerformSegueWithIdentifier:(NSString *)identifier sender:(id)sender
 {
+    if ( [identifier isEqualToString:@"createRepeatInfo"] )
+    {
+        if ( self.repeatSwitch.on == NO )
+        {
+            return NO;
+        }
+    }
     return YES;
 }
 
