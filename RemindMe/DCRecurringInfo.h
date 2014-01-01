@@ -48,4 +48,6 @@ typedef NS_ENUM(NSInteger, DCRecurringInfoWeekDays) {
 @property (nonatomic, assign) NSInteger nthWeekOfMonth;
 
 
+- (NSDate *)calculateNextDateFromLastDueDate:(NSDate *)lastDueDate andLastCompletionDate:(NSDate *)lastCompletionDate;
+
 @end

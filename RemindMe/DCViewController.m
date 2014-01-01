@@ -128,7 +128,8 @@ typedef NS_ENUM(NSInteger, DCReminderDue) {
 - (void)reminderCompletedAtIndexPath:(NSIndexPath *)indexPath
 {
     DCReminder *reminder = [self reminderAtIndexPath:indexPath];
-    reminder.nextDueDate = [reminder.nextDueDate dateByAddingTimeInterval:24*60*60];
+    reminder.nextDueDate = [reminder.repeatingInfo calculateNextDateFromLastDueDate:reminder.nextDueDate andLastCompletionDate:[NSDate date]];
+    // [reminder.nextDueDate dateByAddingTimeInterval:24*60*60];
     [self.data addCompletionDateForReminder:reminder date:[NSDate date]];
     [self.data updateReminder:reminder];
 }
