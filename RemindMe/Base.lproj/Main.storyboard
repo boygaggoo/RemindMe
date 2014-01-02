@@ -295,6 +295,25 @@ AQABAAEAAQAB//+dkAEA//+PgAAE//+dkAEI//+dkAEMUERUAFBTVABQV1QAUFBUAAAAAAEAAAABA
                                             <action selector="startFromChanged:" destination="BPg-eM-TFa" eventType="valueChanged" id="BvI-A1-gqh"/>
                                         </connections>
                                     </segmentedControl>
+                                    <segmentedControl opaque="NO" contentMode="scaleToFill" fixedFrame="YES" contentHorizontalAlignment="left" contentVerticalAlignment="top" segmentControlStyle="plain" selectedSegmentIndex="0" translatesAutoresizingMaskIntoConstraints="NO" id="Xed-sR-5So" customClass="MultiSelectSegmentedControl">
+                                        <rect key="frame" x="20" y="240" width="280" height="29"/>
+                                        <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                                        <segments>
+                                            <segment title="S"/>
+                                            <segment title="M"/>
+                                            <segment title="T"/>
+                                            <segment title="W"/>
+                                            <segment title="Th"/>
+                                            <segment title="F"/>
+                                            <segment title="Sa"/>
+                                        </segments>
+                                    </segmentedControl>
+                                    <label opaque="NO" clipsSubviews="YES" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" fixedFrame="YES" text="Days of the week" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="utu-Cf-Spo">
+                                        <rect key="frame" x="94" y="211" width="133" height="21"/>
+                                        <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                                        <fontDescription key="fontDescription" type="system" pointSize="15"/>
+                                        <nil key="highlightedColor"/>
+                                    </label>
                                 </subviews>
                                 <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="calibratedWhite"/>
                             </view>
@@ -399,6 +418,7 @@ AQABAAEAAQAB//+dkAEA//+PgAAE//+dkAEI//+dkAEMUERUAFBTVABQV1QAUFBUAAAAAAEAAAABA
                         <outlet property="monthlyRepeatStepper" destination="ogA-g3-Fgk" id="WF1-SP-mgd"/>
                         <outlet property="monthlyStartFromControl" destination="dkK-v9-2Kf" id="SQe-su-BE3"/>
                         <outlet property="repeatControl" destination="amo-56-9DQ" id="NuS-e3-zWU"/>
+                        <outlet property="weeklyDayPicker" destination="Xed-sR-5So" id="8hl-8J-XnW"/>
                         <outlet property="weeklyMainView" destination="T34-Ax-sMd" id="Ej8-0G-qD6"/>
                         <outlet property="weeklyRepeatLabel" destination="zty-Hz-rTL" id="Y31-dD-RrY"/>
                         <outlet property="weeklyRepeatStepper" destination="xKM-xF-gKG" id="mjl-mS-Zcl"/>

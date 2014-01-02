@@ -39,7 +39,7 @@ typedef NS_ENUM(NSInteger, DCRecurringInfoWeekDays) {
 @property (nonatomic, assign) BOOL repeatFromLastCompletion;
 
 // Array of DCRecurringInfoWeekDays for days of the week reminder is due
-@property (nonatomic, strong) NSArray *daysToRepeat;
+@property (nonatomic, strong) NSMutableArray *daysToRepeat;
 
 // Day of the month the reminder is due
 @property (nonatomic, assign) NSInteger dayOfMonth;

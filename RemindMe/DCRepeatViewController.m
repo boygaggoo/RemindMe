@@ -7,8 +7,9 @@
 //
 
 #import "DCRepeatViewController.h"
+#import "MultiSelectSegmentedControl.h"
 
-@interface DCRepeatViewController ()
+@interface DCRepeatViewController () <MultiSelectSegmentedControlDelegate>
 
 @property (weak, nonatomic) IBOutlet UISegmentedControl *repeatControl;
 @property (weak, nonatomic) UIView *currentMainView;
@@ -24,6 +25,7 @@
 @property (weak, nonatomic) IBOutlet UIStepper *weeklyRepeatStepper;
 @property (weak, nonatomic) IBOutlet UILabel *weeklyRepeatLabel;
 @property (weak, nonatomic) IBOutlet UISegmentedControl *weeklyStartFromControl;
+@property (weak, nonatomic) IBOutlet MultiSelectSegmentedControl *weeklyDayPicker;
 
 // Monthly controls
 @property (weak, nonatomic) IBOutlet UIView *monthlyMainView;
@@ -49,6 +51,7 @@
 {
     [super viewDidLoad];
 	// Do any additional setup after loading the view.
+    self.weeklyDayPicker.delegate = self;
 }
 
 - (void)viewDidLayoutSubviews
@@ -60,6 +63,7 @@
 - (void)viewWillAppear:(BOOL)animated
 {
     [super viewWillAppear:animated];
+    NSMutableIndexSet *selectedDays = [[NSMutableIndexSet alloc] init];
 
     if ( self.recurringInfo.repeats == DCRecurringInfoRepeatsNever )
     {
@@ -98,6 +102,12 @@
             self.weeklyStartFromControl.selectedSegmentIndex = self.recurringInfo.repeatFromLastCompletion ? 0 : 1;
             self.weeklyRepeatStepper.value = self.recurringInfo.repeatIncrement;
             self.repeatControl.selectedSegmentIndex = 1;
+            [self.weeklyDayPicker selectAllSegments:NO];
+            for ( NSNumber *day in self.recurringInfo.daysToRepeat )
+            {
+                [selectedDays addIndex:[day integerValue]];
+            }
+            self.weeklyDayPicker.selectedSegmentIndexes = selectedDays;
 
             // Reset repeatIncrement in case the original value was outside the allowed range
             self.recurringInfo.repeatIncrement = self.weeklyRepeatStepper.value;
@@ -235,6 +245,22 @@
 - (IBAction)startFromChanged:(UISegmentedControl *)sender
 {
     self.recurringInfo.repeatFromLastCompletion = sender.selectedSegmentIndex == 0 ? YES : NO;
+}
+
+#pragma mark - #pragma mark - 
+
+- (void)multiSelect:(MultiSelectSegmentedControl *)multiSelecSegmendedControl didChangeValue:(BOOL)value atIndex:(NSUInteger)index
+{
+    if ( value )
+    {
+        if ( self.recurringInfo.daysToRepeat == nil )
+            self.recurringInfo.daysToRepeat = [[NSMutableArray alloc] init];
+        [self.recurringInfo.daysToRepeat addObject:[NSNumber numberWithInteger:index]];
+    }
+    else
+    {
+        [self.recurringInfo.daysToRepeat removeObject:[NSNumber numberWithInteger:index]];
+    }
 }
 
 @end

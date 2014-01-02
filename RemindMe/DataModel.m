@@ -58,7 +58,7 @@ static DataModel *dataModelInstance;
     
         [self.database executeUpdate:@"CREATE TABLE reminders (id integer primary key autoincrement, reminderName text not null, nextDueDate date not null);"];
         [self.database executeUpdate:@"CREATE TABLE completed (id integer primary key autoincrement, reminderId integer not null, doneDate not null, foreign key(reminderId) references reminders(id) on delete cascade );"];
-        [self.database executeUpdate:@"CREATE TABLE repeats (id integer primary key autoincrement, reminderId integer not null, repeats integer not null, repeatIncrement not null, repeatsFromLastCompletion integer not null, daysToRepeat text not null, dayOfMonth integer not null, nthWeekOfMonth integer not null, foreign key(reminderId) references reminders(id) on delete cascade );"];
+        [self.database executeUpdate:@"CREATE TABLE repeats (id integer primary key autoincrement, reminderId integer not null, repeats integer not null, repeatIncrement not null, repeatsFromLastCompletion integer not null, daysToRepeat integer not null, dayOfMonth integer not null, nthWeekOfMonth integer not null, foreign key(reminderId) references reminders(id) on delete cascade );"];
     }
     
     if ( dbversion == 0 )
@@ -116,7 +116,7 @@ static DataModel *dataModelInstance;
             reminder.repeatingInfo.repeats = [results2 intForColumn:@"repeats"];
             reminder.repeatingInfo.repeatIncrement = [results2 intForColumn:@"repeatIncrement"];
             reminder.repeatingInfo.repeatFromLastCompletion = [results2 boolForColumn:@"repeatsFromLastCompletion"];
-            reminder.repeatingInfo.daysToRepeat = @[@"todo"];
+            reminder.repeatingInfo.daysToRepeat = [self integerToDays:[results2 intForColumn:@"daysToRepeaet"]];
             reminder.repeatingInfo.dayOfMonth = [results2 intForColumn:@"dayOfMonth"];
             reminder.repeatingInfo.nthWeekOfMonth = [results2 intForColumn:@"nthWeekOfMonth"];
         }
@@ -128,6 +128,67 @@ static DataModel *dataModelInstance;
 - (NSInteger)numItems
 {
     return self.reminderList.count;
+}
+
+- (NSInteger)daysToInteger:(NSArray *)dayArray
+{
+    NSInteger daysAsInt = 0;
+    
+    for ( NSNumber *day in dayArray )
+    {
+        DCRecurringInfoWeekDays dayEnum = [day intValue];
+        
+        if ( daysAsInt == 0 )
+        {
+            daysAsInt = 1;
+        }
+        
+        switch ( dayEnum ) {
+            case DCRecurringInfoWeekDaysSunday:
+                daysAsInt *= 2;
+                break;
+            case DCRecurringInfoWeekDaysMonday:
+                daysAsInt *= 3;
+                break;
+            case DCRecurringInfoWeekDaysTuesday:
+                daysAsInt *= 5;
+                break;
+            case DCRecurringInfoWeekDaysWednesday:
+                daysAsInt *= 7;
+                break;
+            case DCRecurringInfoWeekDaysThursday:
+                daysAsInt *= 11;
+                break;
+            case DCRecurringInfoWeekDaysFriday:
+                daysAsInt *= 13;
+                break;
+            case DCRecurringInfoWeekDaysSaturday:
+                daysAsInt *= 17;
+                break;
+        }
+    }
+    
+    return daysAsInt;
+}
+
+- (NSMutableArray *)integerToDays:(NSInteger)daysAsInt
+{
+    NSMutableArray *days = [[NSMutableArray alloc] init];
+    if ( daysAsInt % 2 == 0 )
+        [days addObject:[NSNumber numberWithInt:DCRecurringInfoWeekDaysSunday]];
+    if ( daysAsInt % 3 == 0 )
+        [days addObject:[NSNumber numberWithInt:DCRecurringInfoWeekDaysMonday]];
+    if ( daysAsInt % 5 == 0 )
+        [days addObject:[NSNumber numberWithInt:DCRecurringInfoWeekDaysTuesday]];
+    if ( daysAsInt % 7 == 0 )
+        [days addObject:[NSNumber numberWithInt:DCRecurringInfoWeekDaysWednesday]];
+    if ( daysAsInt % 11 == 0 )
+        [days addObject:[NSNumber numberWithInt:DCRecurringInfoWeekDaysThursday]];
+    if ( daysAsInt % 13 == 0 )
+        [days addObject:[NSNumber numberWithInt:DCRecurringInfoWeekDaysFriday]];
+    if ( daysAsInt % 17 == 0 )
+        [days addObject:[NSNumber numberWithInt:DCRecurringInfoWeekDaysSaturday]];
+    return days;
 }
 
 - (void)addReminder:(DCReminder *)reminder fromDatabase:(BOOL)fromdb
@@ -149,6 +210,8 @@ static DataModel *dataModelInstance;
 
     if ( !fromdb )
     {
+        NSInteger daysAsInt = [self daysToInteger:reminder.repeatingInfo.daysToRepeat];
+        
         [self.database executeUpdate:@"insert into reminders (reminderName, nextDueDate) values (?, ?)", reminder.name, reminder.nextDueDate];
         reminder.uid = [NSNumber numberWithLongLong:[self.database lastInsertRowId]];
         [self.database executeUpdate:@"insert into repeats (reminderId, repeats, repeatIncrement, repeatsFromLastCompletion, daysToRepeat, dayOfMonth, nthWeekOfMonth) values (?, ?, ?, ?, ?, ?, ?)",
@@ -156,7 +219,7 @@ static DataModel *dataModelInstance;
                        [NSNumber numberWithInt:reminder.repeatingInfo.repeats],
                        [NSNumber numberWithInteger:reminder.repeatingInfo.repeatIncrement],
                        [NSNumber numberWithBool:reminder.repeatingInfo.repeatFromLastCompletion],
-                       @"days",
+                       [NSNumber numberWithInteger:daysAsInt],
                        [NSNumber numberWithInteger:reminder.repeatingInfo.dayOfMonth],
                        [NSNumber numberWithInteger:reminder.repeatingInfo.nthWeekOfMonth] ];
 

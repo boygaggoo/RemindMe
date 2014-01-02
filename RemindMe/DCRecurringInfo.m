@@ -16,7 +16,7 @@
     copy.repeats = self.repeats;
     copy.repeatIncrement = self.repeatIncrement;
     copy.repeatFromLastCompletion = self.repeatFromLastCompletion;
-    // TODO: daysToRepeat;
+    copy.daysToRepeat = [self.daysToRepeat mutableCopy];
     copy.dayOfMonth = self.dayOfMonth;
     copy.nthWeekOfMonth = self.nthWeekOfMonth;
 
