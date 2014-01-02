@@ -23,6 +23,7 @@ static DataModel *dataModelInstance;
     static dispatch_once_t onceToken;
     dispatch_once(&onceToken, ^{
         dataModelInstance = [[self alloc] init];
+        [dataModelInstance loadData];
     });
     
     return dataModelInstance;

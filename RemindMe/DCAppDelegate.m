@@ -8,11 +8,17 @@
 
 #import "DCAppDelegate.h"
 #import "DataModel.h"
+#import "DCNotificationScheduler.h"
 
 @implementation DCAppDelegate
 
 - (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions
 {
+    // Is the application always in the inactive state at this point?
+    if ( application.applicationState == UIApplicationStateInactive )
+    {
+        [[DCNotificationScheduler sharedInstance] recreateNotifications];
+    }
     // Override point for customization after application launch.
     return YES;
 }

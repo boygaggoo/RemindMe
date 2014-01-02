@@ -28,7 +28,6 @@
 - (void)addCompletionDateForReminder:(DCReminder *)reminder date:(NSDate *)date;
 - (DCReminder *)reminderAtIndex:(NSInteger)index;
 - (void)removeReminderAtIndex:(NSInteger)index;
-- (void)loadData;
 - (NSArray *)completionDatesForReminder:(DCReminder *)reminder;
 
 

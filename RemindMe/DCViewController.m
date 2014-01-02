@@ -46,7 +46,7 @@ typedef NS_ENUM(NSInteger, DCReminderDue) {
         _data = [DataModel sharedInstance];
         _data.delegate = self;
         _dueSoonThreshold = 60*60*24*3;
-        _scheduler = [[DCNotificationScheduler alloc] init];
+        _scheduler = [DCNotificationScheduler sharedInstance];
     }
     return self;
 }
@@ -62,9 +62,6 @@ typedef NS_ENUM(NSInteger, DCReminderDue) {
     // self.navigationItem.rightBarButtonItem = self.editButtonItem;
     
     self.navigationItem.title = @"Reminders";
-    
-    // Needs to be called after the data delegate has been set
-    [self.data loadData];
     
     // Gesture recognizer for long taps
     UILongPressGestureRecognizer *lpgr = [[UILongPressGestureRecognizer alloc] initWithTarget:self action:@selector(taskCompleted:)];

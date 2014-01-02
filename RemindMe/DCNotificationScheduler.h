@@ -11,7 +11,9 @@
 
 @interface DCNotificationScheduler : NSObject
 
++ (DCNotificationScheduler *)sharedInstance;
 - (void)scheduleNotificationForReminder:(DCReminder *)reminder;
 - (void)clearNotificationForReminder:(DCReminder *)reminder;
+- (void)recreateNotifications;
 
 @end

@@ -8,14 +8,24 @@
 
 #import "DCNotificationScheduler.h"
 #import "DataModel.h"
+#import "NSDate+Helpers.h"
 
 @implementation DCNotificationScheduler
 
-- (void)scheduleNotificationForReminder:(DCReminder *)reminder
+static DCNotificationScheduler *schedulerInstance;
+
++ (DCNotificationScheduler *)sharedInstance
 {
-    // Remove existing notificaiton if it exists
-    [self clearNotificationForReminder:reminder];
+    static dispatch_once_t onceToken;
+    dispatch_once(&onceToken, ^{
+        schedulerInstance = [[self alloc] init];
+    });
     
+    return schedulerInstance;
+}
+
+- (void)createLocalNotification:(DCReminder *)reminder
+{
     // Create new notification
     UILocalNotification *notification = [[UILocalNotification alloc] init];
     notification.fireDate = reminder.nextDueDate;
@@ -27,10 +37,18 @@
     notification.soundName = UILocalNotificationDefaultSoundName;
     notification.userInfo = [NSDictionary dictionaryWithObject:reminder.uid forKey:@"reminderid"];
     [[UIApplication sharedApplication] scheduleLocalNotification:notification];
+}
+
+- (void)scheduleNotificationForReminder:(DCReminder *)reminder
+{
+    // Remove existing notificaiton if it exists
+    [self clearNotificationForReminder:reminder];
+    
+    // Create the notification and schedule it
+    [self createLocalNotification:reminder];
     
     // Update the badge number for each notification
     [self resetBadgeNumbersForNotifications];
-
 }
 
 - (void)clearNotifications
@@ -65,6 +83,25 @@
     }
     
     [UIApplication sharedApplication].scheduledLocalNotifications = sortedNotifications;
+}
+
+- (void)recreateNotifications
+{
+    [self clearNotifications];
+    NSDate *now = [NSDate date];
+    
+    for ( NSInteger index = 0; index < [[DataModel sharedInstance] numItems]; index++ )
+    {
+        DCReminder *reminder = [[DataModel sharedInstance] reminderAtIndex:index];
+        if ( [reminder.nextDueDate dc_isDateBefore:now] )
+        {
+            continue;
+        }
+        
+        [self createLocalNotification:reminder];
+    }
+    
+    [self resetBadgeNumbersForNotifications];
 }
 
 @end
