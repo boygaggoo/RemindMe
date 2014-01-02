@@ -107,6 +107,20 @@ static DataModel *dataModelInstance;
         reminder.name = [results stringForColumn:@"reminderName"];
         reminder.nextDueDate = [results dateForColumn:@"nextDueDate"];
         reminder.uid = [NSNumber numberWithLongLong:[results intForColumn:@"id"]];
+        
+        // Load repeating info
+        FMResultSet *results2 = [self.database executeQuery:@"select * from repeats where reminderId = (?)", reminder.uid];
+        if ( [results2 next] )
+        {
+            reminder.repeatingInfo = [[DCRecurringInfo alloc] init];
+            reminder.repeatingInfo.repeats = [results2 intForColumn:@"repeats"];
+            reminder.repeatingInfo.repeatIncrement = [results2 intForColumn:@"repeatIncrement"];
+            reminder.repeatingInfo.repeatFromLastCompletion = [results2 boolForColumn:@"repeatsFromLastCompletion"];
+            reminder.repeatingInfo.daysToRepeat = @[@"todo"];
+            reminder.repeatingInfo.dayOfMonth = [results2 intForColumn:@"dayOfMonth"];
+            reminder.repeatingInfo.nthWeekOfMonth = [results2 intForColumn:@"nthWeekOfMonth"];
+        }
+        
         [self addReminder:reminder fromDatabase:YES];
     }
 }
