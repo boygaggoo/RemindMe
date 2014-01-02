@@ -116,7 +116,7 @@ static DataModel *dataModelInstance;
             reminder.repeatingInfo.repeats = [results2 intForColumn:@"repeats"];
             reminder.repeatingInfo.repeatIncrement = [results2 intForColumn:@"repeatIncrement"];
             reminder.repeatingInfo.repeatFromLastCompletion = [results2 boolForColumn:@"repeatsFromLastCompletion"];
-            reminder.repeatingInfo.daysToRepeat = [self integerToDays:[results2 intForColumn:@"daysToRepeaet"]];
+            reminder.repeatingInfo.daysToRepeat = [self integerToDays:[results2 intForColumn:@"daysToRepeat"]];
             reminder.repeatingInfo.dayOfMonth = [results2 intForColumn:@"dayOfMonth"];
             reminder.repeatingInfo.nthWeekOfMonth = [results2 intForColumn:@"nthWeekOfMonth"];
         }
