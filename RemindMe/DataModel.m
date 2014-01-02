@@ -29,11 +29,26 @@
 
 - (void)createTables
 {
-    [self.database open];
     [self.database executeUpdate:@"CREATE TABLE reminders (id integer primary key autoincrement, reminderName text not null, nextDueDate date not null);"];
-    [self.database executeUpdate:@"CREATE TABLE completed (id integer primary key autoincrement, reminderId integer not null, doneDate not null, foreign key(reminderId) references reminders(id) );"];
-    [self.database executeUpdate:@"CREATE TABLE repeats (id integer primary key autoincrement, reminderId integer not null, repeats integer not null, repeatIncrement not null, repeatsFromLastCompletion integer not null, daysToRepeat text not null, dayOfMonth integer not null, nthWeekOfMonth integer not null, foreign key(reminderId) references reminders(id) );"];
-    [self.database close];
+    [self.database executeUpdate:@"CREATE TABLE completed (id integer primary key autoincrement, reminderId integer not null, doneDate not null, foreign key(reminderId) references reminders(id) on delete cascade );"];
+    [self.database executeUpdate:@"CREATE TABLE repeats (id integer primary key autoincrement, reminderId integer not null, repeats integer not null, repeatIncrement not null, repeatsFromLastCompletion integer not null, daysToRepeat text not null, dayOfMonth integer not null, nthWeekOfMonth integer not null, foreign key(reminderId) references reminders(id) on delete cascade );"];
+    
+    FMResultSet *rs = [self.database executeQuery:@"pragma foreign_keys"];
+    if ([rs next]) {
+        int enabled = [rs intForColumnIndex:0];
+        NSLog( @"pragma foreign_keys = %d", enabled );
+    }
+}
+
+- (void)enableForeignKeys
+{
+    [self.database executeUpdate:@"PRAGMA foreign_keys = ON;"];
+}
+
+- (void)openDatabase
+{
+    [self.database open];
+    [self enableForeignKeys];
 }
 
 - (void)loadData
@@ -46,14 +61,13 @@
     NSString *dbPath = [documentsDir stringByAppendingPathComponent:@"reminders.sql"];
 
     self.database = [[FMDatabase alloc] initWithPath:dbPath];
+    [self openDatabase];
     [self createTables];
     [self loadDatabase];
-    
 }
 
 - (void)loadDatabase
 {
-    [self.database open];
     FMResultSet *results = [self.database executeQuery:@"select * from reminders;"];
     
     while( [results next] )
@@ -65,7 +79,11 @@
         [self addReminder:reminder fromDatabase:YES];
     }
     
-    [self.database close];
+    FMResultSet *rs = [self.database executeQuery:@"pragma foreign_keys"];
+    if ([rs next]) {
+        int enabled = [rs intForColumnIndex:0];
+        NSLog( @"pragma foreign_keys = %d", enabled );
+    }
 }
 
 - (NSInteger)numItems
@@ -92,7 +110,6 @@
 
     if ( !fromdb )
     {
-        [self.database open];
         [self.database executeUpdate:@"insert into reminders (reminderName, nextDueDate) values (?, ?)", reminder.name, reminder.nextDueDate];
         reminder.uid = [NSNumber numberWithLongLong:[self.database lastInsertRowId]];
         [self.database executeUpdate:@"insert into repeats (reminderId, repeats, repeatIncrement, repeatsFromLastCompletion, daysToRepeat, dayOfMonth, nthWeekOfMonth) values (?, ?, ?, ?, ?, ?, ?)",
@@ -103,8 +120,7 @@
                        @"days",
                        [NSNumber numberWithInteger:reminder.repeatingInfo.dayOfMonth],
                        [NSNumber numberWithInteger:reminder.repeatingInfo.nthWeekOfMonth] ];
-        [self.database close];
-    
+
         [self.delegate dataModelInsertedObject:reminder atIndex:insertIndex];
     }
 }
@@ -120,9 +136,12 @@
     [self.reminderList removeObjectAtIndex:originalIndex];
     [self addReminder:reminder fromDatabase:YES];
 
-    [self.database open];
     [self.database executeUpdate:@"update reminders set reminderName = (?), nextDueDate = (?) where id = (?)", reminder.name, reminder.nextDueDate, reminder.uid];
-    [self.database close];
+    FMResultSet *rs = [self.database executeQuery:@"pragma foreign_keys"];
+    if ([rs next]) {
+        int enabled = [rs intForColumnIndex:0];
+        NSLog( @"pragma foreign_keys = %d", enabled );
+    }
 
     NSUInteger newIndex = [self.reminderList indexOfObject:reminder];
     [self.delegate dataModelMovedObject:reminder from:originalIndex toIndex:newIndex];
@@ -130,9 +149,12 @@
 
 - (void)addCompletionDateForReminder:(DCReminder *)reminder date:(NSDate *)date
 {
-    [self.database open];
     [self.database executeUpdate:@"insert into completed (reminderId, doneDate) values (?, ?)", reminder.uid, date];
-    [self.database close];
+    FMResultSet *rs = [self.database executeQuery:@"pragma foreign_keys"];
+    if ([rs next]) {
+        int enabled = [rs intForColumnIndex:0];
+        NSLog( @"pragma foreign_keys = %d", enabled );
+    }
 }
 
 - (DCReminder *)reminderAtIndex:(NSInteger)index
@@ -151,42 +173,38 @@
 
         [self.reminderList removeObjectAtIndex:index];
         
-        [self.database open];
         [self.database executeUpdate:@"delete from reminders where id = ?", reminder.uid];
-        [self.database close];
-
+        FMResultSet *rs = [self.database executeQuery:@"pragma foreign_keys"];
+        if ([rs next]) {
+            int enabled = [rs intForColumnIndex:0];
+            NSLog( @"pragma foreign_keys = %d", enabled );
+        }
     }
 }
 
 - (NSInteger)numDueBefore:(NSDate *)date
 {
-    [self.database open];
     FMResultSet *results = [self.database executeQuery:@"select count(*) from reminders where nextDueDate < (?);", date];
     [results next];
     NSInteger count = [results intForColumnIndex:0];
-    [self.database close];
     
     return count;
 }
 
 - (NSInteger)numDueAfter:(NSDate *)date1 andBefore:(NSDate *)date2
 {
-    [self.database open];
     FMResultSet *results = [self.database executeQuery:@"select count(*) from reminders where nextDueDate > (?) and nextDueDate < (?);", date1, date2];
     [results next];
     NSInteger count = [results intForColumnIndex:0];
-    [self.database close];
     
     return count;
 }
 
 - (NSInteger)numDueAfter:(NSDate *)date
 {
-    [self.database open];
     FMResultSet *results = [self.database executeQuery:@"select count(*) from reminders where nextDueDate > (?);", date];
     [results next];
     NSInteger count = [results intForColumnIndex:0];
-    [self.database close];
     
     return count;
 }
@@ -195,14 +213,12 @@
 {
     NSMutableArray *dates = [[NSMutableArray alloc] init];
 
-    [self.database open];
     FMResultSet *results = [self.database executeQuery:@"select * from completed where reminderId == (?) order by doneDate;", reminder.uid];
     while ( [results next] )
     {
         NSDate *date = [results dateForColumn:@"doneDate"];
         [dates addObject:date];
     }
-    [self.database close];
 
     [dates sortUsingComparator:^NSComparisonResult(id obj1, id obj2) {
         NSDate *d1 = obj1;
