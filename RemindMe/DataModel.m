@@ -230,4 +230,9 @@
     return dates;
 }
 
+- (void)dealloc
+{
+    [self.database close];
+}
+
 @end
