@@ -21,6 +21,7 @@
 
 @property (nonatomic, weak) id<DataModelProtocol>delegate;
 
++ (DataModel *)sharedInstance;
 - (NSInteger)numItems;
 - (void)addReminder:(DCReminder *)reminder;
 - (void)updateReminder:(DCReminder *)reminder;

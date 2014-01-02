@@ -11,6 +11,7 @@
 		66CE6B92186115B4008DBB09 /* DCRecurringInfo.m in Sources */ = {isa = PBXBuildFile; fileRef = 66CE6B91186115B4008DBB09 /* DCRecurringInfo.m */; };
 		66CE6B95186126C7008DBB09 /* DCRepeatViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 66CE6B94186126C7008DBB09 /* DCRepeatViewController.m */; };
 		66CE6B9818612D19008DBB09 /* DCReminderInfoSwitchCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 66CE6B9718612D19008DBB09 /* DCReminderInfoSwitchCell.m */; };
+		66CEC4A01875B1BD00E67299 /* DCNotificationScheduler.m in Sources */ = {isa = PBXBuildFile; fileRef = 66CEC49F1875B1BD00E67299 /* DCNotificationScheduler.m */; };
 		66DD0DDD182EE903000098D4 /* DCNewReminderViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 66DD0DDC182EE903000098D4 /* DCNewReminderViewController.m */; };
 		66DD0DE0182EEB4C000098D4 /* DCReminder.m in Sources */ = {isa = PBXBuildFile; fileRef = 66DD0DDF182EEB4C000098D4 /* DCReminder.m */; };
 		66DD0DE3182F0255000098D4 /* DCReminderInfoTextCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 66DD0DE2182F0255000098D4 /* DCReminderInfoTextCell.m */; };
@@ -56,6 +57,8 @@
 		66CE6B94186126C7008DBB09 /* DCRepeatViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = DCRepeatViewController.m; sourceTree = "<group>"; };
 		66CE6B9618612D19008DBB09 /* DCReminderInfoSwitchCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DCReminderInfoSwitchCell.h; sourceTree = "<group>"; };
 		66CE6B9718612D19008DBB09 /* DCReminderInfoSwitchCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = DCReminderInfoSwitchCell.m; sourceTree = "<group>"; };
+		66CEC49E1875B1BD00E67299 /* DCNotificationScheduler.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DCNotificationScheduler.h; sourceTree = "<group>"; };
+		66CEC49F1875B1BD00E67299 /* DCNotificationScheduler.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = DCNotificationScheduler.m; sourceTree = "<group>"; };
 		66DD0DDB182EE903000098D4 /* DCNewReminderViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DCNewReminderViewController.h; sourceTree = "<group>"; };
 		66DD0DDC182EE903000098D4 /* DCNewReminderViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = DCNewReminderViewController.m; sourceTree = "<group>"; };
 		66DD0DDE182EEB4C000098D4 /* DCReminder.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DCReminder.h; sourceTree = "<group>"; };
@@ -214,6 +217,8 @@
 				66DD0DDF182EEB4C000098D4 /* DCReminder.m */,
 				66CE6B90186115B4008DBB09 /* DCRecurringInfo.h */,
 				66CE6B91186115B4008DBB09 /* DCRecurringInfo.m */,
+				66CEC49E1875B1BD00E67299 /* DCNotificationScheduler.h */,
+				66CEC49F1875B1BD00E67299 /* DCNotificationScheduler.m */,
 			);
 			name = Models;
 			sourceTree = "<group>";
@@ -384,6 +389,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				66566EE7184A5B2400626238 /* DCReminderDetailViewController.m in Sources */,
+				66CEC4A01875B1BD00E67299 /* DCNotificationScheduler.m in Sources */,
 				66FE4968182EC0F0001E5950 /* main.m in Sources */,
 				66CE6B9818612D19008DBB09 /* DCReminderInfoSwitchCell.m in Sources */,
 				66FE499E182EC5CB001E5950 /* DataModel.m in Sources */,

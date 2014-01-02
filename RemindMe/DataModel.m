@@ -16,6 +16,18 @@
 
 @implementation DataModel
 
+static DataModel *dataModelInstance;
+
++ (DataModel *)sharedInstance
+{
+    static dispatch_once_t onceToken;
+    dispatch_once(&onceToken, ^{
+        dataModelInstance = [[self alloc] init];
+    });
+    
+    return dataModelInstance;
+}
+
 - (id)init
 {
     self = [super init];

@@ -11,6 +11,7 @@
 #import "DCReminderDetailViewController.h"
 #import "DataModel.h"
 #import "DCReminder.h"
+#import "DCNotificationScheduler.h"
 #import "DCReminderTableViewCell.h"
 #import "NSDate+Helpers.h"
 
@@ -32,6 +33,7 @@ typedef NS_ENUM(NSInteger, DCReminderDue) {
 @property (weak, nonatomic) IBOutlet UIButton *noItemsButton;
 @property (nonatomic, strong) NSDateFormatter *dateFormatter;
 @property (nonatomic, assign) NSUInteger dueSoonThreshold;
+@property (nonatomic, strong) DCNotificationScheduler *scheduler;
 @end
 
 @implementation DCTableViewController
@@ -41,9 +43,10 @@ typedef NS_ENUM(NSInteger, DCReminderDue) {
     self = [super initWithCoder:aDecoder];
     if (self) {
         // Custom initialization
-        _data = [[DataModel alloc] init];
+        _data = [DataModel sharedInstance];
         _data.delegate = self;
         _dueSoonThreshold = 60*60*24*3;
+        _scheduler = [[DCNotificationScheduler alloc] init];
     }
     return self;
 }
@@ -68,6 +71,17 @@ typedef NS_ENUM(NSInteger, DCReminderDue) {
     lpgr.minimumPressDuration = 1.5; //seconds
     lpgr.delegate = self;
     [self.tableView addGestureRecognizer:lpgr];
+    
+    // Look for notifications that we should reload the table view. Sent when a reminder notification is triggered
+    [[NSNotificationCenter defaultCenter] addObserver:self
+                                             selector:@selector(reminderDueNow)
+                                                 name:@"RELOAD_DATA"
+                                               object:nil];
+}
+
+- (void)dealloc
+{
+    [[NSNotificationCenter defaultCenter] removeObserver:self];
 }
 
 - (void)viewWillAppear:(BOOL)animated
@@ -109,6 +123,13 @@ typedef NS_ENUM(NSInteger, DCReminderDue) {
     }
 }
 
+- (void)reminderDueNow
+{
+    _dueSoon--;
+    _overDue++;
+    [self.tableView reloadData];
+}
+
 - (void)updateCounts
 {
     // Get information from the datastore about the number of tasks due soon and over due
@@ -128,10 +149,18 @@ typedef NS_ENUM(NSInteger, DCReminderDue) {
 - (void)reminderCompletedAtIndexPath:(NSIndexPath *)indexPath
 {
     DCReminder *reminder = [self reminderAtIndexPath:indexPath];
-    reminder.nextDueDate = [reminder.repeatingInfo calculateNextDateFromLastDueDate:reminder.nextDueDate andLastCompletionDate:[NSDate date]];
-    // [reminder.nextDueDate dateByAddingTimeInterval:24*60*60];
-    [self.data addCompletionDateForReminder:reminder date:[NSDate date]];
-    [self.data updateReminder:reminder];
+    if ( reminder.repeatingInfo.repeats == DCRecurringInfoRepeatsNever )
+    {
+        // Task doesn't repeat, just delete it
+        [self tableView:self.tableView commitEditingStyle:UITableViewCellEditingStyleDelete forRowAtIndexPath:indexPath];
+    }
+    else
+    {
+        reminder.nextDueDate = [reminder.repeatingInfo calculateNextDateFromLastDueDate:reminder.nextDueDate andLastCompletionDate:[NSDate date]];
+        [self.data addCompletionDateForReminder:reminder date:[NSDate date]];
+        [self.data updateReminder:reminder];
+        [self.scheduler scheduleNotificationForReminder:reminder];
+    }
 }
 
 - (void)taskCompleted:(UILongPressGestureRecognizer *)gestureRecognizer
@@ -421,6 +450,7 @@ typedef NS_ENUM(NSInteger, DCReminderDue) {
 - (void)didAddNewReminder:(DCReminder *)newReminder
 {
     [self.data addReminder:newReminder];
+    [self.scheduler scheduleNotificationForReminder:newReminder];
 }
 
 #pragma mark - Table view data source
@@ -559,6 +589,8 @@ typedef NS_ENUM(NSInteger, DCReminderDue) {
         if ( indexPath.section == 2 )
             index += _overDue + _dueSoon;
         
+        DCReminder *reminder = [self reminderAtIndexPath:indexPath];
+        [self.scheduler clearNotificationForReminder:reminder];
         [self.data removeReminderAtIndex:index];
         
         // Remove section 0
@@ -609,6 +641,10 @@ typedef NS_ENUM(NSInteger, DCReminderDue) {
             [tableView deleteRowsAtIndexPaths:@[indexPath] withRowAnimation:UITableViewRowAnimationFade];
         }
         
+        if ( _totalItems == 0 )
+        {
+            self.noItemsButton.hidden = NO;
+        }
     }
     else if (editingStyle == UITableViewCellEditingStyleInsert) {
         // Create a new instance of the appropriate class, insert it into the array, and add a new row to the table view
