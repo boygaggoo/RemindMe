@@ -41,9 +41,33 @@ static DataModel *dataModelInstance;
 
 - (void)createTables
 {
-    [self.database executeUpdate:@"CREATE TABLE reminders (id integer primary key autoincrement, reminderName text not null, nextDueDate date not null);"];
-    [self.database executeUpdate:@"CREATE TABLE completed (id integer primary key autoincrement, reminderId integer not null, doneDate not null, foreign key(reminderId) references reminders(id) on delete cascade );"];
-    [self.database executeUpdate:@"CREATE TABLE repeats (id integer primary key autoincrement, reminderId integer not null, repeats integer not null, repeatIncrement not null, repeatsFromLastCompletion integer not null, daysToRepeat text not null, dayOfMonth integer not null, nthWeekOfMonth integer not null, foreign key(reminderId) references reminders(id) on delete cascade );"];
+    NSNumber *currentVersion = @1;
+    [self.database executeUpdate:@"CREATE TABLE metadata (key text not null, value integer not null)"];
+    
+    // Get current database version
+    FMResultSet *results = [self.database executeQuery:@"select value from metadata where key = \"dbversion\""];
+    int dbversion = 0;
+    if ( [results next] )
+    {
+        dbversion = [results intForColumnIndex:0];
+    }
+    
+    if ( dbversion < 1 )
+    {
+    
+        [self.database executeUpdate:@"CREATE TABLE reminders (id integer primary key autoincrement, reminderName text not null, nextDueDate date not null);"];
+        [self.database executeUpdate:@"CREATE TABLE completed (id integer primary key autoincrement, reminderId integer not null, doneDate not null, foreign key(reminderId) references reminders(id) on delete cascade );"];
+        [self.database executeUpdate:@"CREATE TABLE repeats (id integer primary key autoincrement, reminderId integer not null, repeats integer not null, repeatIncrement not null, repeatsFromLastCompletion integer not null, daysToRepeat text not null, dayOfMonth integer not null, nthWeekOfMonth integer not null, foreign key(reminderId) references reminders(id) on delete cascade );"];
+    }
+    
+    if ( dbversion == 0 )
+    {
+        [self.database executeUpdate:@"insert into metadata (key, value) values (\"dbversion\", ?)", currentVersion];
+    }
+    else
+    {
+        [self.database executeUpdate:@"update metadata set value = (?) where key = \"dbversion\"", currentVersion];
+    }
 }
 
 - (void)enableForeignKeys
