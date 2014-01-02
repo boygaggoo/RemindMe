@@ -32,12 +32,6 @@
     [self.database executeUpdate:@"CREATE TABLE reminders (id integer primary key autoincrement, reminderName text not null, nextDueDate date not null);"];
     [self.database executeUpdate:@"CREATE TABLE completed (id integer primary key autoincrement, reminderId integer not null, doneDate not null, foreign key(reminderId) references reminders(id) on delete cascade );"];
     [self.database executeUpdate:@"CREATE TABLE repeats (id integer primary key autoincrement, reminderId integer not null, repeats integer not null, repeatIncrement not null, repeatsFromLastCompletion integer not null, daysToRepeat text not null, dayOfMonth integer not null, nthWeekOfMonth integer not null, foreign key(reminderId) references reminders(id) on delete cascade );"];
-    
-    FMResultSet *rs = [self.database executeQuery:@"pragma foreign_keys"];
-    if ([rs next]) {
-        int enabled = [rs intForColumnIndex:0];
-        NSLog( @"pragma foreign_keys = %d", enabled );
-    }
 }
 
 - (void)enableForeignKeys
@@ -77,12 +71,6 @@
         reminder.nextDueDate = [results dateForColumn:@"nextDueDate"];
         reminder.uid = [NSNumber numberWithLongLong:[results intForColumn:@"id"]];
         [self addReminder:reminder fromDatabase:YES];
-    }
-    
-    FMResultSet *rs = [self.database executeQuery:@"pragma foreign_keys"];
-    if ([rs next]) {
-        int enabled = [rs intForColumnIndex:0];
-        NSLog( @"pragma foreign_keys = %d", enabled );
     }
 }
 
@@ -137,11 +125,6 @@
     [self addReminder:reminder fromDatabase:YES];
 
     [self.database executeUpdate:@"update reminders set reminderName = (?), nextDueDate = (?) where id = (?)", reminder.name, reminder.nextDueDate, reminder.uid];
-    FMResultSet *rs = [self.database executeQuery:@"pragma foreign_keys"];
-    if ([rs next]) {
-        int enabled = [rs intForColumnIndex:0];
-        NSLog( @"pragma foreign_keys = %d", enabled );
-    }
 
     NSUInteger newIndex = [self.reminderList indexOfObject:reminder];
     [self.delegate dataModelMovedObject:reminder from:originalIndex toIndex:newIndex];
@@ -150,11 +133,6 @@
 - (void)addCompletionDateForReminder:(DCReminder *)reminder date:(NSDate *)date
 {
     [self.database executeUpdate:@"insert into completed (reminderId, doneDate) values (?, ?)", reminder.uid, date];
-    FMResultSet *rs = [self.database executeQuery:@"pragma foreign_keys"];
-    if ([rs next]) {
-        int enabled = [rs intForColumnIndex:0];
-        NSLog( @"pragma foreign_keys = %d", enabled );
-    }
 }
 
 - (DCReminder *)reminderAtIndex:(NSInteger)index
@@ -174,11 +152,6 @@
         [self.reminderList removeObjectAtIndex:index];
         
         [self.database executeUpdate:@"delete from reminders where id = ?", reminder.uid];
-        FMResultSet *rs = [self.database executeQuery:@"pragma foreign_keys"];
-        if ([rs next]) {
-            int enabled = [rs intForColumnIndex:0];
-            NSLog( @"pragma foreign_keys = %d", enabled );
-        }
     }
 }
 
