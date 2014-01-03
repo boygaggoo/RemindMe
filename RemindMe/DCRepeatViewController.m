@@ -234,11 +234,13 @@
     }
 
     newMainView.frame = CGRectMake(320 * multiplier, 124, 320, 444);
-
+    newMainView.hidden = NO;
+    
     [UIView animateWithDuration:0.2 animations:^{
         newMainView.frame = CGRectMake(0, 124, 320, 444);
         self.currentMainView.frame = CGRectMake(320 * multiplier * -1, 124, 320, 444);
     } completion:^(BOOL finished) {
+        self.currentMainView.hidden = YES;
         self.currentMainView = newMainView;
     }];
 
