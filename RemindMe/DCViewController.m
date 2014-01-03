@@ -361,6 +361,10 @@ typedef NS_ENUM(NSInteger, DCReminderDue) {
     // Too complicated to figure out which individual rows to update for now. Just update everything!
     [self.tableView reloadData];
     
+    // Update badge count
+    [UIApplication sharedApplication].applicationIconBadgeNumber = _overDue;
+
+    
 //    // Figure out index path for updated task
 //    switch ( newSection )
 //    {
