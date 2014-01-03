@@ -61,7 +61,7 @@ static DCNotificationScheduler *schedulerInstance;
     NSArray *notifications = [[UIApplication sharedApplication] scheduledLocalNotifications];
     for ( UILocalNotification *local in notifications )
     {
-        if ( local.userInfo[@"reminderid"] == reminder.uid )
+        if ( [local.userInfo[@"reminderid"] isEqualToNumber:reminder.uid] )
         {
             [[UIApplication sharedApplication] cancelLocalNotification:local];
             [self resetBadgeNumbersForNotifications];
