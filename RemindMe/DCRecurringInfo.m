@@ -25,7 +25,6 @@
 
 - (NSDate *)calculateNextDateFromLastDueDate:(NSDate *)lastDueDate andLastCompletionDate:(NSDate *)lastCompletionDate
 {
-    NSTimeInterval interval = 0;
     NSDate *startDate = nil;
 
     // Determine starting date to start counting from
@@ -46,16 +45,19 @@
             break;
             
         case DCRecurringInfoRepeatsDaily:
-            interval = 60 * 60 * 24 * self.repeatIncrement;
-            return [startDate dateByAddingTimeInterval:interval];
+        {
+            NSDateComponents *incrementDateComponent = [[NSDateComponents alloc] init];
+            [incrementDateComponent setDay:self.repeatIncrement];
+            return [[NSCalendar currentCalendar] dateByAddingComponents:incrementDateComponent toDate:startDate options:0];
             break;
-            
+        }
         case DCRecurringInfoRepeatsWeekly:
             // No days selected to repeat on, so just increment one week from startDate
             if ( self.daysToRepeat == nil || self.daysToRepeat.count == 0 )
             {
-                interval = 60 * 60 * 24 * 7 * self.repeatIncrement;
-                return [startDate dateByAddingTimeInterval:interval];
+                NSDateComponents *incrementDateComponent = [[NSDateComponents alloc] init];
+                [incrementDateComponent setWeek:self.repeatIncrement];
+                return [[NSCalendar currentCalendar] dateByAddingComponents:incrementDateComponent toDate:startDate options:0];
             }
             // Only schedule task on specified days
             else
