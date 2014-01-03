@@ -122,8 +122,7 @@ typedef NS_ENUM(NSInteger, DCReminderDue) {
 
 - (void)reminderDueNow
 {
-    _dueSoon--;
-    _overDue++;
+    [self updateCounts];
     [self.tableView reloadData];
 }
 
