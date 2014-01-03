@@ -24,6 +24,7 @@
 @property (weak, nonatomic) IBOutlet UIView *weeklyMainView;
 @property (weak, nonatomic) IBOutlet UIStepper *weeklyRepeatStepper;
 @property (weak, nonatomic) IBOutlet UILabel *weeklyRepeatLabel;
+@property (weak, nonatomic) IBOutlet UILabel *weeklyStartFromLabel;
 @property (weak, nonatomic) IBOutlet UISegmentedControl *weeklyStartFromControl;
 @property (weak, nonatomic) IBOutlet MultiSelectSegmentedControl *weeklyDayPicker;
 
@@ -108,6 +109,7 @@
                 [selectedDays addIndex:[day integerValue]];
             }
             self.weeklyDayPicker.selectedSegmentIndexes = selectedDays;
+            [self updateStartFromControls];
 
             // Reset repeatIncrement in case the original value was outside the allowed range
             self.recurringInfo.repeatIncrement = self.weeklyRepeatStepper.value;
@@ -247,7 +249,21 @@
     self.recurringInfo.repeatFromLastCompletion = sender.selectedSegmentIndex == 0 ? YES : NO;
 }
 
-#pragma mark - #pragma mark - 
+- (void)updateStartFromControls
+{
+    if ( self.weeklyDayPicker.selectedSegmentIndexes.count == 0 )
+    {
+        self.weeklyStartFromControl.enabled = YES;
+        self.weeklyStartFromLabel.textColor = [UIColor blackColor];
+    }
+    else
+    {
+        self.weeklyStartFromControl.enabled = NO;
+        self.weeklyStartFromLabel.textColor = [UIColor lightGrayColor];
+    }
+}
+
+#pragma mark - #pragma mark -
 
 - (void)multiSelect:(MultiSelectSegmentedControl *)multiSelecSegmendedControl didChangeValue:(BOOL)value atIndex:(NSUInteger)index
 {
@@ -261,6 +277,8 @@
     {
         [self.recurringInfo.daysToRepeat removeObject:[NSNumber numberWithInteger:index]];
     }
+    
+    [self updateStartFromControls];
 }
 
 @end

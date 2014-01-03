@@ -423,6 +423,7 @@ AQABAAEAAQAB//+dkAEA//+PgAAE//+dkAEI//+dkAEMUERUAFBTVABQV1QAUFBUAAAAAAEAAAABA
                         <outlet property="weeklyRepeatLabel" destination="zty-Hz-rTL" id="Y31-dD-RrY"/>
                         <outlet property="weeklyRepeatStepper" destination="xKM-xF-gKG" id="mjl-mS-Zcl"/>
                         <outlet property="weeklyStartFromControl" destination="Rgt-1M-vHw" id="45T-6Q-QRs"/>
+                        <outlet property="weeklyStartFromLabel" destination="xj4-vh-le2" id="YXc-Vj-aFm"/>
                     </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="QPq-fU-3Xf" userLabel="First Responder" sceneMemberID="firstResponder"/>
