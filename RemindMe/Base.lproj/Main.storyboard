@@ -48,7 +48,7 @@
                                     </subviews>
                                 </tableViewCellContentView>
                                 <connections>
-                                    <segue destination="b5P-3a-0zq" kind="push" identifier="reminderDetail" id="aKe-5C-rwZ"/>
+                                    <segue destination="rOp-RG-JUc" kind="push" identifier="editReminder" id="nmH-3g-2oL"/>
                                 </connections>
                             </tableViewCell>
                         </prototypes>
@@ -440,7 +440,7 @@ AQABAAEAAQAB//+dkAEA//+PgAAE//+dkAEI//+dkAEMUERUAFBTVABQV1QAUFBUAAAAAAEAAAABA
                         <color key="backgroundColor" cocoaTouchSystemColor="groupTableViewBackgroundColor"/>
                         <prototypes>
                             <tableViewCell contentMode="scaleToFill" selectionStyle="default" indentationWidth="10" reuseIdentifier="ReminderDateCell" id="FWt-S1-b4t">
-                                <rect key="frame" x="0.0" y="119" width="320" height="44"/>
+                                <rect key="frame" x="0.0" y="55" width="320" height="44"/>
                                 <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                                 <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" tableViewCell="FWt-S1-b4t" id="Cj8-rE-yz7">
                                     <rect key="frame" x="0.0" y="0.0" width="320" height="43"/>
@@ -481,6 +481,7 @@ AQABAAEAAQAB//+dkAEA//+PgAAE//+dkAEI//+dkAEMUERUAFBTVABQV1QAUFBUAAAAAAEAAAABA
         <simulatedScreenMetrics key="destination" type="retina4"/>
     </simulatedMetricsContainer>
     <inferredMetricsTieBreakers>
+        <segue reference="nmH-3g-2oL"/>
         <segue reference="mFE-9t-cMX"/>
     </inferredMetricsTieBreakers>
 </document>

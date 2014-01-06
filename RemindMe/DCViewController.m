@@ -109,14 +109,22 @@ typedef NS_ENUM(NSInteger, DCReminderDue) {
     {
         DCNewReminderViewController *destination = segue.destinationViewController;
         destination.delegate = self;
+        destination.editingReminder = NO;
     }
-    else if ( [segue.identifier isEqualToString:@"reminderDetail"] )
+    else if ( [segue.identifier isEqualToString:@"reminderDetail"] ) // Not currently used
     {
         DCReminderDetailViewController *destination = segue.destinationViewController;
         destination.delegate = self;
         destination.reminder = [self reminderAtIndexPath:[self.tableView indexPathForSelectedRow]];
         destination.data = self.data;
         destination.dateFormatter = self.dateFormatter;
+    }
+    else if ( [segue.identifier isEqualToString:@"editReminder"] )
+    {
+        DCNewReminderViewController *destination = segue.destinationViewController;
+        destination.delegate = self;
+        destination.editingReminder = YES;
+        destination.reminder = [self reminderAtIndexPath:[self.tableView indexPathForSelectedRow]];
     }
 }
 
@@ -451,6 +459,12 @@ typedef NS_ENUM(NSInteger, DCReminderDue) {
 {
     [self.data addReminder:newReminder];
     [self.scheduler scheduleNotificationForReminder:newReminder];
+}
+
+- (void)didSaveReminder:(DCReminder *)reminder
+{
+    [self.data updateReminder:reminder];
+    [self.scheduler scheduleNotificationForReminder:reminder];
 }
 
 #pragma mark - Table view data source

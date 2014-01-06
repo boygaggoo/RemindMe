@@ -16,7 +16,6 @@
 @interface DCNewReminderViewController () <UITextFieldDelegate, NewRepeatInfoProtocol> {
     BOOL editingDate;
     DCReminderInfoLabelCell *dateCell;
-    DCReminder *newReminder;
     BOOL datePicked;
 }
 
@@ -35,7 +34,6 @@
     self = [super initWithCoder:aDecoder];
     if (self) {
         // Custom initialization
-        newReminder = [[DCReminder alloc] init];
     }
     return self;
 }
@@ -47,11 +45,7 @@
     // Uncomment the following line to preserve selection between presentations.
     // self.clearsSelectionOnViewWillAppear = NO;
  
-    self.navigationItem.rightBarButtonItem.enabled = NO;
-    self.picker.date = [NSDate dateWithTimeIntervalSinceNow:60*60*24];
-    self.repeatSwitch.on = (newReminder.repeatingInfo.repeats != DCRecurringInfoRepeatsNever);
-    editingDate = NO;
-    datePicked = NO;
+    [self populateFields];
     [self updateRepeatLabel];
 }
 
@@ -61,10 +55,37 @@
     // Dispose of any resources that can be recreated.
 }
 
+- (void)populateFields
+{
+    if ( self.editingReminder )
+    {
+        self.navigationItem.title = @"Edit Reminder";
+        self.picker.date = self.reminder.nextDueDate;
+        [self setDateLabel:self.reminder.nextDueDate];
+        self.reminderNameText.text = self.reminder.name;
+        datePicked = YES;
+        self.navigationItem.rightBarButtonItem.enabled = YES;
+    }
+    else
+    {
+        self.reminder = [[DCReminder alloc] init];
+        self.navigationItem.title = @"New Reminder";
+        self.picker.date = [NSDate dateWithTimeIntervalSinceNow:60*60*24];
+        datePicked = NO;
+        self.navigationItem.rightBarButtonItem.enabled = NO;
+    }
+    
+    self.repeatSwitch.on = (self.reminder.repeatingInfo.repeats != DCRecurringInfoRepeatsNever);
+    editingDate = NO;
+}
+
 - (IBAction)saveNewReminder:(id)sender
 {
-    newReminder.name = self.reminderNameText.text;
-    [self.delegate didAddNewReminder:newReminder];
+    self.reminder.name = self.reminderNameText.text;
+    if ( self.editingReminder )
+        [self.delegate didSaveReminder:self.reminder];
+    else
+        [self.delegate didAddNewReminder:self.reminder];
     [self.navigationController popViewControllerAnimated:YES];
 }
 
@@ -73,16 +94,21 @@
     [self.navigationController popViewControllerAnimated:YES];
 }
 
-- (IBAction)dateChanged:(UIDatePicker *)sender
+- (void)setDateLabel:(NSDate *)date
 {
     if ( self.dateFormatter == nil )
     {
         self.dateFormatter = [[NSDateFormatter alloc] init];
         [self.dateFormatter setDateFormat:@"MMM dd, yyyy"];
     }
+    
+    self.dueLabel.text = [self.dateFormatter stringFromDate:date];
+}
 
-    self.dueLabel.text = [self.dateFormatter stringFromDate:sender.date];
-    newReminder.nextDueDate = sender.date;
+- (IBAction)dateChanged:(UIDatePicker *)sender
+{
+    [self setDateLabel:sender.date];
+    self.reminder.nextDueDate = sender.date;
     datePicked = true;
 
     if ( ![self.reminderNameText.text isEqualToString:@""] )
@@ -95,14 +121,14 @@
 {
     if ( sender.on == NO )
     {
-        newReminder.repeatingInfo.repeats = DCRecurringInfoRepeatsNever;
+        self.reminder.repeatingInfo.repeats = DCRecurringInfoRepeatsNever;
         [self updateRepeatLabel];
     }
 }
 
 - (void)updateRepeatLabel
 {
-    switch ( newReminder.repeatingInfo.repeats )
+    switch ( self.reminder.repeatingInfo.repeats )
     {
         case DCRecurringInfoRepeatsNever:
             self.repeatDurationLabel.text = @"Never";
@@ -110,17 +136,17 @@
             break;
 
         case DCRecurringInfoRepeatsDaily:
-            self.repeatDurationLabel.text = [NSString stringWithFormat:@"Every %d day%s", newReminder.repeatingInfo.repeatIncrement, newReminder.repeatingInfo.repeatIncrement == 1 ? "" : "s" ];
+            self.repeatDurationLabel.text = [NSString stringWithFormat:@"Every %d day%s", self.reminder.repeatingInfo.repeatIncrement, self.reminder.repeatingInfo.repeatIncrement == 1 ? "" : "s" ];
             self.repeatDurationLabel.textColor = [UIColor blackColor];
             break;
 
         case DCRecurringInfoRepeatsWeekly:
-            self.repeatDurationLabel.text = [NSString stringWithFormat:@"Every %d week%s", newReminder.repeatingInfo.repeatIncrement, newReminder.repeatingInfo.repeatIncrement == 1 ? "" : "s" ];
+            self.repeatDurationLabel.text = [NSString stringWithFormat:@"Every %d week%s", self.reminder.repeatingInfo.repeatIncrement, self.reminder.repeatingInfo.repeatIncrement == 1 ? "" : "s" ];
             self.repeatDurationLabel.textColor = [UIColor blackColor];
             break;
 
         case DCRecurringInfoRepeatsMonthly:
-            self.repeatDurationLabel.text = [NSString stringWithFormat:@"Every %d month%s", newReminder.repeatingInfo.repeatIncrement, newReminder.repeatingInfo.repeatIncrement == 1 ? "" : "s" ];
+            self.repeatDurationLabel.text = [NSString stringWithFormat:@"Every %d month%s", self.reminder.repeatingInfo.repeatIncrement, self.reminder.repeatingInfo.repeatIncrement == 1 ? "" : "s" ];
             self.repeatDurationLabel.textColor = [UIColor blackColor];
             break;
 
@@ -192,9 +218,9 @@
     if ( [segue.identifier isEqualToString:@"createRepeatInfo"] || [segue.identifier isEqualToString:@"createRepeatInfo2"] )
     {
         DCRepeatViewController *controller = segue.destinationViewController;
-        if ( newReminder.repeatingInfo == nil )
-            newReminder.repeatingInfo = [[DCRecurringInfo alloc] init];
-        controller.recurringInfo = [newReminder.repeatingInfo mutableCopy];
+        if ( self.reminder.repeatingInfo == nil )
+            self.reminder.repeatingInfo = [[DCRecurringInfo alloc] init];
+        controller.recurringInfo = [self.reminder.repeatingInfo mutableCopy];
         controller.delegate = self;
     }
 }
@@ -216,7 +242,7 @@
 - (void)didSaveRepeatInfo:(DCRecurringInfo *)repeatInfo
 {
     self.repeatSwitch.on = YES;
-    newReminder.repeatingInfo = repeatInfo;
+    self.reminder.repeatingInfo = repeatInfo;
     [self updateRepeatLabel];
 }
 

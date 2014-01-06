@@ -11,10 +11,12 @@
 
 @protocol NewReminderProtocol <NSObject>
 - (void)didAddNewReminder:(DCReminder *)newReminder;
+- (void)didSaveReminder:(DCReminder *)reminder;
 @end
 
 @interface DCNewReminderViewController : UITableViewController
 
 @property (nonatomic, weak) id<NewReminderProtocol> delegate;
-
+@property (nonatomic) BOOL editingReminder;
+@property (nonatomic, strong) DCReminder *reminder;
 @end
