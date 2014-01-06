@@ -210,19 +210,9 @@ static DataModel *dataModelInstance;
 
     if ( !fromdb )
     {
-        NSInteger daysAsInt = [self daysToInteger:reminder.repeatingInfo.daysToRepeat];
-        
         [self.database executeUpdate:@"insert into reminders (reminderName, nextDueDate) values (?, ?)", reminder.name, reminder.nextDueDate];
         reminder.uid = [NSNumber numberWithLongLong:[self.database lastInsertRowId]];
-        [self.database executeUpdate:@"insert into repeats (reminderId, repeats, repeatIncrement, repeatsFromLastCompletion, daysToRepeat, dayOfMonth, nthWeekOfMonth) values (?, ?, ?, ?, ?, ?, ?)",
-                       reminder.uid,
-                       [NSNumber numberWithInt:reminder.repeatingInfo.repeats],
-                       [NSNumber numberWithInteger:reminder.repeatingInfo.repeatIncrement],
-                       [NSNumber numberWithBool:reminder.repeatingInfo.repeatFromLastCompletion],
-                       [NSNumber numberWithInteger:daysAsInt],
-                       [NSNumber numberWithInteger:reminder.repeatingInfo.dayOfMonth],
-                       [NSNumber numberWithInteger:reminder.repeatingInfo.nthWeekOfMonth] ];
-
+        [self addRecurringInfoForReminder:reminder];
         [self.delegate dataModelInsertedObject:reminder atIndex:insertIndex];
     }
 }
@@ -237,11 +227,38 @@ static DataModel *dataModelInstance;
     NSUInteger originalIndex = [self.reminderList indexOfObject:reminder];
     [self.reminderList removeObjectAtIndex:originalIndex];
     [self addReminder:reminder fromDatabase:YES];
-
     [self.database executeUpdate:@"update reminders set reminderName = (?), nextDueDate = (?) where id = (?)", reminder.name, reminder.nextDueDate, reminder.uid];
-
     NSUInteger newIndex = [self.reminderList indexOfObject:reminder];
+    [self updateRecurringInfoForReminder:reminder];
     [self.delegate dataModelMovedObject:reminder from:originalIndex toIndex:newIndex];
+}
+
+- (void)addRecurringInfoForReminder:(DCReminder *)reminder
+{
+    NSInteger daysAsInt = [self daysToInteger:reminder.repeatingInfo.daysToRepeat];
+    
+    [self.database executeUpdate:@"insert into repeats (reminderId, repeats, repeatIncrement, repeatsFromLastCompletion, daysToRepeat, dayOfMonth, nthWeekOfMonth) values (?, ?, ?, ?, ?, ?, ?)",
+        reminder.uid,
+        [NSNumber numberWithInt:reminder.repeatingInfo.repeats],
+        [NSNumber numberWithInteger:reminder.repeatingInfo.repeatIncrement],
+        [NSNumber numberWithBool:reminder.repeatingInfo.repeatFromLastCompletion],
+        [NSNumber numberWithInteger:daysAsInt],
+        [NSNumber numberWithInteger:reminder.repeatingInfo.dayOfMonth],
+        [NSNumber numberWithInteger:reminder.repeatingInfo.nthWeekOfMonth] ];
+}
+
+- (void)updateRecurringInfoForReminder:(DCReminder *)reminder
+{
+    NSInteger daysAsInt = [self daysToInteger:reminder.repeatingInfo.daysToRepeat];
+    
+    [self.database executeUpdate:@"update repeats set repeats = (?), repeatIncrement = (?), repeatsFromLastCompletion = (?), daysToRepeat = (?), dayOfMonth = (?), nthWeekOfMonth = (?)  where reminderId = (?)",
+        [NSNumber numberWithInt:reminder.repeatingInfo.repeats],
+        [NSNumber numberWithInteger:reminder.repeatingInfo.repeatIncrement],
+        [NSNumber numberWithBool:reminder.repeatingInfo.repeatFromLastCompletion],
+        [NSNumber numberWithInteger:daysAsInt],
+        [NSNumber numberWithInteger:reminder.repeatingInfo.dayOfMonth],
+        [NSNumber numberWithInteger:reminder.repeatingInfo.nthWeekOfMonth],
+        reminder.uid];
 }
 
 - (void)addCompletionDateForReminder:(DCReminder *)reminder date:(NSDate *)date
