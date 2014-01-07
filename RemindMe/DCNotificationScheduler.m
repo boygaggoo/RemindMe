@@ -26,6 +26,10 @@ static DCNotificationScheduler *schedulerInstance;
 
 - (void)createLocalNotification:(DCReminder *)reminder
 {
+    // No need to create a notification for dates in the past
+    if ( [reminder.nextDueDate dc_isDateBefore:[NSDate date]] )
+        return;
+    
     // Create new notification
     UILocalNotification *notification = [[UILocalNotification alloc] init];
     notification.fireDate = reminder.nextDueDate;
