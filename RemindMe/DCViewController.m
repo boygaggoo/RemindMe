@@ -228,7 +228,7 @@ typedef NS_ENUM(NSInteger, DCReminderDue) {
 
     if ( _overDue == 0 )
     {
-        if ( index <= _dueSoon )
+        if ( index < _dueSoon )
             return DCReminderDueSoon;
         if ( _dueSoon == 0 )
             return DCReminderDueFuture;
