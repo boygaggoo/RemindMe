@@ -9,11 +9,14 @@
 #import "DCAppDelegate.h"
 #import "DataModel.h"
 #import "DCNotificationScheduler.h"
+#import <Crashlytics/Crashlytics.h>
 
 @implementation DCAppDelegate
 
 - (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions
 {
+    [Crashlytics startWithAPIKey:@"3d722b3d9afb538112cca01daa1b0ffb7fd60bae"];
+    
     // Is the application always in the inactive state at this point?
     if ( application.applicationState == UIApplicationStateInactive )
     {

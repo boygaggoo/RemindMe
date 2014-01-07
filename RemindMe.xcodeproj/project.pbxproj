@@ -8,6 +8,7 @@
 
 /* Begin PBXBuildFile section */
 		66566EE7184A5B2400626238 /* DCReminderDetailViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 66566EE6184A5B2400626238 /* DCReminderDetailViewController.m */; };
+		66A51A8F187C646D0008BED1 /* Crashlytics.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 66A51A8E187C646D0008BED1 /* Crashlytics.framework */; };
 		66CE6B92186115B4008DBB09 /* DCRecurringInfo.m in Sources */ = {isa = PBXBuildFile; fileRef = 66CE6B91186115B4008DBB09 /* DCRecurringInfo.m */; };
 		66CE6B95186126C7008DBB09 /* DCRepeatViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 66CE6B94186126C7008DBB09 /* DCRepeatViewController.m */; };
 		66CE6B9818612D19008DBB09 /* DCReminderInfoSwitchCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 66CE6B9718612D19008DBB09 /* DCReminderInfoSwitchCell.m */; };
@@ -52,6 +53,7 @@
 		2913A3A8BCD9457CB5CE5D00 /* Pods/Pods.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; path = Pods/Pods.xcconfig; sourceTree = SOURCE_ROOT; };
 		66566EE5184A5B2400626238 /* DCReminderDetailViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DCReminderDetailViewController.h; sourceTree = "<group>"; };
 		66566EE6184A5B2400626238 /* DCReminderDetailViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = DCReminderDetailViewController.m; sourceTree = "<group>"; };
+		66A51A8E187C646D0008BED1 /* Crashlytics.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; path = Crashlytics.framework; sourceTree = "<group>"; };
 		66CE6B90186115B4008DBB09 /* DCRecurringInfo.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DCRecurringInfo.h; sourceTree = "<group>"; };
 		66CE6B91186115B4008DBB09 /* DCRecurringInfo.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = DCRecurringInfo.m; sourceTree = "<group>"; };
 		66CE6B93186126C7008DBB09 /* DCRepeatViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DCRepeatViewController.h; sourceTree = "<group>"; };
@@ -106,6 +108,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				66FE495E182EC0F0001E5950 /* CoreGraphics.framework in Frameworks */,
+				66A51A8F187C646D0008BED1 /* Crashlytics.framework in Frameworks */,
 				66FE4960182EC0F0001E5950 /* UIKit.framework in Frameworks */,
 				66FE495C182EC0F0001E5950 /* Foundation.framework in Frameworks */,
 				7F17D22D17504BA484649EB5 /* libPods.a in Frameworks */,
@@ -157,6 +160,7 @@
 		66FE495A182EC0F0001E5950 /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
+				66A51A8E187C646D0008BED1 /* Crashlytics.framework */,
 				66FE495B182EC0F0001E5950 /* Foundation.framework */,
 				66FE495D182EC0F0001E5950 /* CoreGraphics.framework */,
 				66FE495F182EC0F0001E5950 /* UIKit.framework */,
@@ -272,6 +276,7 @@
 				66FE4955182EC0F0001E5950 /* Frameworks */,
 				66FE4956182EC0F0001E5950 /* Resources */,
 				01D1CAE82EAA479481D44030 /* Copy Pods Resources */,
+				66A51A8D187C643E0008BED1 /* Crashlytics */,
 			);
 			buildRules = (
 			);
@@ -370,6 +375,20 @@
 			shellPath = /bin/sh;
 			shellScript = "\"${SRCROOT}/Pods/Pods-resources.sh\"\n";
 			showEnvVarsInLog = 0;
+		};
+		66A51A8D187C643E0008BED1 /* Crashlytics */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputPaths = (
+			);
+			name = Crashlytics;
+			outputPaths = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "./Crashlytics.framework/run 3d722b3d9afb538112cca01daa1b0ffb7fd60bae";
 		};
 		FC57C6B4A43B487D98F49415 /* Check Pods Manifest.lock */ = {
 			isa = PBXShellScriptBuildPhase;
@@ -539,6 +558,10 @@
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_LAUNCHIMAGE_NAME = LaunchImage;
 				CODE_SIGN_IDENTITY = "iPhone Developer";
+				FRAMEWORK_SEARCH_PATHS = (
+					"$(inherited)",
+					/Users/dacohn/Documents/code/RemindMe,
+				);
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = "RemindMe/RemindMe-Prefix.pch";
 				INFOPLIST_FILE = "RemindMe/RemindMe-Info.plist";
@@ -557,6 +580,10 @@
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_LAUNCHIMAGE_NAME = LaunchImage;
 				CODE_SIGN_IDENTITY = "iPhone Developer";
+				FRAMEWORK_SEARCH_PATHS = (
+					"$(inherited)",
+					/Users/dacohn/Documents/code/RemindMe,
+				);
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = "RemindMe/RemindMe-Prefix.pch";
 				INFOPLIST_FILE = "RemindMe/RemindMe-Info.plist";
