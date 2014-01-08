@@ -97,7 +97,7 @@
                                                     <rect key="frame" x="87" y="7" width="208" height="30"/>
                                                     <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                                                     <fontDescription key="fontDescription" type="system" pointSize="17"/>
-                                                    <textInputTraits key="textInputTraits"/>
+                                                    <textInputTraits key="textInputTraits" autocapitalizationType="sentences"/>
                                                     <connections>
                                                         <outlet property="delegate" destination="rOp-RG-JUc" id="uBK-1g-Tfk"/>
                                                     </connections>
