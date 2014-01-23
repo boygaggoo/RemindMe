@@ -261,42 +261,25 @@ AQABAAEAAQAB//+dkAEA//+PgAAE//+dkAEI//+dkAEMUERUAFBTVABQV1QAUFBUAAAAAAEAAAABA
                                 </connections>
                             </segmentedControl>
                             <view tag="2" contentMode="scaleToFill" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="T34-Ax-sMd" userLabel="Weekly View">
-                                <rect key="frame" x="320" y="124" width="320" height="444"/>
+                                <rect key="frame" x="0.0" y="124" width="320" height="444"/>
                                 <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                                 <subviews>
                                     <stepper opaque="NO" clipsSubviews="YES" contentMode="scaleToFill" horizontalHuggingPriority="750" verticalHuggingPriority="750" fixedFrame="YES" contentHorizontalAlignment="center" contentVerticalAlignment="center" value="1" minimumValue="1" maximumValue="100" translatesAutoresizingMaskIntoConstraints="NO" id="xKM-xF-gKG">
-                                        <rect key="frame" x="206" y="150" width="94" height="29"/>
+                                        <rect key="frame" x="206" y="20" width="94" height="29"/>
                                         <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
                                         <connections>
                                             <action selector="stepperChanged:" destination="BPg-eM-TFa" eventType="valueChanged" id="TZ3-NQ-ZHW"/>
                                         </connections>
                                     </stepper>
                                     <label opaque="NO" clipsSubviews="YES" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" fixedFrame="YES" text="Repeat every 1 week" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="zty-Hz-rTL">
-                                        <rect key="frame" x="20" y="150" width="178" height="29"/>
+                                        <rect key="frame" x="20" y="20" width="178" height="29"/>
                                         <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                                         <fontDescription key="fontDescription" type="system" pointSize="15"/>
                                         <color key="textColor" cocoaTouchSystemColor="darkTextColor"/>
                                         <nil key="highlightedColor"/>
                                     </label>
-                                    <label opaque="NO" clipsSubviews="YES" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" fixedFrame="YES" text="Repeat from last:" textAlignment="center" lineBreakMode="tailTruncation" numberOfLines="2" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" preferredMaxLayoutWidth="280" translatesAutoresizingMaskIntoConstraints="NO" id="xj4-vh-le2">
-                                        <rect key="frame" x="20" y="20" width="280" height="42"/>
-                                        <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
-                                        <fontDescription key="fontDescription" type="system" pointSize="15"/>
-                                        <nil key="highlightedColor"/>
-                                    </label>
-                                    <segmentedControl opaque="NO" contentMode="scaleToFill" fixedFrame="YES" contentHorizontalAlignment="left" contentVerticalAlignment="top" segmentControlStyle="plain" selectedSegmentIndex="0" translatesAutoresizingMaskIntoConstraints="NO" id="Rgt-1M-vHw">
-                                        <rect key="frame" x="44" y="70" width="233" height="29"/>
-                                        <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
-                                        <segments>
-                                            <segment title="Completion Date"/>
-                                            <segment title="Due Date"/>
-                                        </segments>
-                                        <connections>
-                                            <action selector="startFromChanged:" destination="BPg-eM-TFa" eventType="valueChanged" id="BvI-A1-gqh"/>
-                                        </connections>
-                                    </segmentedControl>
                                     <segmentedControl opaque="NO" contentMode="scaleToFill" fixedFrame="YES" contentHorizontalAlignment="left" contentVerticalAlignment="top" segmentControlStyle="plain" selectedSegmentIndex="0" translatesAutoresizingMaskIntoConstraints="NO" id="Xed-sR-5So" customClass="MultiSelectSegmentedControl">
-                                        <rect key="frame" x="20" y="240" width="280" height="29"/>
+                                        <rect key="frame" x="20" y="106" width="280" height="29"/>
                                         <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                                         <segments>
                                             <segment title="S"/>
@@ -309,11 +292,35 @@ AQABAAEAAQAB//+dkAEA//+PgAAE//+dkAEI//+dkAEMUERUAFBTVABQV1QAUFBUAAAAAAEAAAABA
                                         </segments>
                                     </segmentedControl>
                                     <label opaque="NO" clipsSubviews="YES" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" fixedFrame="YES" text="Days of the week" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="utu-Cf-Spo">
-                                        <rect key="frame" x="94" y="211" width="133" height="21"/>
+                                        <rect key="frame" x="94" y="77" width="133" height="21"/>
                                         <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                                         <fontDescription key="fontDescription" type="system" pointSize="15"/>
                                         <nil key="highlightedColor"/>
                                     </label>
+                                    <view contentMode="scaleToFill" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="bP0-Pf-n5B">
+                                        <rect key="frame" x="0.0" y="154" width="320" height="136"/>
+                                        <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                                        <subviews>
+                                            <label opaque="NO" clipsSubviews="YES" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" fixedFrame="YES" text="Repeat from last:" textAlignment="center" lineBreakMode="tailTruncation" numberOfLines="2" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" preferredMaxLayoutWidth="320" translatesAutoresizingMaskIntoConstraints="NO" id="xj4-vh-le2">
+                                                <rect key="frame" x="0.0" y="0.0" width="320" height="42"/>
+                                                <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                                                <fontDescription key="fontDescription" type="system" pointSize="15"/>
+                                                <nil key="highlightedColor"/>
+                                            </label>
+                                            <segmentedControl opaque="NO" contentMode="scaleToFill" fixedFrame="YES" contentHorizontalAlignment="left" contentVerticalAlignment="top" segmentControlStyle="plain" selectedSegmentIndex="0" translatesAutoresizingMaskIntoConstraints="NO" id="Rgt-1M-vHw">
+                                                <rect key="frame" x="44" y="34" width="233" height="29"/>
+                                                <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                                                <segments>
+                                                    <segment title="Completion Date"/>
+                                                    <segment title="Due Date"/>
+                                                </segments>
+                                                <connections>
+                                                    <action selector="startFromChanged:" destination="BPg-eM-TFa" eventType="valueChanged" id="BvI-A1-gqh"/>
+                                                </connections>
+                                            </segmentedControl>
+                                        </subviews>
+                                        <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="calibratedWhite"/>
+                                    </view>
                                 </subviews>
                                 <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="calibratedWhite"/>
                             </view>
@@ -506,6 +513,7 @@ AQABAAEAAQAB//+dkAEA//+PgAAE//+dkAEI//+dkAEMUERUAFBTVABQV1QAUFBUAAAAAAEAAAABA
                         <outlet property="repeatControl" destination="amo-56-9DQ" id="NuS-e3-zWU"/>
                         <outlet property="weeklyDayPicker" destination="Xed-sR-5So" id="8hl-8J-XnW"/>
                         <outlet property="weeklyMainView" destination="T34-Ax-sMd" id="Ej8-0G-qD6"/>
+                        <outlet property="weeklyRepeatFromView" destination="bP0-Pf-n5B" id="m4Z-3g-exW"/>
                         <outlet property="weeklyRepeatLabel" destination="zty-Hz-rTL" id="Y31-dD-RrY"/>
                         <outlet property="weeklyRepeatStepper" destination="xKM-xF-gKG" id="mjl-mS-Zcl"/>
                         <outlet property="weeklyStartFromControl" destination="Rgt-1M-vHw" id="45T-6Q-QRs"/>

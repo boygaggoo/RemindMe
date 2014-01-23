@@ -28,6 +28,7 @@
 @property (weak, nonatomic) IBOutlet UILabel *weeklyStartFromLabel;
 @property (weak, nonatomic) IBOutlet UISegmentedControl *weeklyStartFromControl;
 @property (weak, nonatomic) IBOutlet MultiSelectSegmentedControl *weeklyDayPicker;
+@property (weak, nonatomic) IBOutlet UIView *weeklyRepeatFromView;
 
 // Monthly controls
 @property (weak, nonatomic) IBOutlet UIView *monthlyMainView;
@@ -356,13 +357,11 @@
     {
         if ( self.weeklyDayPicker.selectedSegmentIndexes.count == 0 )
         {
-            self.weeklyStartFromControl.enabled = YES;
-            self.weeklyStartFromLabel.textColor = [UIColor blackColor];
+            [self enableWeeklyRepeatFromControl:YES];
         }
         else
         {
-            self.weeklyStartFromControl.enabled = NO;
-            self.weeklyStartFromLabel.textColor = [UIColor lightGrayColor];
+            [self enableWeeklyRepeatFromControl:NO];
         }
     }
     else if ( control == self.monthlyDayPicker )
@@ -376,6 +375,35 @@
         {
             self.monthlyStartFromControl.enabled = NO;
 //            self.weeklyStartFromLabel.textColor = [UIColor lightGrayColor];
+        }
+    }
+}
+
+- (void)enableWeeklyRepeatFromControl:(BOOL)enabled
+{
+    CGRect frame = self.weeklyRepeatFromView.frame;
+    if ( enabled )
+    {
+        if ( frame.origin.x != 0 )
+        {
+            frame.origin.x = 0;
+            
+            [UIView animateWithDuration:0.2 animations:^{
+                self.weeklyRepeatFromView.frame = frame;
+            } completion:^(BOOL finished) {
+            }];
+        }
+    }
+    else
+    {
+        if ( frame.origin.x != 320 )
+        {
+            frame.origin.x = 320;
+            
+            [UIView animateWithDuration:0.2 animations:^{
+                self.weeklyRepeatFromView.frame = frame;
+            } completion:^(BOOL finished) {
+            }];
         }
     }
 }
