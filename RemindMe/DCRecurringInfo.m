@@ -117,9 +117,25 @@
         case DCRecurringInfoRepeatsMonthly:
         {
             NSDateComponents* dateComponents = [[NSDateComponents alloc] init];
-            [dateComponents setMonth:1];
             NSCalendar* calendar = [NSCalendar currentCalendar];
-            return [calendar dateByAddingComponents:dateComponents toDate:startDate options:0];
+            NSDate *newDate = lastDueDate;
+            
+            if ( self.monthlyRepeatWeekly )
+            {
+                NSLog( @" * not handled yet" );
+            }
+            else
+            {
+                // Repeat on nth day of month
+                [dateComponents setMonth:self.repeatIncrement];
+                newDate = [calendar dateByAddingComponents:dateComponents toDate:lastDueDate options:0];
+                NSDateComponents *temp = [calendar components:(NSCalendarUnitTimeZone|NSCalendarUnitYear|NSCalendarUnitMonth|NSCalendarUnitDay|NSCalendarUnitHour|NSCalendarUnitMinute) fromDate:newDate];
+                [temp setDay:self.dayOfMonth];
+                newDate = [calendar dateFromComponents:temp];
+            }
+            
+            
+            return newDate;
             break;
         }
             

@@ -352,6 +352,84 @@ AQABAAEAAQAB//+dkAEA//+PgAAE//+dkAEI//+dkAEMUERUAFBTVABQV1QAUFBUAAAAAAEAAAABA
                                             <action selector="startFromChanged:" destination="BPg-eM-TFa" eventType="valueChanged" id="PJ8-vm-2HY"/>
                                         </connections>
                                     </segmentedControl>
+                                    <label opaque="NO" clipsSubviews="YES" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" fixedFrame="YES" text="Find a string for this label:" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="YJu-1b-hp5">
+                                        <rect key="frame" x="20" y="205" width="280" height="21"/>
+                                        <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                                        <fontDescription key="fontDescription" type="system" pointSize="15"/>
+                                        <nil key="highlightedColor"/>
+                                    </label>
+                                    <segmentedControl opaque="NO" contentMode="scaleToFill" fixedFrame="YES" contentHorizontalAlignment="left" contentVerticalAlignment="top" segmentControlStyle="plain" selectedSegmentIndex="0" translatesAutoresizingMaskIntoConstraints="NO" id="7ix-LY-B1g">
+                                        <rect key="frame" x="99" y="234" width="133" height="29"/>
+                                        <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                                        <segments>
+                                            <segment title="Option 1"/>
+                                            <segment title="Option 2"/>
+                                        </segments>
+                                        <connections>
+                                            <action selector="dayWeekControlChanged:" destination="BPg-eM-TFa" eventType="valueChanged" id="0Fu-da-WhQ"/>
+                                        </connections>
+                                    </segmentedControl>
+                                    <view contentMode="scaleToFill" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="Gg7-Kn-M6T">
+                                        <rect key="frame" x="320" y="270" width="320" height="174"/>
+                                        <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                                        <subviews>
+                                            <stepper opaque="NO" clipsSubviews="YES" contentMode="scaleToFill" horizontalHuggingPriority="750" verticalHuggingPriority="750" fixedFrame="YES" contentHorizontalAlignment="center" contentVerticalAlignment="center" value="1" minimumValue="1" maximumValue="31" translatesAutoresizingMaskIntoConstraints="NO" id="ZZw-Iy-1AL">
+                                                <rect key="frame" x="206" y="20" width="94" height="29"/>
+                                                <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
+                                                <connections>
+                                                    <action selector="dayOfMonthStepperChanged:" destination="BPg-eM-TFa" eventType="valueChanged" id="9oE-hp-eBj"/>
+                                                </connections>
+                                            </stepper>
+                                            <label opaque="NO" clipsSubviews="YES" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" fixedFrame="YES" text="Day of month: 1" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="NRs-oY-wox">
+                                                <rect key="frame" x="20" y="20" width="178" height="29"/>
+                                                <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                                                <fontDescription key="fontDescription" type="system" pointSize="15"/>
+                                                <color key="textColor" cocoaTouchSystemColor="darkTextColor"/>
+                                                <nil key="highlightedColor"/>
+                                            </label>
+                                        </subviews>
+                                        <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="calibratedWhite"/>
+                                    </view>
+                                    <view contentMode="scaleToFill" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="07N-zH-qah">
+                                        <rect key="frame" x="320" y="270" width="320" height="174"/>
+                                        <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                                        <subviews>
+                                            <segmentedControl opaque="NO" contentMode="scaleToFill" fixedFrame="YES" contentHorizontalAlignment="left" contentVerticalAlignment="top" segmentControlStyle="plain" selectedSegmentIndex="0" translatesAutoresizingMaskIntoConstraints="NO" id="JCF-Gy-IEg" customClass="MultiSelectSegmentedControl">
+                                                <rect key="frame" x="20" y="91" width="280" height="29"/>
+                                                <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                                                <segments>
+                                                    <segment title="S"/>
+                                                    <segment title="M"/>
+                                                    <segment title="T"/>
+                                                    <segment title="W"/>
+                                                    <segment title="Th"/>
+                                                    <segment title="F"/>
+                                                    <segment title="Sa"/>
+                                                </segments>
+                                            </segmentedControl>
+                                            <label opaque="NO" clipsSubviews="YES" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" fixedFrame="YES" text="Days of the week" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="bJy-4y-YEH">
+                                                <rect key="frame" x="93" y="62" width="133" height="21"/>
+                                                <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                                                <fontDescription key="fontDescription" type="system" pointSize="15"/>
+                                                <nil key="highlightedColor"/>
+                                            </label>
+                                            <stepper opaque="NO" clipsSubviews="YES" contentMode="scaleToFill" horizontalHuggingPriority="750" verticalHuggingPriority="750" fixedFrame="YES" contentHorizontalAlignment="center" contentVerticalAlignment="center" value="1" minimumValue="1" maximumValue="100" translatesAutoresizingMaskIntoConstraints="NO" id="HyF-UV-b46">
+                                                <rect key="frame" x="206" y="20" width="94" height="29"/>
+                                                <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
+                                                <connections>
+                                                    <action selector="weekOfMonthStepperChanged:" destination="BPg-eM-TFa" eventType="valueChanged" id="hTt-PK-cri"/>
+                                                </connections>
+                                            </stepper>
+                                            <label opaque="NO" clipsSubviews="YES" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" fixedFrame="YES" text="Week of month: 1" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="LJ5-1q-sR0">
+                                                <rect key="frame" x="20" y="20" width="178" height="29"/>
+                                                <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                                                <fontDescription key="fontDescription" type="system" pointSize="15"/>
+                                                <color key="textColor" cocoaTouchSystemColor="darkTextColor"/>
+                                                <nil key="highlightedColor"/>
+                                            </label>
+                                        </subviews>
+                                        <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="calibratedWhite"/>
+                                    </view>
                                 </subviews>
                                 <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="calibratedWhite"/>
                             </view>
@@ -413,10 +491,18 @@ AQABAAEAAQAB//+dkAEA//+PgAAE//+dkAEI//+dkAEMUERUAFBTVABQV1QAUFBUAAAAAAEAAAABA
                         <outlet property="dailyRepeatLabel" destination="cmn-Rq-M0T" id="LkX-nh-3Pn"/>
                         <outlet property="dailyRepeatStepper" destination="I3j-Gx-8F7" id="dyT-Nn-j8N"/>
                         <outlet property="dailyStartFromControl" destination="k7c-IZ-qky" id="PuK-6D-bfw"/>
+                        <outlet property="monthlyDayOfMonthLabel" destination="NRs-oY-wox" id="tnj-Gu-LjZ"/>
+                        <outlet property="monthlyDayOfMonthStepper" destination="ZZw-Iy-1AL" id="NTB-py-8vl"/>
+                        <outlet property="monthlyDayPicker" destination="JCF-Gy-IEg" id="U78-Vz-uUS"/>
+                        <outlet property="monthlyMainDailyView" destination="Gg7-Kn-M6T" id="5oc-BK-jt8"/>
                         <outlet property="monthlyMainView" destination="PeP-5E-bhw" id="52c-Bc-bMS"/>
+                        <outlet property="monthlyMainWeeklyView" destination="07N-zH-qah" id="aOg-wa-XeK"/>
                         <outlet property="monthlyRepeatLabel" destination="CUt-pu-nKz" id="zDJ-oY-adI"/>
                         <outlet property="monthlyRepeatStepper" destination="ogA-g3-Fgk" id="WF1-SP-mgd"/>
                         <outlet property="monthlyStartFromControl" destination="dkK-v9-2Kf" id="SQe-su-BE3"/>
+                        <outlet property="monthlyWeekOfMonthLabel" destination="LJ5-1q-sR0" id="zNe-9f-Td2"/>
+                        <outlet property="monthlyWeekOfMonthStepper" destination="HyF-UV-b46" id="wKR-d9-KoU"/>
+                        <outlet property="montlyDayOrWeekControl" destination="7ix-LY-B1g" id="m3t-Jb-cWS"/>
                         <outlet property="repeatControl" destination="amo-56-9DQ" id="NuS-e3-zWU"/>
                         <outlet property="weeklyDayPicker" destination="Xed-sR-5So" id="8hl-8J-XnW"/>
                         <outlet property="weeklyMainView" destination="T34-Ax-sMd" id="Ej8-0G-qD6"/>

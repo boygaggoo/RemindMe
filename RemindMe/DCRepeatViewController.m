@@ -13,6 +13,7 @@
 
 @property (weak, nonatomic) IBOutlet UISegmentedControl *repeatControl;
 @property (weak, nonatomic) UIView *currentMainView;
+@property (weak, nonatomic) UIView *currentMonthSubView;
 
 // Daily controls
 @property (weak, nonatomic) IBOutlet UIView *dailyMainView;
@@ -33,6 +34,16 @@
 @property (weak, nonatomic) IBOutlet UIStepper *monthlyRepeatStepper;
 @property (weak, nonatomic) IBOutlet UILabel *monthlyRepeatLabel;
 @property (weak, nonatomic) IBOutlet UISegmentedControl *monthlyStartFromControl;
+@property (weak, nonatomic) IBOutlet UISegmentedControl *montlyDayOrWeekControl;
+@property (weak, nonatomic) IBOutlet UILabel *monthlyDayOfMonthLabel;
+@property (weak, nonatomic) IBOutlet UIStepper *monthlyDayOfMonthStepper;
+@property (weak, nonatomic) IBOutlet UIStepper *monthlyWeekOfMonthStepper;
+@property (weak, nonatomic) IBOutlet MultiSelectSegmentedControl *monthlyDayPicker;
+@property (weak, nonatomic) IBOutlet UILabel *monthlyWeekOfMonthLabel;
+
+@property (weak, nonatomic) IBOutlet UIView *monthlyMainDailyView;
+@property (weak, nonatomic) IBOutlet UIView *monthlyMainWeeklyView;
+
 
 
 @end
@@ -53,18 +64,19 @@
     [super viewDidLoad];
 	// Do any additional setup after loading the view.
     self.weeklyDayPicker.delegate = self;
+    self.monthlyDayPicker.delegate = self;
 }
 
 - (void)viewDidLayoutSubviews
 {
     // Put the current view into the correct location
     self.currentMainView.frame = CGRectMake(0, 124, 320, 444);
+    self.currentMonthSubView.frame = CGRectMake(0, 270, 320, 174);
 }
 
 - (void)viewWillAppear:(BOOL)animated
 {
     [super viewWillAppear:animated];
-    NSMutableIndexSet *selectedDays = [[NSMutableIndexSet alloc] init];
 
     if ( self.recurringInfo.repeats == DCRecurringInfoRepeatsNever )
     {
@@ -76,6 +88,15 @@
     self.dailyMainView.frame = CGRectMake(320, 124, 320, 444);
     self.weeklyMainView.frame = CGRectMake(320, 124, 320, 444);
     self.monthlyMainView.frame = CGRectMake(320, 124, 320, 444);
+    
+    if ( self.recurringInfo.monthlyRepeatWeekly )
+    {
+        self.currentMonthSubView = self.monthlyMainWeeklyView;
+    }
+    else
+    {
+        self.currentMonthSubView = self.monthlyMainDailyView;
+    }
 
     switch (self.recurringInfo.repeats)
     {
@@ -103,13 +124,7 @@
             self.weeklyStartFromControl.selectedSegmentIndex = self.recurringInfo.repeatFromLastCompletion ? 0 : 1;
             self.weeklyRepeatStepper.value = self.recurringInfo.repeatIncrement;
             self.repeatControl.selectedSegmentIndex = 1;
-            [self.weeklyDayPicker selectAllSegments:NO];
-            for ( NSNumber *day in self.recurringInfo.daysToRepeat )
-            {
-                [selectedDays addIndex:[day integerValue]];
-            }
-            self.weeklyDayPicker.selectedSegmentIndexes = selectedDays;
-            [self updateStartFromControls];
+            [self updateMultiSelectControl:self.weeklyDayPicker];
 
             // Reset repeatIncrement in case the original value was outside the allowed range
             self.recurringInfo.repeatIncrement = self.weeklyRepeatStepper.value;
@@ -125,8 +140,9 @@
             self.monthlyStartFromControl.selectedSegmentIndex = self.recurringInfo.repeatFromLastCompletion ? 0 : 1;
             self.monthlyRepeatStepper.value = self.recurringInfo.repeatIncrement;
             self.repeatControl.selectedSegmentIndex = 2;
+            [self updateMultiSelectControl:self.monthlyDayPicker];
 
-            // Reset repeatIncrement in case the original value was outside the allowed range
+            // Reset repeatIncrement and dayOfMonth in case the original value was outside the allowed range
             self.recurringInfo.repeatIncrement = self.monthlyRepeatStepper.value;
             
             break;
@@ -137,8 +153,15 @@
         default:
             break;
     }
+    
+    self.monthlyDayOfMonthStepper.value = self.recurringInfo.dayOfMonth;
+    self.recurringInfo.dayOfMonth = self.monthlyDayOfMonthStepper.value;
+    self.monthlyWeekOfMonthStepper.value = self.recurringInfo.nthWeekOfMonth;
+    self.recurringInfo.nthWeekOfMonth = self.monthlyWeekOfMonthStepper.value;
 
     [self updateRepeatLabel];
+    [self updateDayOfMonthLabel];
+
 }
 
 - (void)didReceiveMemoryWarning
@@ -186,10 +209,48 @@
     }
 }
 
+- (void)updateMultiSelectControl:(MultiSelectSegmentedControl *)control
+{
+    NSMutableIndexSet *selectedDays = [[NSMutableIndexSet alloc] init];
+
+    [control selectAllSegments:NO];
+    for ( NSNumber *day in self.recurringInfo.daysToRepeat )
+    {
+        [selectedDays addIndex:[day integerValue]];
+    }
+    control.selectedSegmentIndexes = selectedDays;
+
+    [self updateStartFromControls:control];
+}
+
+- (void)updateDayOfMonthLabel
+{
+    NSString *text = [NSString stringWithFormat:@"Day of month: %d", self.recurringInfo.dayOfMonth];
+    self.monthlyDayOfMonthLabel.text = text;
+}
+
+- (void)updateWeekOfMonthLabel
+{
+    NSString *text = [NSString stringWithFormat:@"Week of month: %d", self.recurringInfo.nthWeekOfMonth];
+    self.monthlyWeekOfMonthLabel.text = text;
+}
+
 - (IBAction)stepperChanged:(UIStepper *)sender
 {
     self.recurringInfo.repeatIncrement = (int)floor(sender.value);
     [self updateRepeatLabel];
+}
+
+- (IBAction)dayOfMonthStepperChanged:(UIStepper *)sender
+{
+    self.recurringInfo.dayOfMonth = (int)floor(sender.value);
+    [self updateDayOfMonthLabel];
+}
+
+- (IBAction)weekOfMonthStepperChanged:(UIStepper *)sender
+{
+    self.recurringInfo.nthWeekOfMonth = (int)floor(sender.value);
+    [self updateWeekOfMonthLabel];
 }
 
 - (IBAction)repeatControlChanged:(UISegmentedControl *)sender
@@ -210,6 +271,7 @@
             self.weeklyRepeatStepper.value = self.recurringInfo.repeatIncrement;
             self.weeklyStartFromControl.selectedSegmentIndex = self.recurringInfo.repeatFromLastCompletion ? 0 : 1;
             self.recurringInfo.repeats = DCRecurringInfoRepeatsWeekly;
+            [self updateMultiSelectControl:self.weeklyDayPicker];
             break;
 
         case 2:
@@ -217,6 +279,7 @@
             self.monthlyRepeatStepper.value = self.recurringInfo.repeatIncrement;
             self.monthlyStartFromControl.selectedSegmentIndex = self.recurringInfo.repeatFromLastCompletion ? 0 : 1;
             self.recurringInfo.repeats = DCRecurringInfoRepeatsMonthly;
+            [self updateMultiSelectControl:self.monthlyDayPicker];
             break;
 
         default:
@@ -225,7 +288,7 @@
 
     [self updateRepeatLabel];
 
-    // Animage new view into place
+    // Animate new view into place
     int multiplier = 1;
 
     if ( newMainView.tag < self.currentMainView.tag )
@@ -246,22 +309,74 @@
 
 }
 
+- (IBAction)dayWeekControlChanged:(UISegmentedControl *)sender
+{
+    UIView *newSubView = nil;
+    int multiplier = 1;
+
+    switch ( sender.selectedSegmentIndex )
+    {
+        case 0:
+            newSubView = self.monthlyMainDailyView;
+            multiplier = -1;
+            self.recurringInfo.monthlyRepeatWeekly = NO;
+            [self updateDayOfMonthLabel];
+            break;
+        case 1:
+            newSubView = self.monthlyMainWeeklyView;
+            multiplier = 1;
+            self.recurringInfo.monthlyRepeatWeekly = YES;
+            break;
+            
+        default:
+            break;
+    }
+    
+    // Animate sub view into place
+    newSubView.frame = CGRectMake(320 * multiplier, 270, 320, 174);
+    newSubView.hidden = NO;
+    
+    [UIView animateWithDuration:0.2 animations:^{
+        newSubView.frame = CGRectMake(0, 270, 320, 174);
+        self.currentMonthSubView.frame = CGRectMake(320 * multiplier * -1, 270, 320, 174);
+    } completion:^(BOOL finished) {
+        self.currentMonthSubView.hidden = YES;
+        self.currentMonthSubView = newSubView;
+    }];
+}
+
 - (IBAction)startFromChanged:(UISegmentedControl *)sender
 {
     self.recurringInfo.repeatFromLastCompletion = sender.selectedSegmentIndex == 0 ? YES : NO;
 }
 
-- (void)updateStartFromControls
+- (void)updateStartFromControls:(MultiSelectSegmentedControl *)control
 {
-    if ( self.weeklyDayPicker.selectedSegmentIndexes.count == 0 )
+    if ( control == self.weeklyDayPicker )
     {
-        self.weeklyStartFromControl.enabled = YES;
-        self.weeklyStartFromLabel.textColor = [UIColor blackColor];
+        if ( self.weeklyDayPicker.selectedSegmentIndexes.count == 0 )
+        {
+            self.weeklyStartFromControl.enabled = YES;
+            self.weeklyStartFromLabel.textColor = [UIColor blackColor];
+        }
+        else
+        {
+            self.weeklyStartFromControl.enabled = NO;
+            self.weeklyStartFromLabel.textColor = [UIColor lightGrayColor];
+        }
     }
-    else
+    else if ( control == self.monthlyDayPicker )
     {
-        self.weeklyStartFromControl.enabled = NO;
-        self.weeklyStartFromLabel.textColor = [UIColor lightGrayColor];
+        if ( self.monthlyDayPicker.selectedSegmentIndexes.count == 0 )
+        {
+            self.monthlyStartFromControl.enabled = YES;
+//            self.weeklyStartFromLabel.textColor = [UIColor blackColor];
+        }
+        else
+        {
+            self.monthlyStartFromControl.enabled = NO;
+//            self.weeklyStartFromLabel.textColor = [UIColor lightGrayColor];
+        }
     }
 }
 
@@ -280,7 +395,7 @@
         [self.recurringInfo.daysToRepeat removeObject:[NSNumber numberWithInteger:index]];
     }
     
-    [self updateStartFromControls];
+    [self updateStartFromControls:multiSelecSegmendedControl];
 }
 
 @end

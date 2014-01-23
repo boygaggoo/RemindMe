@@ -41,6 +41,9 @@ typedef NS_ENUM(NSInteger, DCRecurringInfoWeekDays) {
 // Array of DCRecurringInfoWeekDays for days of the week reminder is due
 @property (nonatomic, strong) NSMutableArray *daysToRepeat;
 
+// For monthly tasks, repeat on nth day of month if NO, nth week of month if YES
+@property (nonatomic, assign) BOOL monthlyRepeatWeekly;
+
 // Day of the month the reminder is due
 @property (nonatomic, assign) NSInteger dayOfMonth;
 
