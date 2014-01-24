@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+	<key>IDESourceControlProjectFavoriteDictionaryKey</key>
+	<false/>
+	<key>IDESourceControlProjectIdentifier</key>
+	<string>0FA040D8-BBB9-4BDB-8727-2265467EDD4A</string>
+	<key>IDESourceControlProjectName</key>
+	<string>RemindMe</string>
+	<key>IDESourceControlProjectOriginsDictionary</key>
+	<dict>
+		<key>FF6BC5D4-4A38-40ED-B381-82A711568AC1</key>
+		<string>ssh://github.com/dacohn/RemindMe.git</string>
+	</dict>
+	<key>IDESourceControlProjectPath</key>
+	<string>RemindMe.xcworkspace</string>
+	<key>IDESourceControlProjectRelativeInstallPathDictionary</key>
+	<dict>
+		<key>FF6BC5D4-4A38-40ED-B381-82A711568AC1</key>
+		<string>..</string>
+	</dict>
+	<key>IDESourceControlProjectURL</key>
+	<string>ssh://github.com/dacohn/RemindMe.git</string>
+	<key>IDESourceControlProjectVersion</key>
+	<integer>110</integer>
+	<key>IDESourceControlProjectWCCIdentifier</key>
+	<string>FF6BC5D4-4A38-40ED-B381-82A711568AC1</string>
+	<key>IDESourceControlProjectWCConfigurations</key>
+	<array>
+		<dict>
+			<key>IDESourceControlRepositoryExtensionIdentifierKey</key>
+			<string>public.vcs.git</string>
+			<key>IDESourceControlWCCIdentifierKey</key>
+			<string>FF6BC5D4-4A38-40ED-B381-82A711568AC1</string>
+			<key>IDESourceControlWCCName</key>
+			<string>RemindMe</string>
+		</dict>
+	</array>
+</dict>
+</plist>
