@@ -32,8 +32,10 @@ typedef NS_ENUM(NSInteger, DCReminderDue) {
 @property (nonatomic, strong) DataModel *data;
 @property (weak, nonatomic) IBOutlet UIButton *noItemsButton;
 @property (nonatomic, strong) NSDateFormatter *dateFormatter;
+@property (nonatomic, strong) NSDateFormatter *timeFormatter;
 @property (nonatomic, assign) NSUInteger dueSoonThreshold;
 @property (nonatomic, strong) DCNotificationScheduler *scheduler;
+@property (nonatomic, assign) BOOL showTime;
 @end
 
 @implementation DCTableViewController
@@ -47,6 +49,7 @@ typedef NS_ENUM(NSInteger, DCReminderDue) {
         _data.delegate = self;
         _dueSoonThreshold = 60*60*24*3;
         _scheduler = [DCNotificationScheduler sharedInstance];
+        _showTime = YES;
     }
     return self;
 }
@@ -241,6 +244,35 @@ typedef NS_ENUM(NSInteger, DCReminderDue) {
         return DCReminderDueSoon;
 
     return DCReminderDueFuture;
+}
+
+- (NSString *)stringForDate:(NSDate *)date
+{
+    if ( self.dateFormatter == nil )
+    {
+        self.dateFormatter = [[NSDateFormatter alloc] init];
+        [self.dateFormatter setDateFormat:@"MMMM dd"];
+    }
+    
+    if ( self.timeFormatter == nil )
+    {
+        self.timeFormatter = [[NSDateFormatter alloc] init];
+        [self.timeFormatter setDateFormat:@"h:mm a"];
+    }
+    
+    NSString *relativeString = [date dc_relativeDateString];
+    if ( relativeString )
+    {
+        if ( self.showTime )
+            return [relativeString stringByAppendingFormat:@", %@", [self.timeFormatter stringFromDate:date]];
+        else
+            return relativeString;
+    }
+    
+    if ( self.showTime )
+        return [NSString stringWithFormat:@"%@, %@", [self.dateFormatter stringFromDate:date], [self.timeFormatter stringFromDate:date]];
+    else
+        return [NSString stringWithFormat:@"%@", [self.dateFormatter stringFromDate:date]];
 }
 
 - (DCReminder *)reminderAtIndexPath:(NSIndexPath *)indexPath
@@ -519,12 +551,7 @@ typedef NS_ENUM(NSInteger, DCReminderDue) {
     DCReminderTableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:CellIdentifier forIndexPath:indexPath];
     NSInteger index = indexPath.row;
     
-    if ( self.dateFormatter == nil )
-    {
-        self.dateFormatter = [[NSDateFormatter alloc] init];
-        [self.dateFormatter setDateFormat:@"MMM dd, yyyy"];
-    }
-    
+
     if ( indexPath.section == 1 )
     {
         if ( _overDue == 0 )
@@ -541,7 +568,7 @@ typedef NS_ENUM(NSInteger, DCReminderDue) {
     
     // Configure the cell...
     cell.textLabel.text = reminder.name;
-    cell.detailTextLabel.text = [self.dateFormatter stringFromDate:reminder.nextDueDate];
+    cell.detailTextLabel.text = [self stringForDate:reminder.nextDueDate];
     
     // If overdue
     if ( indexPath.section == 0 && _overDue )
@@ -561,7 +588,7 @@ typedef NS_ENUM(NSInteger, DCReminderDue) {
     if ( section == 0 )
     {
         if ( _overDue > 0 )
-            return @"Overdue";
+            return @"Due";
         if ( _dueSoon > 0 )
             return @"Due soon";
     }

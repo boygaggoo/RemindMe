@@ -25,4 +25,49 @@
     return ([self timeIntervalSinceDate:date] > 0);
 }
 
+- (NSString *)dc_relativeDateString
+{
+    NSCalendar *calendar = [NSCalendar currentCalendar];
+    
+    // Get today's date with no time set
+    NSDate *now = [NSDate date];
+    NSDateComponents *nowDateComponents = [[NSCalendar currentCalendar] components:NSCalendarUnitDay|NSCalendarUnitMonth|NSCalendarUnitYear fromDate:now];
+    now = [calendar dateFromComponents:nowDateComponents];
+    
+    if ( now == nil )
+        return nil;
+
+    // Get this object's date with no time set
+    NSDateComponents *myDateComponents = [[NSCalendar currentCalendar] components:NSCalendarUnitDay|NSCalendarUnitMonth|NSCalendarUnitYear fromDate:self];
+    NSDate *myDate = [calendar dateFromComponents:myDateComponents];
+    
+    if ( myDate == nil )
+        return nil;
+    
+    if ( [now compare:myDate] == NSOrderedSame )
+    {
+        return @"Today";
+    }
+    
+    NSDateComponents *addDayComponent = [[NSDateComponents alloc] init];
+    [addDayComponent setDay:1];
+
+    NSDate *tomorrowDate = [calendar dateByAddingComponents:addDayComponent toDate:now options:0];
+
+    if ( [tomorrowDate compare:myDate] == NSOrderedSame )
+    {
+        return @"Tomorrow";
+    }
+    
+    [addDayComponent setDay:-1];
+    NSDate *yesterdayDate = [calendar dateByAddingComponents:addDayComponent toDate:now options:0];
+    
+    if ( [yesterdayDate compare:myDate] == NSOrderedSame )
+    {
+        return @"Yesterday";
+    }
+    
+    return nil;
+}
+
 @end

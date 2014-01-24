@@ -13,5 +13,6 @@
 - (BOOL)dc_isDateAfter:(NSDate *)date1 andBefore:(NSDate *)date2;
 - (BOOL)dc_isDateBefore:(NSDate *)date;
 - (BOOL)dc_isDateAfter:(NSDate *)date;
+- (NSString *)dc_relativeDateString;
 
 @end
