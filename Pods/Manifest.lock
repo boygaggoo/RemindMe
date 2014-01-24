@@ -4,11 +4,14 @@ PODS:
   - FMDB/common (2.1)
   - FMDB/standard (2.1):
     - FMDB/common
+  - SWTableViewCell (0.2.2)
 
 DEPENDENCIES:
   - FMDB
+  - SWTableViewCell
 
 SPEC CHECKSUMS:
   FMDB: 3fd5aaf632ca4ed39e3f101e0398504e6d5b0918
+  SWTableViewCell: b20432962d410c45c25b69e7c519a1296ecce70b
 
 COCOAPODS: 0.22.1
