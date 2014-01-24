@@ -42,7 +42,7 @@ static DataModel *dataModelInstance;
 
 - (void)createTables
 {
-    NSNumber *currentVersion = @2;
+    NSNumber *currentVersion = @3;
     [self.database executeUpdate:@"CREATE TABLE metadata (key text not null, value integer not null)"];
     
     // Get current database version
@@ -63,7 +63,13 @@ static DataModel *dataModelInstance;
     
     if ( dbversion < 2 )
     {
-        [self.database executeUpdate:@"alter table repeats add column monthlyRepeatWeekly integer not null;"];
+        //[self.database executeUpdate:@"alter table repeats add column monthlyRepeatWeekly integer not null;"];
+    }
+    
+    if ( dbversion < 3 )
+    {
+        [self.database executeUpdate:@"alter table repeats add column monthlyRepeatType integer not null default 0;"];
+        [self.database executeUpdate:@"alter table repeats add column monthlyWeekDay integer not null default 0;"];
     }
     
     if ( dbversion == 0 )
@@ -97,6 +103,7 @@ static DataModel *dataModelInstance;
     NSString *dbPath = [documentsDir stringByAppendingPathComponent:@"reminders.sql"];
 
     self.database = [[FMDatabase alloc] initWithPath:dbPath];
+    self.database.logsErrors = YES;
     [self openDatabase];
     [self createTables];
     [self loadDatabase];
@@ -122,8 +129,9 @@ static DataModel *dataModelInstance;
             reminder.repeatingInfo.repeatIncrement = [results2 intForColumn:@"repeatIncrement"];
             reminder.repeatingInfo.repeatFromLastCompletion = [results2 boolForColumn:@"repeatsFromLastCompletion"];
             reminder.repeatingInfo.daysToRepeat = [self integerToDays:[results2 intForColumn:@"daysToRepeat"]];
-            reminder.repeatingInfo.monthlyRepeatWeekly = [results2 boolForColumn:@"monthlyRepeatWeekly"];
+            reminder.repeatingInfo.monthlyRepeatType = [results2 intForColumn:@"monthlyRepeatType"];
             reminder.repeatingInfo.dayOfMonth = [results2 intForColumn:@"dayOfMonth"];
+            reminder.repeatingInfo.monthlyWeekDay = [results2 intForColumn:@"monthlyWeekDay"];
             reminder.repeatingInfo.nthWeekOfMonth = [results2 intForColumn:@"nthWeekOfMonth"];
         }
         
@@ -243,14 +251,15 @@ static DataModel *dataModelInstance;
 {
     NSInteger daysAsInt = [self daysToInteger:reminder.repeatingInfo.daysToRepeat];
     
-    [self.database executeUpdate:@"insert into repeats (reminderId, repeats, repeatIncrement, repeatsFromLastCompletion, daysToRepeat, monthlyRepeatWeekly, dayOfMonth, nthWeekOfMonth) values (?, ?, ?, ?, ?, ?, ?, ?)",
+    [self.database executeUpdate:@"insert into repeats (reminderId, repeats, repeatIncrement, repeatsFromLastCompletion, daysToRepeat, monthlyRepeatType, dayOfMonth, monthlyWeekDay, nthWeekOfMonth) values (?, ?, ?, ?, ?, ?, ?, ?, ?)",
         reminder.uid,
         [NSNumber numberWithInt:reminder.repeatingInfo.repeats],
         [NSNumber numberWithInteger:reminder.repeatingInfo.repeatIncrement],
         [NSNumber numberWithBool:reminder.repeatingInfo.repeatFromLastCompletion],
         [NSNumber numberWithInteger:daysAsInt],
-        [NSNumber numberWithBool:reminder.repeatingInfo.monthlyRepeatWeekly],
+        [NSNumber numberWithInteger:reminder.repeatingInfo.monthlyRepeatType],
         [NSNumber numberWithInteger:reminder.repeatingInfo.dayOfMonth],
+        [NSNumber numberWithInteger:reminder.repeatingInfo.monthlyWeekDay],
         [NSNumber numberWithInteger:reminder.repeatingInfo.nthWeekOfMonth] ];
 }
 
@@ -258,13 +267,14 @@ static DataModel *dataModelInstance;
 {
     NSInteger daysAsInt = [self daysToInteger:reminder.repeatingInfo.daysToRepeat];
     
-    [self.database executeUpdate:@"update repeats set repeats = (?), repeatIncrement = (?), repeatsFromLastCompletion = (?), daysToRepeat = (?), monthlyRepeatWeekly = (?), dayOfMonth = (?), nthWeekOfMonth = (?)  where reminderId = (?)",
+    [self.database executeUpdate:@"update repeats set repeats = (?), repeatIncrement = (?), repeatsFromLastCompletion = (?), daysToRepeat = (?), monthlyRepeatType = (?), dayOfMonth = (?), monthlyWeekDay = (?), nthWeekOfMonth = (?)  where reminderId = (?)",
         [NSNumber numberWithInt:reminder.repeatingInfo.repeats],
         [NSNumber numberWithInteger:reminder.repeatingInfo.repeatIncrement],
         [NSNumber numberWithBool:reminder.repeatingInfo.repeatFromLastCompletion],
         [NSNumber numberWithInteger:daysAsInt],
-        [NSNumber numberWithBool:reminder.repeatingInfo.monthlyRepeatWeekly],
+        [NSNumber numberWithInteger:reminder.repeatingInfo.monthlyRepeatType],
         [NSNumber numberWithInteger:reminder.repeatingInfo.dayOfMonth],
+        [NSNumber numberWithInteger:reminder.repeatingInfo.monthlyWeekDay],
         [NSNumber numberWithInteger:reminder.repeatingInfo.nthWeekOfMonth],
         reminder.uid];
 }

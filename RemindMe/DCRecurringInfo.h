@@ -27,6 +27,12 @@ typedef NS_ENUM(NSInteger, DCRecurringInfoWeekDays) {
     DCRecurringInfoWeekDaysSaturday
 };
 
+typedef NS_ENUM(NSInteger, DCRecurringInfoMonthlyType) {
+    DCRecurringInfoMonthlyTypeDayOfMonth,
+    DCRecurringInfoMonthlyTypeWeekOfMonth,
+    DCRecurringInfoMonthlyTypeRegular
+};
+
 @interface DCRecurringInfo : NSObject <NSMutableCopying>
 
 // How often this task repeats
@@ -41,11 +47,14 @@ typedef NS_ENUM(NSInteger, DCRecurringInfoWeekDays) {
 // Array of DCRecurringInfoWeekDays for days of the week reminder is due
 @property (nonatomic, strong) NSMutableArray *daysToRepeat;
 
-// For monthly tasks, repeat on nth day of month if NO, nth week of month if YES
-@property (nonatomic, assign) BOOL monthlyRepeatWeekly;
+// Use enum instead for determining type of monthly repeating task
+@property (nonatomic, assign) DCRecurringInfoMonthlyType monthlyRepeatType;
 
 // Day of the month the reminder is due
 @property (nonatomic, assign) NSInteger dayOfMonth;
+
+// Day of the week reminder is due for monthly tasks
+@property (nonatomic, assign) DCRecurringInfoWeekDays monthlyWeekDay;
 
 // Which week of the month to repeat (1-4)
 @property (nonatomic, assign) NSInteger nthWeekOfMonth;

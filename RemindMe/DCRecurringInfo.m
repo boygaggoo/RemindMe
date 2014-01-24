@@ -17,7 +17,9 @@
     copy.repeatIncrement = self.repeatIncrement;
     copy.repeatFromLastCompletion = self.repeatFromLastCompletion;
     copy.daysToRepeat = [self.daysToRepeat mutableCopy];
+    copy.monthlyRepeatType = self.monthlyRepeatType;
     copy.dayOfMonth = self.dayOfMonth;
+    copy.monthlyWeekDay = self.monthlyWeekDay;
     copy.nthWeekOfMonth = self.nthWeekOfMonth;
 
     return copy;
@@ -120,20 +122,48 @@
             NSCalendar* calendar = [NSCalendar currentCalendar];
             NSDate *newDate = lastDueDate;
             
-            if ( self.monthlyRepeatWeekly )
+            switch ( self.monthlyRepeatType )
             {
-                NSLog( @" * not handled yet" );
+                case DCRecurringInfoMonthlyTypeDayOfMonth:
+                {
+                    [dateComponents setMonth:self.repeatIncrement];
+                    newDate = [calendar dateByAddingComponents:dateComponents toDate:lastDueDate options:0];
+                    NSDateComponents *temp = [calendar components:(NSCalendarUnitTimeZone|NSCalendarUnitYear|NSCalendarUnitMonth|NSCalendarUnitDay|NSCalendarUnitHour|NSCalendarUnitMinute) fromDate:newDate];
+                    [temp setDay:self.dayOfMonth];
+                    newDate = [calendar dateFromComponents:temp];
+                    break;
+                }
+                    
+                case DCRecurringInfoMonthlyTypeWeekOfMonth:
+                {
+                    [dateComponents setMonth:self.repeatIncrement];
+                    newDate = [calendar dateByAddingComponents:dateComponents toDate:lastDueDate options:0];
+                    NSDateComponents *temp = [calendar components:(NSCalendarUnitTimeZone|NSCalendarUnitYear|NSCalendarUnitMonth|NSCalendarUnitWeekdayOrdinal|NSCalendarUnitWeekday|NSCalendarUnitHour|NSCalendarUnitMinute) fromDate:newDate];
+                    NSInteger correctMonth = [temp month];
+                    [temp setWeekdayOrdinal:self.nthWeekOfMonth];
+                    [temp setWeekday:self.monthlyWeekDay + 1];
+                    newDate = [calendar dateFromComponents:temp];
+                    
+                    // If we tried to go to the 5th week of a month and it doesn't exist, it will go into the next month, so go back one week
+                    temp = [calendar components:(NSCalendarUnitTimeZone|NSCalendarUnitYear|NSCalendarUnitMonth|NSCalendarUnitWeekdayOrdinal|NSCalendarUnitWeekday|NSCalendarUnitHour|NSCalendarUnitMinute) fromDate:newDate];
+                    NSInteger newMonth = [temp month];
+                    if ( correctMonth != newMonth )
+                    {
+                        NSDateComponents *negativeOneWeek = [[NSDateComponents alloc] init];
+                        [negativeOneWeek setWeek:-1];
+                        newDate = [calendar dateByAddingComponents:negativeOneWeek toDate:newDate options:0];
+                    }
+                    break;
+                }
+                    
+                case DCRecurringInfoMonthlyTypeRegular:
+                {
+                    NSDateComponents *incrementDateComponent = [[NSDateComponents alloc] init];
+                    [incrementDateComponent setMonth:self.repeatIncrement];
+                    newDate = [[NSCalendar currentCalendar] dateByAddingComponents:incrementDateComponent toDate:startDate options:0];
+                    break;
+                }
             }
-            else
-            {
-                // Repeat on nth day of month
-                [dateComponents setMonth:self.repeatIncrement];
-                newDate = [calendar dateByAddingComponents:dateComponents toDate:lastDueDate options:0];
-                NSDateComponents *temp = [calendar components:(NSCalendarUnitTimeZone|NSCalendarUnitYear|NSCalendarUnitMonth|NSCalendarUnitDay|NSCalendarUnitHour|NSCalendarUnitMinute) fromDate:newDate];
-                [temp setDay:self.dayOfMonth];
-                newDate = [calendar dateFromComponents:temp];
-            }
-            
             
             return newDate;
             break;
