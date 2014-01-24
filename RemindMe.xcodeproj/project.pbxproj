@@ -274,8 +274,8 @@
 				FC57C6B4A43B487D98F49415 /* Check Pods Manifest.lock */,
 				66FE4954182EC0F0001E5950 /* Sources */,
 				66FE4955182EC0F0001E5950 /* Frameworks */,
-				66FE4956182EC0F0001E5950 /* Resources */,
 				665232381892D247003390A2 /* Update Build Number */,
+				66FE4956182EC0F0001E5950 /* Resources */,
 				01D1CAE82EAA479481D44030 /* Copy Pods Resources */,
 				66A51A8D187C643E0008BED1 /* Crashlytics */,
 			);
@@ -379,7 +379,7 @@
 		};
 		665232381892D247003390A2 /* Update Build Number */ = {
 			isa = PBXShellScriptBuildPhase;
-			buildActionMask = 2147483647;
+			buildActionMask = 8;
 			files = (
 			);
 			inputPaths = (
@@ -387,9 +387,9 @@
 			name = "Update Build Number";
 			outputPaths = (
 			);
-			runOnlyForDeploymentPostprocessing = 0;
+			runOnlyForDeploymentPostprocessing = 1;
 			shellPath = /bin/bash;
-			shellScript = "\"${DEVELOPER_BIN_DIR}/agvtool\" next-version -all";
+			shellScript = "# Auto-increment the build number every time the project is archived.\nbuildNumber=$(/usr/libexec/PlistBuddy -c \"Print CFBundleVersion\" \"${PROJECT_DIR}/${INFOPLIST_FILE}\")\nbuildNumber=$(($buildNumber + 1))\n/usr/libexec/PlistBuddy -c \"Set :CFBundleVersion $buildNumber\" \"${PROJECT_DIR}/${INFOPLIST_FILE}\"\n";
 		};
 		66A51A8D187C643E0008BED1 /* Crashlytics */ = {
 			isa = PBXShellScriptBuildPhase;
