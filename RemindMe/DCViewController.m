@@ -556,8 +556,6 @@ typedef NS_ENUM(NSInteger, DCReminderDue) {
 
 - (void)swipeableTableViewCell:(SWTableViewCell *)cell didTriggerLeftUtilityButtonWithIndex:(NSInteger)index
 {
-//    [cell hideUtilityButtonsAnimated:YES];
-
     if ( index == 0 )
     {
         NSIndexPath *indexPath = [self.tableView indexPathForCell:cell];
@@ -574,12 +572,14 @@ typedef NS_ENUM(NSInteger, DCReminderDue) {
 
 - (void)didAddNewReminder:(DCReminder *)newReminder
 {
+    newReminder.nextDueDate = [NSDate dc_dateWithoutSecondsFromDate:newReminder.nextDueDate];
     [self.data addReminder:newReminder];
     [self.scheduler scheduleNotificationForReminder:newReminder];
 }
 
 - (void)didSaveReminder:(DCReminder *)reminder
 {
+    reminder.nextDueDate = [NSDate dc_dateWithoutSecondsFromDate:reminder.nextDueDate];
     [self.data updateReminder:reminder];
     [self.scheduler scheduleNotificationForReminder:reminder];
 }

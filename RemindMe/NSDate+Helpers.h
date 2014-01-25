@@ -14,5 +14,6 @@
 - (BOOL)dc_isDateBefore:(NSDate *)date;
 - (BOOL)dc_isDateAfter:(NSDate *)date;
 - (NSString *)dc_relativeDateString;
++ (NSDate *)dc_dateWithoutSecondsFromDate:(NSDate *)date;
 
 @end

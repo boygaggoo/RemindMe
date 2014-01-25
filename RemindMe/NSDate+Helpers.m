@@ -70,4 +70,10 @@
     return nil;
 }
 
++ (NSDate *)dc_dateWithoutSecondsFromDate:(NSDate *)date
+{
+    NSTimeInterval time = floor([date timeIntervalSinceReferenceDate] / 60.0) * 60.0;
+    return [NSDate dateWithTimeIntervalSinceReferenceDate:time];
+}
+
 @end
