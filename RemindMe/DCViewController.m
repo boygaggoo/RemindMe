@@ -669,7 +669,7 @@ typedef NS_ENUM(NSInteger, DCReminderDue) {
     NSMutableArray *leftUtilityButtons = [NSMutableArray new];
     NSMutableArray *rightUtilityButtons = [NSMutableArray new];
     
-    [leftUtilityButtons sw_addUtilityButtonWithColor:[UIColor colorWithRed:0.0f green:0.8f blue:0.0f alpha:1.0f] title:@"Complete"];
+    [leftUtilityButtons sw_addUtilityButtonWithColor:[UIColor colorWithRed:0.1f green:0.7f blue:0.2f alpha:1.0f] title:@"Complete"];
     [rightUtilityButtons sw_addUtilityButtonWithColor:[UIColor colorWithRed:1.0f green:0.231f blue:0.188 alpha:1.0f] title:@"Delete"];
     
     cell.leftUtilityButtons = leftUtilityButtons;
