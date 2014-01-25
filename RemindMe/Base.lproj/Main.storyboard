@@ -24,11 +24,11 @@
                             </connections>
                         </button>
                         <prototypes>
-                            <tableViewCell contentMode="scaleToFill" selectionStyle="blue" accessoryType="disclosureIndicator" hidesAccessoryWhenEditing="NO" indentationLevel="1" indentationWidth="0.0" reuseIdentifier="ReminderItem" textLabel="h9G-QN-H6D" detailTextLabel="6TY-D2-vbc" style="IBUITableViewCellStyleSubtitle" id="BgF-9Y-a3D" customClass="DCReminderTableViewCell">
+                            <tableViewCell contentMode="scaleToFill" selectionStyle="blue" hidesAccessoryWhenEditing="NO" indentationLevel="1" indentationWidth="0.0" reuseIdentifier="ReminderItem" textLabel="h9G-QN-H6D" detailTextLabel="6TY-D2-vbc" style="IBUITableViewCellStyleSubtitle" id="BgF-9Y-a3D" customClass="DCReminderTableViewCell">
                                 <rect key="frame" x="0.0" y="119" width="320" height="44"/>
                                 <autoresizingMask key="autoresizingMask"/>
                                 <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" tableViewCell="BgF-9Y-a3D" id="BKe-VX-bpE">
-                                    <rect key="frame" x="0.0" y="0.0" width="287" height="43"/>
+                                    <rect key="frame" x="0.0" y="0.0" width="320" height="43"/>
                                     <autoresizingMask key="autoresizingMask"/>
                                     <subviews>
                                         <label opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="left" text="Title" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" id="h9G-QN-H6D">
@@ -48,7 +48,7 @@
                                     </subviews>
                                 </tableViewCellContentView>
                                 <connections>
-                                    <segue destination="rOp-RG-JUc" kind="push" identifier="editReminder" id="nmH-3g-2oL"/>
+                                    <segue destination="rOp-RG-JUc" kind="push" identifier="editReminder" id="Go3-3R-aM2"/>
                                 </connections>
                             </tableViewCell>
                         </prototypes>
@@ -581,7 +581,7 @@ AQABAAEAAQAB//+dkAEA//+PgAAE//+dkAEI//+dkAEMUERUAFBTVABQV1QAUFBUAAAAAAEAAAABA
         <simulatedScreenMetrics key="destination" type="retina4"/>
     </simulatedMetricsContainer>
     <inferredMetricsTieBreakers>
-        <segue reference="nmH-3g-2oL"/>
+        <segue reference="Go3-3R-aM2"/>
         <segue reference="mFE-9t-cMX"/>
     </inferredMetricsTieBreakers>
 </document>

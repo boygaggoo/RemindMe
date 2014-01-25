@@ -44,7 +44,7 @@
 
     // Uncomment the following line to preserve selection between presentations.
     // self.clearsSelectionOnViewWillAppear = NO;
- 
+    
     [self populateFields];
     [self updateRepeatLabel];
 }
@@ -59,6 +59,12 @@
 {
     if ( self.editingReminder )
     {
+        if ( self.reminder == nil )
+        {
+            NSLog( @"Error: No reminder object specified to edit!" );
+            return;
+        }
+        
         self.navigationItem.title = @"Edit Reminder";
         self.picker.date = self.reminder.nextDueDate;
         [self setDateLabel:self.reminder.nextDueDate];

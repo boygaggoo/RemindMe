@@ -18,7 +18,6 @@
 
 - (id)initWithCoder:(NSCoder *)aDecoder
 {
-    NSLog( @"   ***   %s   ***", __FUNCTION__ );
     self = [super initWithCoder:aDecoder];
     if (self) {
         // Initialization code

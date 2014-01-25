@@ -7,7 +7,8 @@
 //
 
 #import "DCSlidingTableViewCell.h"
+#import <SWTableViewCell/SWTableViewCell.h>
 
-@interface DCReminderTableViewCell : UITableViewCell
+@interface DCReminderTableViewCell : SWTableViewCell
 
 @end

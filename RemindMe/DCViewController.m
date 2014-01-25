@@ -14,6 +14,7 @@
 #import "DCNotificationScheduler.h"
 #import "DCReminderTableViewCell.h"
 #import "NSDate+Helpers.h"
+#import <SWTableViewCell/SWTableViewCell.h>
 
 typedef NS_ENUM(NSInteger, DCReminderDue) {
     DCReminderDueOverdue,
@@ -21,7 +22,7 @@ typedef NS_ENUM(NSInteger, DCReminderDue) {
     DCReminderDueFuture
 };
 
-@interface DCTableViewController () <NewReminderProtocol, ReminderDetailProtocol, DataModelProtocol, UIGestureRecognizerDelegate> {
+@interface DCTableViewController () <NewReminderProtocol, ReminderDetailProtocol, DataModelProtocol, UIGestureRecognizerDelegate, SWTableViewCellDelegate> {
     NSInteger _totalItems;
     NSInteger _dueSoon;
     NSInteger _overDue;
@@ -66,12 +67,6 @@ typedef NS_ENUM(NSInteger, DCReminderDue) {
     
     self.navigationItem.title = @"Reminders";
     
-    // Gesture recognizer for long taps
-    UILongPressGestureRecognizer *lpgr = [[UILongPressGestureRecognizer alloc] initWithTarget:self action:@selector(taskCompleted:)];
-    lpgr.minimumPressDuration = 1.5; //seconds
-    lpgr.delegate = self;
-    [self.tableView addGestureRecognizer:lpgr];
-    
     // Look for notifications that we should reload the table view. Sent when a reminder notification is triggered
     [[NSNotificationCenter defaultCenter] addObserver:self
                                              selector:@selector(reminderDueNow)
@@ -98,6 +93,15 @@ typedef NS_ENUM(NSInteger, DCReminderDue) {
     }
     
     [super viewWillAppear:animated];
+}
+
+- (void)viewDidDisappear:(BOOL)animated
+{
+    for ( DCReminderTableViewCell *cell in [self.tableView visibleCells] )
+    {
+        [cell hideUtilityButtonsAnimated:YES];
+    }
+    [super viewDidDisappear:animated];
 }
 
 - (void)didReceiveMemoryWarning
@@ -127,7 +131,7 @@ typedef NS_ENUM(NSInteger, DCReminderDue) {
         DCNewReminderViewController *destination = segue.destinationViewController;
         destination.delegate = self;
         destination.editingReminder = YES;
-        destination.reminder = [self reminderAtIndexPath:[self.tableView indexPathForSelectedRow]];
+        destination.reminder = [self reminderAtIndexPath:sender];
     }
 }
 
@@ -159,7 +163,7 @@ typedef NS_ENUM(NSInteger, DCReminderDue) {
     if ( reminder.repeatingInfo.repeats == DCRecurringInfoRepeatsNever )
     {
         // Task doesn't repeat, just delete it
-        [self tableView:self.tableView commitEditingStyle:UITableViewCellEditingStyleDelete forRowAtIndexPath:indexPath];
+        [self deleteRow:indexPath];
     }
     else
     {
@@ -167,29 +171,6 @@ typedef NS_ENUM(NSInteger, DCReminderDue) {
         [self.data addCompletionDateForReminder:reminder date:[NSDate date]];
         [self.data updateReminder:reminder];
         [self.scheduler scheduleNotificationForReminder:reminder];
-    }
-}
-
-- (void)taskCompleted:(UILongPressGestureRecognizer *)gestureRecognizer
-{
-    if (gestureRecognizer.state == UIGestureRecognizerStateBegan)
-    {
-        
-        CGPoint p = [gestureRecognizer locationInView:self.tableView];
-        
-        NSIndexPath *indexPath = [self.tableView indexPathForRowAtPoint:p];
-        if (indexPath == nil)
-        {
-            NSLog(@"long press on table view but not on a row");
-        }
-        else
-        {
-            UITableViewCell *cell = [self.tableView cellForRowAtIndexPath:indexPath];
-            if (cell.isHighlighted)
-            {
-                [self reminderCompletedAtIndexPath:indexPath];
-            }
-        }
     }
 }
 
@@ -251,7 +232,7 @@ typedef NS_ENUM(NSInteger, DCReminderDue) {
     if ( self.dateFormatter == nil )
     {
         self.dateFormatter = [[NSDateFormatter alloc] init];
-        [self.dateFormatter setDateFormat:@"MMMM dd"];
+        [self.dateFormatter setDateFormat:@"MMMM d"];
     }
     
     if ( self.timeFormatter == nil )
@@ -277,6 +258,9 @@ typedef NS_ENUM(NSInteger, DCReminderDue) {
 
 - (DCReminder *)reminderAtIndexPath:(NSIndexPath *)indexPath
 {
+    if ( indexPath == nil )
+        return nil;
+
     NSInteger index = indexPath.row;
     
     if ( indexPath.section == 1 )
@@ -291,6 +275,79 @@ typedef NS_ENUM(NSInteger, DCReminderDue) {
         index += _overDue + _dueSoon;
     
     return [self.data reminderAtIndex:index];
+}
+
+- (void)deleteRow:(NSIndexPath *)indexPath
+{
+    NSInteger index = indexPath.row;
+    
+    if ( indexPath.section == 1 )
+    {
+        if ( _overDue == 0 )
+            index += _dueSoon;
+        else
+            index += _overDue;
+    }
+    
+    if ( indexPath.section == 2 )
+        index += _overDue + _dueSoon;
+    
+    DCReminder *reminder = [self reminderAtIndexPath:indexPath];
+    [self.scheduler clearNotificationForReminder:reminder];
+    [self.data removeReminderAtIndex:index];
+    
+    // Remove section 0
+    if ( indexPath.section == 0 &&
+        ((_overDue == 1 || (_overDue == 0 && _dueSoon == 1)) || (_totalItems == 1)) )
+    {
+        if ( _overDue > 0 )
+            _overDue--;
+        else if ( _dueSoon > 0 )
+            _dueSoon--;
+        _totalItems--;
+        [self.tableView deleteSections:[NSIndexSet indexSetWithIndex:0] withRowAnimation:UITableViewRowAnimationTop];
+    }
+    // Remove section 1
+    else if ( (indexPath.section == 1) &&
+             (( _overDue > 0 && ((_dueSoon == 1) || ((_dueSoon == 0) && (_totalItems - _overDue == 1)))) ||
+              ( (_overDue == 0) && (_totalItems - _dueSoon == 1))) )
+    {
+        if ( _overDue > 0 && _dueSoon > 0)
+            _dueSoon--;
+        _totalItems--;
+        [self.tableView deleteSections:[NSIndexSet indexSetWithIndex:1] withRowAnimation:UITableViewRowAnimationTop];
+    }
+    // Remove section 2
+    else if ( indexPath.section == 2 && _totalItems - _overDue - _dueSoon == 1)
+    {
+        _totalItems--;
+        [self.tableView deleteSections:[NSIndexSet indexSetWithIndex:2] withRowAnimation:UITableViewRowAnimationTop];
+    }
+    else
+    {
+        if ( indexPath.section == 0 )
+        {
+            if ( _overDue > 0 )
+                _overDue--;
+            else if ( _dueSoon > 0 )
+                _dueSoon--;
+        }
+        else if ( indexPath.section == 1 )
+        {
+            if ( _overDue > 0 )
+            {
+                if ( _dueSoon > 0 )
+                    _dueSoon--;
+            }
+        }
+        _totalItems--;
+        [self.tableView deleteRowsAtIndexPaths:@[indexPath] withRowAnimation:UITableViewRowAnimationFade];
+    }
+    
+    if ( _totalItems == 0 )
+    {
+        self.noItemsButton.hidden = NO;
+    }
 }
 
 #pragma mark - DataModelProtocol
@@ -484,6 +541,34 @@ typedef NS_ENUM(NSInteger, DCReminderDue) {
 //    [self.tableView reloadRowsAtIndexPaths:@[newIndexPath] withRowAnimation:UITableViewRowAnimationNone];
 }
 
+#pragma mark - SWTableViewCellDelegate
+
+- (void)swipeableTableViewCell:(SWTableViewCell *)cell didTriggerRightUtilityButtonWithIndex:(NSInteger)index
+{
+    [cell hideUtilityButtonsAnimated:YES];
+
+    if ( index == 0 )
+    {
+        NSIndexPath *indexPath = [self.tableView indexPathForCell:cell];
+        [self deleteRow:indexPath];
+    }
+}
+
+- (void)swipeableTableViewCell:(SWTableViewCell *)cell didTriggerLeftUtilityButtonWithIndex:(NSInteger)index
+{
+//    [cell hideUtilityButtonsAnimated:YES];
+
+    if ( index == 0 )
+    {
+        NSIndexPath *indexPath = [self.tableView indexPathForCell:cell];
+        [self reminderCompletedAtIndexPath:indexPath];
+    }
+}
+
+- (BOOL)swipeableTableViewCellShouldHideUtilityButtonsOnSwipe:(SWTableViewCell *)cell
+{
+    return YES;
+}
 
 #pragma mark - NewReminderProtocol
 
@@ -579,6 +664,21 @@ typedef NS_ENUM(NSInteger, DCReminderDue) {
     // If future
     else
         cell.detailTextLabel.textColor = [UIColor blackColor];
+    
+    // Configure swipe options
+    NSMutableArray *leftUtilityButtons = [NSMutableArray new];
+    NSMutableArray *rightUtilityButtons = [NSMutableArray new];
+    
+    [leftUtilityButtons sw_addUtilityButtonWithColor:[UIColor colorWithRed:0.0f green:0.8f blue:0.0f alpha:1.0f] title:@"Complete"];
+    [rightUtilityButtons sw_addUtilityButtonWithColor:[UIColor colorWithRed:1.0f green:0.231f blue:0.188 alpha:1.0f] title:@"Delete"];
+    
+    cell.leftUtilityButtons = leftUtilityButtons;
+    cell.rightUtilityButtons = rightUtilityButtons;
+    
+    cell.containingTableView = tableView;
+    [cell setCellHeight:cell.frame.size.height];
+
+    cell.delegate = self;
 
     return cell;
 }
@@ -602,95 +702,9 @@ typedef NS_ENUM(NSInteger, DCReminderDue) {
     return @"Future";
 }
 
-/*
- // Override to support conditional editing of the table view.
- - (BOOL)tableView:(UITableView *)tableView canEditRowAtIndexPath:(NSIndexPath *)indexPath
- {
- // Return NO if you do not want the specified item to be editable.
- return YES;
- }
- */
-
-
-// Override to support editing the table view.
-- (void)tableView:(UITableView *)tableView commitEditingStyle:(UITableViewCellEditingStyle)editingStyle forRowAtIndexPath:(NSIndexPath *)indexPath
+- (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath
 {
-    if (editingStyle == UITableViewCellEditingStyleDelete)
-    {
-        NSInteger index = indexPath.row;
-        
-        if ( indexPath.section == 1 )
-        {
-            if ( _overDue == 0 )
-                index += _dueSoon;
-            else
-                index += _overDue;
-        }
-
-        if ( indexPath.section == 2 )
-            index += _overDue + _dueSoon;
-        
-        DCReminder *reminder = [self reminderAtIndexPath:indexPath];
-        [self.scheduler clearNotificationForReminder:reminder];
-        [self.data removeReminderAtIndex:index];
-        
-        // Remove section 0
-        if ( indexPath.section == 0 &&
-            ((_overDue == 1 || (_overDue == 0 && _dueSoon == 1)) || (_totalItems == 1)) )
-        {
-            if ( _overDue > 0 )
-                _overDue--;
-            else if ( _dueSoon > 0 )
-                _dueSoon--;
-            _totalItems--;
-            [tableView deleteSections:[NSIndexSet indexSetWithIndex:0] withRowAnimation:UITableViewRowAnimationTop];
-        }
-        // Remove section 1
-        else if ( (indexPath.section == 1) &&
-                 (( _overDue > 0 && ((_dueSoon == 1) || ((_dueSoon == 0) && (_totalItems - _overDue == 1)))) ||
-                 ( (_overDue == 0) && (_totalItems - _dueSoon == 1))) )
-        {
-            if ( _overDue > 0 && _dueSoon > 0)
-                _dueSoon--;
-            _totalItems--;
-            [tableView deleteSections:[NSIndexSet indexSetWithIndex:1] withRowAnimation:UITableViewRowAnimationTop];
-        }
-        // Remove section 2
-        else if ( indexPath.section == 2 && _totalItems - _overDue - _dueSoon == 1)
-        {
-            _totalItems--;
-            [tableView deleteSections:[NSIndexSet indexSetWithIndex:2] withRowAnimation:UITableViewRowAnimationTop];
-        }
-        else
-        {
-            if ( indexPath.section == 0 )
-            {
-                if ( _overDue > 0 )
-                    _overDue--;
-                else if ( _dueSoon > 0 )
-                    _dueSoon--;
-            }
-            else if ( indexPath.section == 1 )
-            {
-                if ( _overDue == 0 )
-                {
-                    if ( _dueSoon > 0 )
-                        _dueSoon--;
-                }
-            }
-            _totalItems--;
-            [tableView deleteRowsAtIndexPaths:@[indexPath] withRowAnimation:UITableViewRowAnimationFade];
-        }
-        
-        if ( _totalItems == 0 )
-        {
-            self.noItemsButton.hidden = NO;
-        }
-    }
-    else if (editingStyle == UITableViewCellEditingStyleInsert) {
-        // Create a new instance of the appropriate class, insert it into the array, and add a new row to the table view
-    }
+    [self performSegueWithIdentifier:@"editReminder" sender:indexPath];
 }
-
 
 @end
