@@ -81,9 +81,12 @@ static DCNotificationScheduler *schedulerInstance;
     // Next badge number will be number currently over due, plus 1
     NSInteger badgeNumber = [[DataModel sharedInstance] numDueBefore:[NSDate date]] + 1;
     
-    for ( UILocalNotification *local in sortedNotifications )
+    if ( [[NSUserDefaults standardUserDefaults] boolForKey:kDCShowIconBadge] )
     {
-        local.applicationIconBadgeNumber = badgeNumber++;
+        for ( UILocalNotification *local in sortedNotifications )
+        {
+            local.applicationIconBadgeNumber = badgeNumber++;
+        }
     }
     
     [UIApplication sharedApplication].scheduledLocalNotifications = sortedNotifications;

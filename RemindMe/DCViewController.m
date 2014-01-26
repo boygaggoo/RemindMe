@@ -48,7 +48,6 @@ typedef NS_ENUM(NSInteger, DCReminderDue) {
         // Custom initialization
         _data = [DataModel sharedInstance];
         _data.delegate = self;
-        _dueSoonThreshold = 60*60*24*3;
         _scheduler = [DCNotificationScheduler sharedInstance];
         _showTime = YES;
     }
@@ -72,6 +71,8 @@ typedef NS_ENUM(NSInteger, DCReminderDue) {
                                              selector:@selector(reminderDueNow)
                                                  name:@"RELOAD_DATA"
                                                object:nil];
+    
+    [self setDefaults];
 }
 
 - (void)dealloc
@@ -110,6 +111,23 @@ typedef NS_ENUM(NSInteger, DCReminderDue) {
     // Dispose of any resources that can be recreated.
 }
 
+- (void)setDefaults
+{
+    NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
+    
+    if ( [defaults objectForKey:kDCDueSoonThreshold] == nil )
+    {
+        [defaults setObject:[NSNumber numberWithInt:3] forKey:kDCDueSoonThreshold];
+    }
+    
+    if ( [defaults objectForKey:kDCShowIconBadge] == nil )
+    {
+        [defaults setBool:YES forKey:kDCShowIconBadge];
+    }
+    
+    [defaults synchronize];
+}
+
 - (void)prepareForSegue:(UIStoryboardSegue *)segue sender:(id)sender
 {
     if ( [segue.identifier isEqualToString:@"newReminder"] )
@@ -143,6 +161,9 @@ typedef NS_ENUM(NSInteger, DCReminderDue) {
 
 - (void)updateCounts
 {
+    self.dueSoonThreshold = [[NSUserDefaults standardUserDefaults] integerForKey:kDCDueSoonThreshold];
+    self.dueSoonThreshold *= (60 * 60 * 24);
+
     // Get information from the datastore about the number of tasks due soon and over due
     _now = [NSDate date];
     _soon = [NSDate dateWithTimeIntervalSinceNow:self.dueSoonThreshold];
@@ -459,7 +480,14 @@ typedef NS_ENUM(NSInteger, DCReminderDue) {
     [self.tableView reloadData];
     
     // Update badge count
-    [UIApplication sharedApplication].applicationIconBadgeNumber = _overDue;
+    if ( [[NSUserDefaults standardUserDefaults] boolForKey:kDCShowIconBadge] )
+    {
+        [UIApplication sharedApplication].applicationIconBadgeNumber = _overDue;
+    }
+    else
+    {
+        [UIApplication sharedApplication].applicationIconBadgeNumber = 0;
+    }
 
     
 //    // Figure out index path for updated task
