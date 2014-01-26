@@ -77,6 +77,16 @@
     [self.tableView deselectRowAtIndexPath:[self.tableView indexPathForSelectedRow] animated:YES];
 }
 
+- (float)tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath
+{
+    if ( indexPath.section == 1 && indexPath.row == 0 )
+    {
+        return 0;
+    }
+    
+    return [super tableView:tableView heightForRowAtIndexPath:indexPath];
+}
+
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath
 {
     if ( indexPath.section == 0 && indexPath.row == 0 )
@@ -106,7 +116,7 @@
         NSString *systemName = [[UIDevice currentDevice] systemName];
         NSString *ios = [[UIDevice currentDevice] systemVersion];
 
-        NSString *body = [NSString stringWithFormat:@"\n\n\n---\nRemindMe %@ (%@)\n%@ %@ %@\n", version, build, model, systemName, ios ];
+        NSString *body = [NSString stringWithFormat:@"\n\n\n---\nRemindMe %@ (%@)\n%@\n%@ %@\n", version, build, model, systemName, ios ];
         MFMailComposeViewController *mailCompose = [[MFMailComposeViewController alloc] init];
         mailCompose.mailComposeDelegate = self;
         [mailCompose setSubject:@"RemindMe Feedback"];
