@@ -7,8 +7,11 @@
 //
 
 #import "DCSettingsViewController.h"
+#import <MessageUI/MessageUI.h>
 
-@interface DCSettingsViewController ()
+#define reviewURL @"itms-apps://itunes.apple.com/app/id000000"
+
+@interface DCSettingsViewController () <MFMailComposeViewControllerDelegate>
 
 @property (weak, nonatomic) IBOutlet UILabel *dueSoonThresholdLabel;
 @property (weak, nonatomic) IBOutlet UITextField *dueSoonThresholdTextField;
@@ -95,6 +98,27 @@
         [self.dueSoonThresholdTextField becomeFirstResponder];
         
     }
+    else if ( indexPath.section == 1 && indexPath.row == 1 )
+    {
+        NSString *version = [[NSBundle mainBundle] objectForInfoDictionaryKey: @"CFBundleShortVersionString"];
+        NSString *build = [[NSBundle mainBundle] objectForInfoDictionaryKey: (NSString *)kCFBundleVersionKey];
+        NSString *model = [[UIDevice currentDevice] model];
+        NSString *systemName = [[UIDevice currentDevice] systemName];
+        NSString *ios = [[UIDevice currentDevice] systemVersion];
+
+        NSString *body = [NSString stringWithFormat:@"\n\n\n---\nRemindMe %@ (%@)\n%@ %@ %@\n", version, build, model, systemName, ios ];
+        MFMailComposeViewController *mailCompose = [[MFMailComposeViewController alloc] init];
+        mailCompose.mailComposeDelegate = self;
+        [mailCompose setSubject:@"RemindMe Feedback"];
+        [mailCompose setToRecipients:@[@"remindme@dancohn.net"]];
+        [mailCompose setMessageBody:body isHTML:NO];
+        [self presentViewController:mailCompose animated:YES completion:nil];
+    }
+    else if ( indexPath.section == 1 && indexPath.row == 2 )
+    {
+        [[UIApplication sharedApplication] openURL:[NSURL URLWithString:reviewURL]];
+        [tableView deselectRowAtIndexPath:indexPath animated:YES];
+    }
     else
     {
         [tableView deselectRowAtIndexPath:indexPath animated:YES];
@@ -115,6 +139,18 @@
     }
     
     [defaults synchronize];
+}
+
+#pragma mark - MFMailComposeViewControllerDelegate
+
+- (void)mailComposeController:(MFMailComposeViewController *)controller didFinishWithResult:(MFMailComposeResult)result error:(NSError *)error
+{
+    if ( error )
+    {
+        NSLog( @"Error sending email: %@", error );
+    }
+    
+    [controller dismissViewControllerAnimated:YES completion:nil];
 }
 
 @end

@@ -8,6 +8,7 @@
 
 /* Begin PBXBuildFile section */
 		661136C018958D7F00281D91 /* DCSettingsViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 661136BF18958D7F00281D91 /* DCSettingsViewController.m */; };
+		661136C21895A0C300281D91 /* MessageUI.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 661136C11895A0C300281D91 /* MessageUI.framework */; };
 		66566EE7184A5B2400626238 /* DCReminderDetailViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 66566EE6184A5B2400626238 /* DCReminderDetailViewController.m */; };
 		66A51A8F187C646D0008BED1 /* Crashlytics.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 66A51A8E187C646D0008BED1 /* Crashlytics.framework */; };
 		66CE6B92186115B4008DBB09 /* DCRecurringInfo.m in Sources */ = {isa = PBXBuildFile; fileRef = 66CE6B91186115B4008DBB09 /* DCRecurringInfo.m */; };
@@ -54,6 +55,7 @@
 		2913A3A8BCD9457CB5CE5D00 /* Pods/Pods.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; path = Pods/Pods.xcconfig; sourceTree = SOURCE_ROOT; };
 		661136BE18958D7F00281D91 /* DCSettingsViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DCSettingsViewController.h; sourceTree = "<group>"; };
 		661136BF18958D7F00281D91 /* DCSettingsViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = DCSettingsViewController.m; sourceTree = "<group>"; };
+		661136C11895A0C300281D91 /* MessageUI.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = MessageUI.framework; path = System/Library/Frameworks/MessageUI.framework; sourceTree = SDKROOT; };
 		66566EE5184A5B2400626238 /* DCReminderDetailViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DCReminderDetailViewController.h; sourceTree = "<group>"; };
 		66566EE6184A5B2400626238 /* DCReminderDetailViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = DCReminderDetailViewController.m; sourceTree = "<group>"; };
 		66A51A8E187C646D0008BED1 /* Crashlytics.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; path = Crashlytics.framework; sourceTree = "<group>"; };
@@ -110,6 +112,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				661136C21895A0C300281D91 /* MessageUI.framework in Frameworks */,
 				66FE495E182EC0F0001E5950 /* CoreGraphics.framework in Frameworks */,
 				66A51A8F187C646D0008BED1 /* Crashlytics.framework in Frameworks */,
 				66FE4960182EC0F0001E5950 /* UIKit.framework in Frameworks */,
@@ -163,6 +166,7 @@
 		66FE495A182EC0F0001E5950 /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
+				661136C11895A0C300281D91 /* MessageUI.framework */,
 				66A51A8E187C646D0008BED1 /* Crashlytics.framework */,
 				66FE495B182EC0F0001E5950 /* Foundation.framework */,
 				66FE495D182EC0F0001E5950 /* CoreGraphics.framework */,
