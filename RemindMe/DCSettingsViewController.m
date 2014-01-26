@@ -16,6 +16,7 @@
 @property (weak, nonatomic) IBOutlet UILabel *dueSoonThresholdLabel;
 @property (weak, nonatomic) IBOutlet UITextField *dueSoonThresholdTextField;
 @property (weak, nonatomic) IBOutlet UISwitch *showBadgeIconSwitch;
+@property (weak, nonatomic) IBOutlet UILabel *versionLabel;
 
 @end
 
@@ -45,6 +46,8 @@
     self.dueSoonThresholdTextField.hidden = YES;
     self.dueSoonThresholdLabel.text = [NSString stringWithFormat:@"%lu", (long)[[NSUserDefaults standardUserDefaults] integerForKey:kDCDueSoonThreshold]];
     self.showBadgeIconSwitch.on = [[NSUserDefaults standardUserDefaults] boolForKey:kDCShowIconBadge];
+    NSString *version = [[NSBundle mainBundle] objectForInfoDictionaryKey: @"CFBundleShortVersionString"];
+    self.versionLabel.text = [NSString stringWithFormat:@"Version %@", version];
 }
 
 - (void)didReceiveMemoryWarning

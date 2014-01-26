@@ -543,6 +543,13 @@ AQABAAEAAQAB//+dkAEA//+PgAAE//+dkAEI//+dkAEMUERUAFBTVABQV1QAUFBUAAAAAAEAAAABA
                         <rect key="frame" x="0.0" y="0.0" width="320" height="568"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <color key="backgroundColor" cocoaTouchSystemColor="groupTableViewBackgroundColor"/>
+                        <label key="tableFooterView" opaque="NO" clipsSubviews="YES" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Version 0.1.2" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" id="Oqw-RL-0dZ">
+                            <rect key="frame" x="0.0" y="397" width="320" height="44"/>
+                            <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                            <fontDescription key="fontDescription" type="system" pointSize="14"/>
+                            <color key="textColor" white="0.66666666666666663" alpha="1" colorSpace="calibratedWhite"/>
+                            <nil key="highlightedColor"/>
+                        </label>
                         <sections>
                             <tableViewSection headerTitle="Options" id="9Bt-39-9aS">
                                 <cells>
@@ -663,6 +670,7 @@ AQABAAEAAQAB//+dkAEA//+PgAAE//+dkAEI//+dkAEMUERUAFBTVABQV1QAUFBUAAAAAAEAAAABA
                         <outlet property="dueSoonThresholdLabel" destination="VS2-80-nWB" id="sy8-Ae-QE0"/>
                         <outlet property="dueSoonThresholdTextField" destination="SDf-mx-4i2" id="KTc-l2-ObV"/>
                         <outlet property="showBadgeIconSwitch" destination="0Lo-xK-Fm0" id="kWY-CB-x1t"/>
+                        <outlet property="versionLabel" destination="Oqw-RL-0dZ" id="irb-PW-4OE"/>
                     </connections>
                 </tableViewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="6zL-Sh-WQd" userLabel="First Responder" sceneMemberID="firstResponder"/>
