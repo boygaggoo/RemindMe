@@ -188,6 +188,9 @@ static DataModel *dataModelInstance;
 - (NSMutableArray *)integerToDays:(NSInteger)daysAsInt
 {
     NSMutableArray *days = [[NSMutableArray alloc] init];
+    if ( daysAsInt == 0 )
+        return days;
+    
     if ( daysAsInt % 2 == 0 )
         [days addObject:[NSNumber numberWithInt:DCRecurringInfoWeekDaysSunday]];
     if ( daysAsInt % 3 == 0 )
