@@ -95,11 +95,6 @@
     [self.navigationController popViewControllerAnimated:YES];
 }
 
-- (IBAction)cancel:(id)sender
-{
-    [self.navigationController popViewControllerAnimated:YES];
-}
-
 - (void)setDateLabel:(NSDate *)date
 {
     if ( self.dateFormatter == nil )
@@ -232,6 +227,7 @@
             self.reminder.repeatingInfo = [[DCRecurringInfo alloc] init];
         controller.recurringInfo = [self.reminder.repeatingInfo mutableCopy];
         controller.delegate = self;
+        self.navigationItem.backBarButtonItem = [[UIBarButtonItem alloc] initWithTitle:@"Cancel" style:UIBarButtonItemStylePlain target:nil action:nil];
     }
 }
 

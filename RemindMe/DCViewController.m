@@ -135,6 +135,7 @@ typedef NS_ENUM(NSInteger, DCReminderDue) {
         DCNewReminderViewController *destination = segue.destinationViewController;
         destination.delegate = self;
         destination.editingReminder = NO;
+        self.navigationItem.backBarButtonItem = [[UIBarButtonItem alloc] initWithTitle:@"Cancel" style:UIBarButtonItemStylePlain target:nil action:nil];
     }
     else if ( [segue.identifier isEqualToString:@"reminderDetail"] ) // Not currently used
     {
@@ -143,6 +144,7 @@ typedef NS_ENUM(NSInteger, DCReminderDue) {
         destination.reminder = [self reminderAtIndexPath:[self.tableView indexPathForSelectedRow]];
         destination.data = self.data;
         destination.dateFormatter = self.dateFormatter;
+        self.navigationItem.backBarButtonItem = [[UIBarButtonItem alloc] initWithTitle:@"Cancel" style:UIBarButtonItemStylePlain target:nil action:nil];
     }
     else if ( [segue.identifier isEqualToString:@"editReminder"] )
     {
@@ -150,6 +152,11 @@ typedef NS_ENUM(NSInteger, DCReminderDue) {
         destination.delegate = self;
         destination.editingReminder = YES;
         destination.reminder = [self reminderAtIndexPath:sender];
+        self.navigationItem.backBarButtonItem = [[UIBarButtonItem alloc] initWithTitle:@"Cancel" style:UIBarButtonItemStylePlain target:nil action:nil];
+    }
+    else
+    {
+        self.navigationItem.backBarButtonItem = [[UIBarButtonItem alloc] initWithTitle:self.navigationItem.title style:UIBarButtonItemStylePlain target:nil action:nil];
     }
 }
 
