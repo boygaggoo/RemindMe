@@ -201,7 +201,11 @@
 
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath
 {
-    if ( indexPath.section == 0 && indexPath.row == 1 )
+    if ( indexPath.section == 0 && indexPath.row == 0 )
+    {
+        [self.reminderNameText becomeFirstResponder];
+    }
+    else if ( indexPath.section == 0 && indexPath.row == 1 )
     {
         editingDate = !editingDate;
         [tableView deselectRowAtIndexPath:indexPath animated:NO];
