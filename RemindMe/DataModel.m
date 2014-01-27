@@ -54,22 +54,10 @@ static DataModel *dataModelInstance;
     }
     
     if ( dbversion < 1 )
-    {
-    
+    {    
         [self.database executeUpdate:@"CREATE TABLE reminders (id integer primary key autoincrement, reminderName text not null, nextDueDate date not null);"];
         [self.database executeUpdate:@"CREATE TABLE completed (id integer primary key autoincrement, reminderId integer not null, doneDate not null, foreign key(reminderId) references reminders(id) on delete cascade );"];
-        [self.database executeUpdate:@"CREATE TABLE repeats (id integer primary key autoincrement, reminderId integer not null, repeats integer not null, repeatIncrement not null, repeatsFromLastCompletion integer not null, daysToRepeat integer not null, dayOfMonth integer not null, nthWeekOfMonth integer not null, foreign key(reminderId) references reminders(id) on delete cascade );"];
-    }
-    
-    if ( dbversion < 2 )
-    {
-        //[self.database executeUpdate:@"alter table repeats add column monthlyRepeatWeekly integer not null;"];
-    }
-    
-    if ( dbversion < 3 )
-    {
-        [self.database executeUpdate:@"alter table repeats add column monthlyRepeatType integer not null default 0;"];
-        [self.database executeUpdate:@"alter table repeats add column monthlyWeekDay integer not null default 0;"];
+        [self.database executeUpdate:@"CREATE TABLE repeats (id integer primary key autoincrement, reminderId integer not null, repeats integer not null, repeatIncrement not null, repeatsFromLastCompletion integer not null, daysToRepeat integer not null, dayOfMonth integer not null, nthWeekOfMonth integer not null, monthlyRepeatType integor not null, monthlyWeekDay integer not null, foreign key(reminderId) references reminders(id) on delete cascade );"];
     }
     
     if ( dbversion == 0 )
