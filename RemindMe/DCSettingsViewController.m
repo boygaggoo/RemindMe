@@ -47,7 +47,7 @@
     self.dueSoonThresholdLabel.text = [NSString stringWithFormat:@"%lu", (long)[[NSUserDefaults standardUserDefaults] integerForKey:kDCDueSoonThreshold]];
     self.showBadgeIconSwitch.on = [[NSUserDefaults standardUserDefaults] boolForKey:kDCShowIconBadge];
     NSString *version = [[NSBundle mainBundle] objectForInfoDictionaryKey: @"CFBundleShortVersionString"];
-    self.versionLabel.text = [NSString stringWithFormat:@"Version %@", version];
+    self.versionLabel.text = [NSString stringWithFormat:@"RemindMe Version %@", version];
 }
 
 - (void)didReceiveMemoryWarning
