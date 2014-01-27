@@ -288,7 +288,7 @@
 				FC57C6B4A43B487D98F49415 /* Check Pods Manifest.lock */,
 				66FE4954182EC0F0001E5950 /* Sources */,
 				66FE4955182EC0F0001E5950 /* Frameworks */,
-				665232381892D247003390A2 /* Update Build Number */,
+				661136C61895EF9800281D91 /* Tag Archive */,
 				66FE4956182EC0F0001E5950 /* Resources */,
 				01D1CAE82EAA479481D44030 /* Copy Pods Resources */,
 				66A51A8D187C643E0008BED1 /* Crashlytics */,
@@ -394,19 +394,19 @@
 			shellScript = "\"${SRCROOT}/Pods/Pods-resources.sh\"\n";
 			showEnvVarsInLog = 0;
 		};
-		665232381892D247003390A2 /* Update Build Number */ = {
+		661136C61895EF9800281D91 /* Tag Archive */ = {
 			isa = PBXShellScriptBuildPhase;
 			buildActionMask = 8;
 			files = (
 			);
 			inputPaths = (
 			);
-			name = "Update Build Number";
+			name = "Tag Archive";
 			outputPaths = (
 			);
 			runOnlyForDeploymentPostprocessing = 1;
 			shellPath = /bin/bash;
-			shellScript = "# Auto-increment the build number every time the project is archived.\nbuildNumber=$(/usr/libexec/PlistBuddy -c \"Print CFBundleVersion\" \"${PROJECT_DIR}/${INFOPLIST_FILE}\")\nbuildNumber=$(($buildNumber + 1))\n/usr/libexec/PlistBuddy -c \"Set :CFBundleVersion $buildNumber\" \"${PROJECT_DIR}/${INFOPLIST_FILE}\"\n";
+			shellScript = "if [ -z \"$(git status -uno --porcelain)\" ]; then\n    # Auto-increment the build number every time the project is archived.\n    buildNumber=$(/usr/libexec/PlistBuddy -c \"Print CFBundleVersion\" \"${PROJECT_DIR}/${INFOPLIST_FILE}\")\n    buildNumber=$(($buildNumber + 1))\n    /usr/libexec/PlistBuddy -c \"Set :CFBundleVersion $buildNumber\" \"${PROJECT_DIR}/${INFOPLIST_FILE}\"\n    TAG=`date +xcarchive-%Y%m%d-%H%M%S`\n    echo \"Working directory clean, creating tag ${TAG}\"\n    git tag -a -m \"Xcode Archive created\" ${TAG}\n    exit 0\nelse\n    echo \"error: Working directory dirty, stopping build\"\n    exit 1\nfi\n";
 		};
 		66A51A8D187C643E0008BED1 /* Crashlytics */ = {
 			isa = PBXShellScriptBuildPhase;
