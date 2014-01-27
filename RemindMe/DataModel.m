@@ -43,7 +43,7 @@ static DataModel *dataModelInstance;
 - (void)createTables
 {
     NSNumber *currentVersion = @3;
-    [self.database executeUpdate:@"CREATE TABLE metadata (key text not null, value integer not null)"];
+    [self.database executeUpdate:@"CREATE TABLE IF NOT EXISTS metadata (key text not null, value integer not null)"];
     
     // Get current database version
     FMResultSet *results = [self.database executeQuery:@"select value from metadata where key = \"dbversion\""];
