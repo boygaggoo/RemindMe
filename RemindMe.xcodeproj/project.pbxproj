@@ -9,6 +9,7 @@
 /* Begin PBXBuildFile section */
 		661136C018958D7F00281D91 /* DCSettingsViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 661136BF18958D7F00281D91 /* DCSettingsViewController.m */; };
 		661136C21895A0C300281D91 /* MessageUI.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 661136C11895A0C300281D91 /* MessageUI.framework */; };
+		661136C51895E4EE00281D91 /* DCWeeklyRepeatView.m in Sources */ = {isa = PBXBuildFile; fileRef = 661136C41895E4EE00281D91 /* DCWeeklyRepeatView.m */; };
 		66566EE7184A5B2400626238 /* DCReminderDetailViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 66566EE6184A5B2400626238 /* DCReminderDetailViewController.m */; };
 		66A51A8F187C646D0008BED1 /* Crashlytics.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 66A51A8E187C646D0008BED1 /* Crashlytics.framework */; };
 		66CE6B92186115B4008DBB09 /* DCRecurringInfo.m in Sources */ = {isa = PBXBuildFile; fileRef = 66CE6B91186115B4008DBB09 /* DCRecurringInfo.m */; };
@@ -56,6 +57,8 @@
 		661136BE18958D7F00281D91 /* DCSettingsViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DCSettingsViewController.h; sourceTree = "<group>"; };
 		661136BF18958D7F00281D91 /* DCSettingsViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = DCSettingsViewController.m; sourceTree = "<group>"; };
 		661136C11895A0C300281D91 /* MessageUI.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = MessageUI.framework; path = System/Library/Frameworks/MessageUI.framework; sourceTree = SDKROOT; };
+		661136C31895E4EE00281D91 /* DCWeeklyRepeatView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DCWeeklyRepeatView.h; sourceTree = "<group>"; };
+		661136C41895E4EE00281D91 /* DCWeeklyRepeatView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = DCWeeklyRepeatView.m; sourceTree = "<group>"; };
 		66566EE5184A5B2400626238 /* DCReminderDetailViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DCReminderDetailViewController.h; sourceTree = "<group>"; };
 		66566EE6184A5B2400626238 /* DCReminderDetailViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = DCReminderDetailViewController.m; sourceTree = "<group>"; };
 		66A51A8E187C646D0008BED1 /* Crashlytics.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; path = Crashlytics.framework; sourceTree = "<group>"; };
@@ -252,6 +255,8 @@
 				66DD0DE918319B33000098D4 /* DCSlidingTableViewCell.m */,
 				66DD0DEB18319C6A000098D4 /* DCReminderTableViewCell.h */,
 				66DD0DEC18319C6A000098D4 /* DCReminderTableViewCell.m */,
+				661136C31895E4EE00281D91 /* DCWeeklyRepeatView.h */,
+				661136C41895E4EE00281D91 /* DCWeeklyRepeatView.m */,
 			);
 			name = Views;
 			sourceTree = "<group>";
@@ -325,6 +330,9 @@
 				LastUpgradeCheck = 0500;
 				ORGANIZATIONNAME = "Dan Cohn";
 				TargetAttributes = {
+					66FE4957182EC0F0001E5950 = {
+						DevelopmentTeam = 858B77MQJ5;
+					};
 					66FE4978182EC0F0001E5950 = {
 						TestTargetID = 66FE4957182EC0F0001E5950;
 					};
@@ -445,6 +453,7 @@
 				66DD0DDD182EE903000098D4 /* DCNewReminderViewController.m in Sources */,
 				66DD0DE3182F0255000098D4 /* DCReminderInfoTextCell.m in Sources */,
 				661136C018958D7F00281D91 /* DCSettingsViewController.m in Sources */,
+				661136C51895E4EE00281D91 /* DCWeeklyRepeatView.m in Sources */,
 				66DD0DE6182F0312000098D4 /* DCReminderInfoLabelCell.m in Sources */,
 				66DD0DF118383726000098D4 /* NSDate+Helpers.m in Sources */,
 				66DD0DED18319C6A000098D4 /* DCReminderTableViewCell.m in Sources */,
@@ -583,6 +592,7 @@
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_LAUNCHIMAGE_NAME = LaunchImage;
 				CODE_SIGN_IDENTITY = "iPhone Developer";
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
 				CURRENT_PROJECT_VERSION = 21;
 				FRAMEWORK_SEARCH_PATHS = (
 					"$(inherited)",
@@ -593,6 +603,7 @@
 				INFOPLIST_FILE = "RemindMe/RemindMe-Info.plist";
 				IPHONEOS_DEPLOYMENT_TARGET = 7.0;
 				PRODUCT_NAME = "$(TARGET_NAME)";
+				PROVISIONING_PROFILE = "";
 				VALID_ARCHS = "armv7 armv7s";
 				WRAPPER_EXTENSION = app;
 			};
@@ -606,6 +617,7 @@
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_LAUNCHIMAGE_NAME = LaunchImage;
 				CODE_SIGN_IDENTITY = "iPhone Developer";
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
 				CURRENT_PROJECT_VERSION = 21;
 				FRAMEWORK_SEARCH_PATHS = (
 					"$(inherited)",
@@ -616,6 +628,7 @@
 				INFOPLIST_FILE = "RemindMe/RemindMe-Info.plist";
 				IPHONEOS_DEPLOYMENT_TARGET = 7.0;
 				PRODUCT_NAME = "$(TARGET_NAME)";
+				PROVISIONING_PROFILE = "";
 				VALID_ARCHS = "armv7 armv7s";
 				WRAPPER_EXTENSION = app;
 			};

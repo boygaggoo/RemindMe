@@ -265,7 +265,7 @@ AQABAAEAAQAB//+dkAEA//+PgAAE//+dkAEI//+dkAEMUERUAFBTVABQV1QAUFBUAAAAAAEAAAABA
                                     <action selector="repeatControlChanged:" destination="BPg-eM-TFa" eventType="valueChanged" id="Wlx-0H-sML"/>
                                 </connections>
                             </segmentedControl>
-                            <view tag="2" contentMode="scaleToFill" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="T34-Ax-sMd" userLabel="Weekly View">
+                            <view tag="2" contentMode="scaleToFill" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="T34-Ax-sMd" userLabel="Weekly View" customClass="DCWeeklyRepeatView">
                                 <rect key="frame" x="320" y="124" width="320" height="444"/>
                                 <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                                 <subviews>

@@ -66,6 +66,19 @@
     [super viewDidLoad];
 	// Do any additional setup after loading the view.
     self.weeklyDayPicker.delegate = self;
+    
+    CGRect frame = self.weeklyRepeatFromView.frame;
+    
+    if ( self.weeklyDayPicker.selectedSegmentIndexes.count == 0 && frame.origin.x != 0 )
+    {
+        // Set tag to 0 so we don't move it
+        self.weeklyRepeatFromView.tag = 0;
+    }
+    else if ( self.weeklyDayPicker.selectedSegmentIndexes.count != 0 && frame.origin.x != 320 )
+    {
+        // Set tag to 5 so layoutSubviews will know to move the view off screen
+        self.weeklyRepeatFromView.tag = 5;
+    }
 }
 
 - (void)viewDidLayoutSubviews
@@ -79,19 +92,6 @@
     frame = self.currentMonthSubView.frame;
     frame.origin.x = 0;
     self.currentMonthSubView.frame = frame;
-
-    frame = self.weeklyRepeatFromView.frame;
-
-    if ( self.weeklyDayPicker.selectedSegmentIndexes.count == 0 && frame.origin.x != 0 )
-    {
-        frame.origin.x = 0;
-        self.weeklyRepeatFromView.frame = frame;
-    }
-    else if ( self.weeklyDayPicker.selectedSegmentIndexes.count != 0 && frame.origin.x != 320 )
-    {
-        frame.origin.x = 320;
-        self.weeklyRepeatFromView.frame = frame;
-    }
 }
 
 - (void)viewWillAppear:(BOOL)animated
