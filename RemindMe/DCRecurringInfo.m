@@ -28,11 +28,18 @@
 - (NSDate *)calculateNextDateFromLastDueDate:(NSDate *)lastDueDate andLastCompletionDate:(NSDate *)lastCompletionDate
 {
     NSDate *startDate = nil;
+    NSCalendar* calendar = [NSCalendar currentCalendar];
 
     // Determine starting date to start counting from
     if ( self.repeatFromLastCompletion )
     {
-        startDate = lastCompletionDate;
+        NSDateComponents *completeDateComponents = [calendar components:(NSCalendarUnitTimeZone|NSCalendarUnitYear|NSCalendarUnitMonth|NSCalendarUnitDay|NSCalendarUnitHour|NSCalendarUnitMinute) fromDate:lastCompletionDate];
+        NSDateComponents *dueDateComponents = [calendar components:(NSCalendarUnitTimeZone|NSCalendarUnitYear|NSCalendarUnitMonth|NSCalendarUnitDay|NSCalendarUnitHour|NSCalendarUnitMinute) fromDate:lastDueDate];
+
+        completeDateComponents.hour = dueDateComponents.hour;
+        completeDateComponents.minute = dueDateComponents.minute;
+        
+        startDate = [calendar dateFromComponents:completeDateComponents];
     }
     else
     {
@@ -50,7 +57,7 @@
         {
             NSDateComponents *incrementDateComponent = [[NSDateComponents alloc] init];
             [incrementDateComponent setDay:self.repeatIncrement];
-            return [[NSCalendar currentCalendar] dateByAddingComponents:incrementDateComponent toDate:startDate options:0];
+            return [calendar dateByAddingComponents:incrementDateComponent toDate:startDate options:0];
             break;
         }
         case DCRecurringInfoRepeatsWeekly:
@@ -59,14 +66,14 @@
             {
                 NSDateComponents *incrementDateComponent = [[NSDateComponents alloc] init];
                 [incrementDateComponent setWeek:self.repeatIncrement];
-                return [[NSCalendar currentCalendar] dateByAddingComponents:incrementDateComponent toDate:startDate options:0];
+                return [calendar dateByAddingComponents:incrementDateComponent toDate:startDate options:0];
             }
             // Only schedule task on specified days
             else
             {
                 NSInteger daysToNextDueDate = 8; // Repeats weekly so start with a value greater than 7
                 NSDateComponents *incrementDateComponent = [[NSDateComponents alloc] init];
-                NSDateComponents *lastDueDateComponents = [[NSCalendar currentCalendar] components:NSCalendarUnitWeekday | NSCalendarUnitWeekOfYear fromDate:lastDueDate];
+                NSDateComponents *lastDueDateComponents = [calendar components:NSCalendarUnitWeekday | NSCalendarUnitWeekOfYear fromDate:lastDueDate];
                 NSUInteger weekdayToday = [lastDueDateComponents weekday];
                 NSDate *newDate = nil;
                 
@@ -74,7 +81,7 @@
                 if ( self.daysToRepeat.count == 1 )
                 {
                     [incrementDateComponent setWeek:1];
-                    newDate = [[NSCalendar currentCalendar] dateByAddingComponents:incrementDateComponent toDate:lastDueDate options:0];
+                    newDate = [calendar dateByAddingComponents:incrementDateComponent toDate:lastDueDate options:0];
                 }
                 // If set to repeat multiple times per week, figure out the next day
                 else
@@ -92,7 +99,7 @@
                     
                     // Increment by number of days to next repeat day
                     [incrementDateComponent setDay:daysToNextDueDate];
-                    newDate = [[NSCalendar currentCalendar] dateByAddingComponents:incrementDateComponent toDate:lastDueDate options:0];
+                    newDate = [calendar dateByAddingComponents:incrementDateComponent toDate:lastDueDate options:0];
                 }
                 
                 // Skip weeks if repeatIncrement is greater than 1
@@ -100,7 +107,7 @@
                 {
                     // If current date is in the same week as the last due date, no need to skip weeks
                     NSUInteger lastDueDateWeek = [lastDueDateComponents weekOfYear];
-                    NSDateComponents *newDateComponents = [[NSCalendar currentCalendar] components:NSCalendarUnitWeekOfYear fromDate:newDate];
+                    NSDateComponents *newDateComponents = [calendar components:NSCalendarUnitWeekOfYear fromDate:newDate];
                     NSUInteger nextDueDateWeek = [newDateComponents weekOfYear];
                     
                     // Weeks are different so skip ahead how every many weeks are necessary
@@ -109,7 +116,7 @@
                         NSDateComponents *addWeeksComponent = [[NSDateComponents alloc] init];
                         // Subtract one week because we already skipped to the next one
                         [addWeeksComponent setWeek:self.repeatIncrement - 1];
-                        newDate = [[NSCalendar currentCalendar] dateByAddingComponents:addWeeksComponent toDate:newDate options:0];
+                        newDate = [calendar dateByAddingComponents:addWeeksComponent toDate:newDate options:0];
                     }
                 }
                 return newDate;
@@ -119,7 +126,6 @@
         case DCRecurringInfoRepeatsMonthly:
         {
             NSDateComponents* dateComponents = [[NSDateComponents alloc] init];
-            NSCalendar* calendar = [NSCalendar currentCalendar];
             NSDate *newDate = lastDueDate;
             
             switch ( self.monthlyRepeatType )
@@ -160,7 +166,7 @@
                 {
                     NSDateComponents *incrementDateComponent = [[NSDateComponents alloc] init];
                     [incrementDateComponent setMonth:self.repeatIncrement];
-                    newDate = [[NSCalendar currentCalendar] dateByAddingComponents:incrementDateComponent toDate:startDate options:0];
+                    newDate = [calendar dateByAddingComponents:incrementDateComponent toDate:startDate options:0];
                     break;
                 }
             }
