@@ -687,7 +687,7 @@ typedef NS_ENUM(NSInteger, DCReminderDue) {
     if ( indexPath.section == 0 && _overDue )
         cell.detailTextLabel.textColor = [UIColor redColor];
     // If due soon
-    else if ( (indexPath.section == 0 && _overDue == 0) || (indexPath.section == 1 && _overDue > 0 ) )
+    else if ( (indexPath.section == 0 && _overDue == 0 && _dueSoon > 0 ) || (indexPath.section == 1 && _overDue > 0 ) )
         cell.detailTextLabel.textColor = [UIColor blueColor];
     // If future
     else
