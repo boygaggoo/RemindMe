@@ -9,7 +9,7 @@
 #import "DCSettingsViewController.h"
 #import <MessageUI/MessageUI.h>
 
-#define reviewURL @"itms-apps://itunes.apple.com/app/id000000"
+#define reviewURL @"itms-apps://itunes.apple.com/app/id807510842"
 
 @interface DCSettingsViewController () <MFMailComposeViewControllerDelegate>
 
