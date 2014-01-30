@@ -7,7 +7,10 @@
 //
 
 #import <UIKit/UIKit.h>
+#import "DCReminder.h"
 
 @interface DCTableViewController : UITableViewController
+
+@property (nonatomic, strong) DCReminder *reminderFromURL;
 
 @end

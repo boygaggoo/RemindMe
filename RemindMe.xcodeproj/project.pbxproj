@@ -10,6 +10,7 @@
 		661136C018958D7F00281D91 /* DCSettingsViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 661136BF18958D7F00281D91 /* DCSettingsViewController.m */; };
 		661136C21895A0C300281D91 /* MessageUI.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 661136C11895A0C300281D91 /* MessageUI.framework */; };
 		661136C51895E4EE00281D91 /* DCWeeklyRepeatView.m in Sources */ = {isa = PBXBuildFile; fileRef = 661136C41895E4EE00281D91 /* DCWeeklyRepeatView.m */; };
+		661136CB189B0BB000281D91 /* NSString+Helpers.m in Sources */ = {isa = PBXBuildFile; fileRef = 661136CA189B0BB000281D91 /* NSString+Helpers.m */; };
 		66566EE7184A5B2400626238 /* DCReminderDetailViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 66566EE6184A5B2400626238 /* DCReminderDetailViewController.m */; };
 		66A51A8F187C646D0008BED1 /* Crashlytics.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 66A51A8E187C646D0008BED1 /* Crashlytics.framework */; };
 		66CE6B92186115B4008DBB09 /* DCRecurringInfo.m in Sources */ = {isa = PBXBuildFile; fileRef = 66CE6B91186115B4008DBB09 /* DCRecurringInfo.m */; };
@@ -59,6 +60,8 @@
 		661136C11895A0C300281D91 /* MessageUI.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = MessageUI.framework; path = System/Library/Frameworks/MessageUI.framework; sourceTree = SDKROOT; };
 		661136C31895E4EE00281D91 /* DCWeeklyRepeatView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DCWeeklyRepeatView.h; sourceTree = "<group>"; };
 		661136C41895E4EE00281D91 /* DCWeeklyRepeatView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = DCWeeklyRepeatView.m; sourceTree = "<group>"; };
+		661136C9189B0BB000281D91 /* NSString+Helpers.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "NSString+Helpers.h"; sourceTree = "<group>"; };
+		661136CA189B0BB000281D91 /* NSString+Helpers.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "NSString+Helpers.m"; sourceTree = "<group>"; };
 		66566EE5184A5B2400626238 /* DCReminderDetailViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DCReminderDetailViewController.h; sourceTree = "<group>"; };
 		66566EE6184A5B2400626238 /* DCReminderDetailViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = DCReminderDetailViewController.m; sourceTree = "<group>"; };
 		66A51A8E187C646D0008BED1 /* Crashlytics.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; path = Crashlytics.framework; sourceTree = "<group>"; };
@@ -142,6 +145,8 @@
 			children = (
 				66DD0DEF18383726000098D4 /* NSDate+Helpers.h */,
 				66DD0DF018383726000098D4 /* NSDate+Helpers.m */,
+				661136C9189B0BB000281D91 /* NSString+Helpers.h */,
+				661136CA189B0BB000281D91 /* NSString+Helpers.m */,
 			);
 			name = Categories;
 			sourceTree = "<group>";
@@ -463,6 +468,7 @@
 				66CE6B95186126C7008DBB09 /* DCRepeatViewController.m in Sources */,
 				66DD0DEA18319B33000098D4 /* DCSlidingTableViewCell.m in Sources */,
 				66CEC4A31876138C00E67299 /* MultiSelectSegmentedControl.m in Sources */,
+				661136CB189B0BB000281D91 /* NSString+Helpers.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

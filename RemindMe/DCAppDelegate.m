@@ -8,7 +8,11 @@
 
 #import "DCAppDelegate.h"
 #import "DataModel.h"
+#import "DCReminder.h"
 #import "DCNotificationScheduler.h"
+#import "NSString+Helpers.h"
+#import "DCViewController.h"
+#import "DCNewReminderViewController.h"
 #import <Crashlytics/Crashlytics.h>
 
 @implementation DCAppDelegate
@@ -23,6 +27,9 @@
         [[DCNotificationScheduler sharedInstance] recreateNotifications];
     }
     // Override point for customization after application launch.
+    
+    NSLog( @"launchOptions: %@", launchOptions );
+
     return YES;
 }
 							
@@ -67,6 +74,39 @@
 {
     NSLog( @"Got local notification: %@", notification );
     [[NSNotificationCenter defaultCenter] postNotificationName:@"RELOAD_DATA"object:nil];
+}
+
+- (BOOL)application:(UIApplication *)application openURL:(NSURL *)url sourceApplication:(NSString *)sourceApplication annotation:(id)annotation
+{
+    if ( [url.host isEqualToString:@"add"] )
+    {
+        NSDictionary *options = [url.query dc_dictionaryFromURLQuery];
+        
+        // Create new reminder object from information provided
+        DCReminder *reminder = [[DCReminder alloc] init];
+        reminder.name = options[@"name"];
+        if ( [options objectForKey:@"due"] )
+        {
+            reminder.nextDueDate = [NSDate dateWithTimeIntervalSince1970:[(NSString *)options[@"due"] doubleValue]];
+        }
+
+        // Get the root view controller, set a temporary property to our new reminder object
+        UINavigationController *navigationController = (UINavigationController*) self.window.rootViewController;
+        DCTableViewController *startingVC = [[navigationController viewControllers] objectAtIndex:0];
+        startingVC.reminderFromURL = reminder;
+        
+        // Make sure to pop to the root control so pressing back brings the user to the correct location
+        [navigationController popToRootViewControllerAnimated:NO];
+        
+        // Segue to the NewReminderViewController
+        [startingVC performSegueWithIdentifier:@"newReminder" sender:self];
+    }
+    else
+    {
+        NSLog( @"Error: Unreocgnized URL host: %@", url.host );
+    }
+
+    return YES;
 }
 
 @end

@@ -74,11 +74,44 @@
     }
     else
     {
-        self.reminder = [[DCReminder alloc] init];
+        NSInteger enableCount = 0;
+        // Reminder might exist already from using URL scheme
+        if ( self.reminder == nil )
+        {
+            self.reminder = [[DCReminder alloc] init];
+        }
+        else
+        {
+            if ( self.reminder.name )
+            {
+                enableCount++;
+                self.reminderNameText.text = self.reminder.name;
+            }
+            
+            if ( self.reminder.nextDueDate )
+            {
+                enableCount++;
+                self.picker.date = self.reminder.nextDueDate;
+                [self setDateLabel:self.reminder.nextDueDate];
+                datePicked = YES;
+            }
+            else
+            {
+                self.picker.date = [NSDate dateWithTimeIntervalSinceNow:60*60*24];
+                datePicked = NO;
+            }
+        }
+        
         self.navigationItem.title = @"New Reminder";
-        self.picker.date = [NSDate dateWithTimeIntervalSinceNow:60*60*24];
-        datePicked = NO;
-        self.navigationItem.rightBarButtonItem.enabled = NO;
+
+        if ( enableCount == 2 )
+        {
+            self.navigationItem.rightBarButtonItem.enabled = YES;
+        }
+        else
+        {
+            self.navigationItem.rightBarButtonItem.enabled = NO;
+        }
     }
     
     self.repeatSwitch.on = (self.reminder.repeatingInfo.repeats != DCRecurringInfoRepeatsNever);

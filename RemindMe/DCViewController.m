@@ -10,7 +10,6 @@
 #import "DCNewReminderViewController.h"
 #import "DCReminderDetailViewController.h"
 #import "DataModel.h"
-#import "DCReminder.h"
 #import "DCNotificationScheduler.h"
 #import "DCReminderTableViewCell.h"
 #import "NSDate+Helpers.h"
@@ -135,6 +134,12 @@ typedef NS_ENUM(NSInteger, DCReminderDue) {
         DCNewReminderViewController *destination = segue.destinationViewController;
         destination.delegate = self;
         destination.editingReminder = NO;
+        // Set up the reminder object in case we created one from a URL scheme
+        if ( self.reminderFromURL != nil )
+        {
+            destination.reminder = self.reminderFromURL;
+            self.reminderFromURL = nil;
+        }
         self.navigationItem.backBarButtonItem = [[UIBarButtonItem alloc] initWithTitle:@"Cancel" style:UIBarButtonItemStylePlain target:nil action:nil];
     }
     else if ( [segue.identifier isEqualToString:@"reminderDetail"] ) // Not currently used
