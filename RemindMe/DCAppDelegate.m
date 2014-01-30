@@ -27,8 +27,6 @@
         [[DCNotificationScheduler sharedInstance] recreateNotifications];
     }
     // Override point for customization after application launch.
-    
-    NSLog( @"launchOptions: %@", launchOptions );
 
     return YES;
 }
