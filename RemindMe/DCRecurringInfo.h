@@ -61,5 +61,9 @@ typedef NS_ENUM(NSInteger, DCRecurringInfoMonthlyType) {
 
 
 - (NSDate *)calculateNextDateFromLastDueDate:(NSDate *)lastDueDate andLastCompletionDate:(NSDate *)lastCompletionDate;
+- (NSString *)weekdayStringForDay:(DCRecurringInfoWeekDays)day;
+- (NSString *)weekAndDaysOfMonthString;
+- (NSString *)sentenceFormat;
+
 
 @end

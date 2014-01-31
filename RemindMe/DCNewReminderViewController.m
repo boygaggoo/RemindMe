@@ -25,7 +25,7 @@
 @property (weak, nonatomic) IBOutlet UISwitch *repeatSwitch;
 @property (weak, nonatomic) IBOutlet UILabel *dueLabel;
 @property (weak, nonatomic) IBOutlet UITextField *reminderNameText;
-@property (weak, nonatomic) IBOutlet UILabel *repeatDurationLabel;
+@property (weak, nonatomic) IBOutlet UILabel *repeatStringLabel;
 @end
 
 @implementation DCNewReminderViewController
@@ -44,6 +44,13 @@
 
     // Uncomment the following line to preserve selection between presentations.
     // self.clearsSelectionOnViewWillAppear = NO;
+
+    self.repeatStringLabel.backgroundColor = [UIColor clearColor];
+    self.repeatStringLabel.textColor = [UIColor darkGrayColor];
+    self.repeatStringLabel.textAlignment = NSTextAlignmentCenter;
+    self.repeatStringLabel.font = [UIFont fontWithName:@"HelveticaNeue-Light" size:14.0f];
+    self.repeatStringLabel.numberOfLines = 0;
+    self.repeatStringLabel.lineBreakMode = NSLineBreakByWordWrapping;
     
     [self populateFields];
     [self updateRepeatLabel];
@@ -162,33 +169,17 @@
 
 - (void)updateRepeatLabel
 {
-    switch ( self.reminder.repeatingInfo.repeats )
-    {
-        case DCRecurringInfoRepeatsNever:
-            self.repeatDurationLabel.text = @"Never";
-            self.repeatDurationLabel.textColor = [UIColor lightGrayColor];
-            break;
-
-        case DCRecurringInfoRepeatsDaily:
-            self.repeatDurationLabel.text = [NSString stringWithFormat:@"Every %d day%s", self.reminder.repeatingInfo.repeatIncrement, self.reminder.repeatingInfo.repeatIncrement == 1 ? "" : "s" ];
-            self.repeatDurationLabel.textColor = [UIColor blackColor];
-            break;
-
-        case DCRecurringInfoRepeatsWeekly:
-            self.repeatDurationLabel.text = [NSString stringWithFormat:@"Every %d week%s", self.reminder.repeatingInfo.repeatIncrement, self.reminder.repeatingInfo.repeatIncrement == 1 ? "" : "s" ];
-            self.repeatDurationLabel.textColor = [UIColor blackColor];
-            break;
-
-        case DCRecurringInfoRepeatsMonthly:
-            self.repeatDurationLabel.text = [NSString stringWithFormat:@"Every %d month%s", self.reminder.repeatingInfo.repeatIncrement, self.reminder.repeatingInfo.repeatIncrement == 1 ? "" : "s" ];
-            self.repeatDurationLabel.textColor = [UIColor blackColor];
-            break;
-
-        default:
-            self.repeatDurationLabel.text = @"fix me";
-            self.repeatDurationLabel.textColor = [UIColor lightGrayColor];
-            break;
-    }
+    self.repeatStringLabel.text = [self.reminder.repeatingInfo sentenceFormat];
+    
+    CGSize maximumLabelSize = CGSizeMake(self.repeatStringLabel.frame.size.width,9999);
+    
+    CGSize size = [self.repeatStringLabel.text boundingRectWithSize:maximumLabelSize options:NSStringDrawingUsesLineFragmentOrigin
+                                                         attributes: @{ NSFontAttributeName: self.repeatStringLabel.font } context: nil].size;
+    
+    CGRect frame = self.repeatStringLabel.frame;
+    frame.size.height = size.height;
+    frame.origin.y = 0;
+    self.repeatStringLabel.frame = frame;
 }
 
 #pragma mark - UITextFieldDelegate
@@ -245,6 +236,10 @@
     }
 }
 
+//- (UIView *)tableView:(UITableView *)tableView viewForFooterInSection:(NSInteger)section
+//{
+//    return self.repeatStringLabel;
+//}
 
 #pragma mark - Navigation
 

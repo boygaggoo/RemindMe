@@ -186,4 +186,206 @@
     return nil;
 }
 
+- (NSString *)weekdayStringForDay:(DCRecurringInfoWeekDays)day
+{
+    switch ( day )
+    {
+        case DCRecurringInfoWeekDaysSunday:
+            return @"Sunday";
+            break;
+        case DCRecurringInfoWeekDaysMonday:
+            return @"Monday";
+            break;
+        case DCRecurringInfoWeekDaysTuesday:
+            return @"Tuesday";
+            break;
+        case DCRecurringInfoWeekDaysWednesday:
+            return @"Wednesday";
+            break;
+        case DCRecurringInfoWeekDaysThursday:
+            return @"Thursday";
+            break;
+        case DCRecurringInfoWeekDaysFriday:
+            return @"Friday";
+            break;
+        case DCRecurringInfoWeekDaysSaturday:
+            return @"Saturday";
+            break;
+    }
+    
+    return nil;
+}
+
+- (NSString *)weekAndDaysOfMonthString
+{
+    NSString *number = nil;
+    if ( self.nthWeekOfMonth == 1 )
+        number = @"First";
+    else if ( self.nthWeekOfMonth == 2 )
+        number = @"Second";
+    else if ( self.nthWeekOfMonth == 3 )
+        number = @"Third";
+    else if ( self.nthWeekOfMonth == 4 )
+        number = @"Fourth";
+    else if ( self.nthWeekOfMonth == 5 )
+        number = @"Fifth";
+    else
+    {
+        number = @"Fifth";
+        NSLog( @"Error: Trying to set week of month to %d", self.nthWeekOfMonth );
+        self.nthWeekOfMonth = 5;
+    }
+    
+    NSString *weekday = nil;
+    switch ( self.monthlyWeekDay )
+    {
+        case DCRecurringInfoWeekDaysSunday:
+            weekday = @"Sunday";
+            break;
+        case DCRecurringInfoWeekDaysMonday:
+            weekday = @"Monday";
+            break;
+        case DCRecurringInfoWeekDaysTuesday:
+            weekday = @"Tuesday";
+            break;
+        case DCRecurringInfoWeekDaysWednesday:
+            weekday = @"Wednesday";
+            break;
+        case DCRecurringInfoWeekDaysThursday:
+            weekday = @"Thursday";
+            break;
+        case DCRecurringInfoWeekDaysFriday:
+            weekday = @"Friday";
+            break;
+        case DCRecurringInfoWeekDaysSaturday:
+            weekday = @"Saturday";
+            break;
+    }
+    
+    NSString *text = [NSString stringWithFormat:@"%@ %@\nof the month", number, weekday];
+    return text;
+}
+
+- (NSString *)daysOfWeekString
+{
+    NSMutableString *days = [NSMutableString string];
+    NSArray *sortedDays = [self.daysToRepeat sortedArrayUsingSelector:@selector(compare:)];
+
+    for ( NSUInteger index = 0; index < sortedDays.count; index++ )
+    {
+        if ( index != 0 )
+        {
+            [days appendString:@" "];
+        }
+        
+        [days appendString:[self weekdayStringForDay:[[sortedDays objectAtIndex:index] integerValue]]];
+        
+        if ( sortedDays.count > 2 )
+        {
+            if ( sortedDays.count - index > 1 )
+            {
+                [days appendString:@","];
+            }
+        }
+        
+        if ( sortedDays.count - index == 2 )
+        {
+            [days appendString:@" and"];
+        }
+    }
+    
+    return days;
+}
+
+- (NSString *)sentenceFormat
+{
+    NSMutableString *sentence;
+    
+    switch ( self.repeats )
+    {
+        case DCRecurringInfoRepeatsNever:
+            sentence = [@"Does not repeat" mutableCopy];
+            break;
+            
+        case DCRecurringInfoRepeatsDaily:
+            sentence = [NSMutableString stringWithFormat:@"Repeat every %d day%s", self.repeatIncrement, self.repeatIncrement == 1 ? "" : "s"];
+            break;
+            
+        case DCRecurringInfoRepeatsWeekly:
+            sentence = [NSMutableString stringWithFormat:@"Repeat every %d week%s", self.repeatIncrement, self.repeatIncrement == 1 ? "" : "s"];
+            
+            if ( self.daysToRepeat.count > 0 )
+            {
+                [sentence appendString:@" on "];
+                [sentence appendString:[self daysOfWeekString]];
+            }
+
+            break;
+            
+        case DCRecurringInfoRepeatsMonthly:
+        {
+            sentence = [NSMutableString stringWithFormat:@"Repeat every %d month%s", self.repeatIncrement, self.repeatIncrement == 1 ? "" : "s"];
+            
+            switch ( self.monthlyRepeatType )
+            {
+                case DCRecurringInfoMonthlyTypeDayOfMonth:
+                {
+                    [sentence appendFormat:@" on the %d", self.dayOfMonth];
+                    
+                    switch ( self.dayOfMonth )
+                    {
+                        case 1:
+                        case 21:
+                        case 31:
+                            [sentence appendString:@"st"];
+                            break;
+                            
+                        case 2:
+                        case 22:
+                            [sentence appendString:@"nd"];
+                            break;
+                            
+                        case 3:
+                        case 23:
+                            [sentence appendString:@"rd"];
+                            break;
+                            
+                        default:
+                            [sentence appendString:@"th"];
+                            break;
+                    }
+                    
+                    [sentence appendString:@" day of the month"];
+                    break;
+                }
+                    
+                case DCRecurringInfoMonthlyTypeWeekOfMonth:
+                {
+                    [sentence appendString:@" on the "];
+                    NSString *weekString = [self weekAndDaysOfMonthString];
+                    
+                    // Make first letter lowercase
+                    NSString *first = [[weekString substringToIndex:1] lowercaseString];
+                    weekString = [weekString stringByReplacingCharactersInRange:NSMakeRange(0, 1) withString:first];
+
+                    [sentence appendString:weekString];
+                    break;
+                }
+                    
+                default:
+                    break;
+            }
+            
+            break;
+        }
+            
+        default:
+            break;
+    }
+    
+    [sentence appendString:@"."];
+
+    return sentence;
+}
+
 @end
