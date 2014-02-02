@@ -297,9 +297,55 @@
     return days;
 }
 
+- (NSString *)repeatNumberString
+{
+    switch ( self.repeats )
+    {
+        case DCRecurringInfoRepeatsNever:
+            return nil;
+            break;
+
+        case DCRecurringInfoRepeatsDaily:
+            if ( self.repeatIncrement == 1 )
+            {
+                return @"day";
+            }
+            else
+            {
+                return [NSString stringWithFormat:@"%d days", self.repeatIncrement];
+            }
+            break;
+
+        case DCRecurringInfoRepeatsWeekly:
+            if ( self.repeatIncrement == 1 )
+            {
+                return @"week";
+            }
+            else
+            {
+                return [NSString stringWithFormat:@"%d weeks", self.repeatIncrement];
+            }
+            break;
+
+        case DCRecurringInfoRepeatsMonthly:
+            if ( self.repeatIncrement == 1 )
+            {
+                return @"month";
+            }
+            else
+            {
+                return [NSString stringWithFormat:@"%d months", self.repeatIncrement];
+            }
+            break;
+
+        default:
+            return nil;
+    }
+}
+
 - (NSString *)sentenceFormat
 {
-    NSMutableString *sentence;
+    NSMutableString *sentence = [NSMutableString stringWithFormat:@"Repeat every %@", [self repeatNumberString]];
     
     switch ( self.repeats )
     {
@@ -308,12 +354,9 @@
             break;
             
         case DCRecurringInfoRepeatsDaily:
-            sentence = [NSMutableString stringWithFormat:@"Repeat every %d day%s", self.repeatIncrement, self.repeatIncrement == 1 ? "" : "s"];
             break;
             
         case DCRecurringInfoRepeatsWeekly:
-            sentence = [NSMutableString stringWithFormat:@"Repeat every %d week%s", self.repeatIncrement, self.repeatIncrement == 1 ? "" : "s"];
-            
             if ( self.daysToRepeat.count > 0 )
             {
                 [sentence appendString:@" on "];
@@ -324,8 +367,6 @@
             
         case DCRecurringInfoRepeatsMonthly:
         {
-            sentence = [NSMutableString stringWithFormat:@"Repeat every %d month%s", self.repeatIncrement, self.repeatIncrement == 1 ? "" : "s"];
-            
             switch ( self.monthlyRepeatType )
             {
                 case DCRecurringInfoMonthlyTypeDayOfMonth:
