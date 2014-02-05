@@ -201,7 +201,7 @@
     [self updateDayOfMonthLabel];
     [self updateWeekOfMonthLabel];
 
-//    [self viewDidLayoutSubviewss];
+    [self viewDidLayoutSubviews];
 }
 
 - (void)didReceiveMemoryWarning
