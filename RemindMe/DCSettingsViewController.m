@@ -121,11 +121,19 @@
 
         NSString *body = [NSString stringWithFormat:@"\n\n\n---\nRemindMe %@ (%@)\n%@\n%@ %@\n", version, build, model, systemName, ios ];
         MFMailComposeViewController *mailCompose = [[MFMailComposeViewController alloc] init];
-        mailCompose.mailComposeDelegate = self;
-        [mailCompose setSubject:@"RemindMe Feedback"];
-        [mailCompose setToRecipients:@[@"remindme@dancohn.net"]];
-        [mailCompose setMessageBody:body isHTML:NO];
-        [self presentViewController:mailCompose animated:YES completion:nil];
+        if ( mailCompose == nil )
+        {
+            NSLog( @"mailCompose is nil!" );
+            [tableView deselectRowAtIndexPath:indexPath animated:YES];
+        }
+        else
+        {
+            mailCompose.mailComposeDelegate = self;
+            [mailCompose setSubject:@"RemindMe Feedback"];
+            [mailCompose setToRecipients:@[@"remindme@dancohn.net"]];
+            [mailCompose setMessageBody:body isHTML:NO];
+            [self presentViewController:mailCompose animated:YES completion:nil];
+        }
     }
     else if ( indexPath.section == 1 && indexPath.row == 2 )
     {
