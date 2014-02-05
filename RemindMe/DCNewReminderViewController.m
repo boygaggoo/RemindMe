@@ -147,7 +147,7 @@
     if ( self.dateFormatter == nil )
     {
         self.dateFormatter = [[NSDateFormatter alloc] init];
-        [self.dateFormatter setDateFormat:@"MMM dd, yyyy"];
+        [self.dateFormatter setDateFormat:@"MMM d, yyyy, h:mm a"];
     }
     
     self.dueLabel.text = [self.dateFormatter stringFromDate:date];
