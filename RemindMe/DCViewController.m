@@ -161,9 +161,11 @@ typedef NS_ENUM(NSInteger, DCReminderDue) {
     else if ( [segue.identifier isEqualToString:@"editReminder"] )
     {
         DCNewReminderViewController *destination = segue.destinationViewController;
+        UITableViewCell *cell = (UITableViewCell *)sender;
+        NSIndexPath *indexPath = [self.tableView indexPathForCell:cell];
         destination.delegate = self;
         destination.editingReminder = YES;
-        destination.reminder = [self reminderAtIndexPath:sender];
+        destination.reminder = [self reminderAtIndexPath:indexPath];
         self.navigationItem.backBarButtonItem = [[UIBarButtonItem alloc] initWithTitle:@"Cancel" style:UIBarButtonItemStylePlain target:nil action:nil];
     }
     else
@@ -551,7 +553,8 @@ typedef NS_ENUM(NSInteger, DCReminderDue) {
 
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath
 {
-    [self performSegueWithIdentifier:@"editReminder" sender:indexPath];
+    UITableViewCell *sender = [tableView cellForRowAtIndexPath:indexPath];
+    [self performSegueWithIdentifier:@"editReminder" sender:sender];
 }
 
 
