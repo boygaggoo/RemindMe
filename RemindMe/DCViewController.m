@@ -203,7 +203,7 @@ typedef NS_ENUM(NSInteger, DCReminderDue) {
     if ( reminder.repeatingInfo.repeats == DCRecurringInfoRepeatsNever )
     {
         // Task doesn't repeat, just delete it
-        [self deleteRow:indexPath];
+        [self deleteRow:indexPath withAnimation:UITableViewRowAnimationRight];
     }
     else
     {
@@ -315,7 +315,7 @@ typedef NS_ENUM(NSInteger, DCReminderDue) {
     return [self.data reminderAtIndex:index];
 }
 
-- (void)deleteRow:(NSIndexPath *)indexPath
+- (void)deleteRow:(NSIndexPath *)indexPath withAnimation:(UITableViewRowAnimation)animation
 {
     NSInteger index = indexPath.row;
 
@@ -341,12 +341,12 @@ typedef NS_ENUM(NSInteger, DCReminderDue) {
     [self.data removeReminderAtIndex:index];
     
     // Remove row from table view
-    [self.tableView deleteRowsAtIndexPaths:@[ indexPath ] withRowAnimation:UITableViewRowAnimationLeft];
+    [self.tableView deleteRowsAtIndexPaths:@[ indexPath ] withRowAnimation:animation];
     
     // Remove section header if no more tasks in section
     if ( [self tableView:self.tableView numberOfRowsInSection:indexPath.section] == 0 )
     {
-        [self.tableView reloadSections:[NSIndexSet indexSetWithIndex:indexPath.section] withRowAnimation:UITableViewRowAnimationLeft];
+        [self.tableView reloadSections:[NSIndexSet indexSetWithIndex:indexPath.section] withRowAnimation:animation];
     }
   
     // Enable the button to add a new task if none exist now
@@ -427,7 +427,7 @@ typedef NS_ENUM(NSInteger, DCReminderDue) {
     if ( index == 0 )
     {
         NSIndexPath *indexPath = [self.tableView indexPathForCell:cell];
-        [self deleteRow:indexPath];
+        [self deleteRow:indexPath withAnimation:UITableViewRowAnimationLeft];
     }
 }
 
