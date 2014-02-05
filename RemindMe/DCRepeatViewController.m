@@ -218,21 +218,19 @@
 
 - (void)updateRepeatLabel
 {
-    NSString *text;
+    NSString *text = [NSString stringWithFormat:@"Repeat every %@", [self.recurringInfo repeatNumberString] ];
+
     switch (self.recurringInfo.repeats)
     {
         case DCRecurringInfoRepeatsDaily:
-            text = [NSString stringWithFormat:@"Repeat every %d day%s", self.recurringInfo.repeatIncrement, self.recurringInfo.repeatIncrement == 1 ? "" : "s" ];
             self.dailyRepeatLabel.text = text;
             break;
 
         case DCRecurringInfoRepeatsWeekly:
-            text = [NSString stringWithFormat:@"Repeat every %d week%s", self.recurringInfo.repeatIncrement, self.recurringInfo.repeatIncrement == 1 ? "" : "s" ];
             self.weeklyRepeatLabel.text = text;
             break;
 
         case DCRecurringInfoRepeatsMonthly:
-            text = [NSString stringWithFormat:@"Repeat every %d month%s", self.recurringInfo.repeatIncrement, self.recurringInfo.repeatIncrement == 1 ? "" : "s" ];
             self.monthlyRepeatLabel.text = text;
             break;
             

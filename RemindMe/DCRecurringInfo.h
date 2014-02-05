@@ -64,6 +64,6 @@ typedef NS_ENUM(NSInteger, DCRecurringInfoMonthlyType) {
 - (NSString *)weekdayStringForDay:(DCRecurringInfoWeekDays)day;
 - (NSString *)weekAndDaysOfMonthString;
 - (NSString *)sentenceFormat;
-
+- (NSString *)repeatNumberString;
 
 @end
