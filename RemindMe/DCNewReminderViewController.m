@@ -52,8 +52,13 @@
     self.repeatStringLabel.numberOfLines = 0;
     self.repeatStringLabel.lineBreakMode = NSLineBreakByWordWrapping;
     
-    [self populateFields];
     [self updateRepeatLabel];
+}
+
+- (void)viewWillAppear:(BOOL)animated
+{
+    [self populateFields];
+    [super viewWillAppear:animated];
 }
 
 - (void)didReceiveMemoryWarning
@@ -86,6 +91,8 @@
         if ( self.reminder == nil )
         {
             self.reminder = [[DCReminder alloc] init];
+            self.picker.date = [NSDate dateWithTimeIntervalSinceNow:60*60*24];
+            datePicked = NO;
         }
         else
         {
