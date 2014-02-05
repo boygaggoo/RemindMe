@@ -52,12 +52,12 @@
     self.repeatStringLabel.numberOfLines = 0;
     self.repeatStringLabel.lineBreakMode = NSLineBreakByWordWrapping;
     
-    [self updateRepeatLabel];
 }
 
 - (void)viewWillAppear:(BOOL)animated
 {
     [self populateFields];
+    [self updateRepeatLabel];
     [super viewWillAppear:animated];
 }
 
