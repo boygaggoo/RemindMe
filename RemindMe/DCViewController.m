@@ -75,10 +75,8 @@ typedef NS_ENUM(NSInteger, DCReminderDue) {
     
     [self setDefaults];
     
-    // Help hide padding above top of grouped sections when trying to hide the section
-    self.tableView.sectionHeaderHeight = 0;
-    self.tableView.sectionFooterHeight = 0;
-    self.tableView.tableHeaderView = [[UIView alloc] initWithFrame:CGRectMake(0.0f, 0.0f, self.tableView.bounds.size.width, 0.01f)];
+    self.headerViewHeight = 33.0f;
+    self.footerViewHeight = 0.0f;
 }
 
 - (void)dealloc
@@ -345,11 +343,6 @@ typedef NS_ENUM(NSInteger, DCReminderDue) {
     // Remove row from table view
     [self.tableView deleteRowsAtIndexPaths:@[ indexPath ] withRowAnimation:animation];
     
-    // Remove section header if no more tasks in section
-    if ( [self tableView:self.tableView numberOfRowsInSection:indexPath.section] == 0 )
-    {
-        [self.tableView reloadSections:[NSIndexSet indexSetWithIndex:indexPath.section] withRowAnimation:animation];
-    }
   
     // Enable the button to add a new task if none exist now
     if ( _totalItems == 0 )
@@ -402,12 +395,6 @@ typedef NS_ENUM(NSInteger, DCReminderDue) {
     [self.tableView deleteRowsAtIndexPaths:@[ originalIndexPath ] withRowAnimation:UITableViewRowAnimationRight];
     [self.tableView insertRowsAtIndexPaths:@[ newIndexPath ] withRowAnimation:UITableViewRowAnimationLeft];
     [self.tableView endUpdates];
-    
-    // Remove section header if no more tasks in section
-    if ( [self tableView:self.tableView numberOfRowsInSection:originalIndexPath.section] == 0 )
-    {
-        [self.tableView reloadSections:[NSIndexSet indexSetWithIndex:originalIndexPath.section] withRowAnimation:UITableViewRowAnimationRight];
-    }
     
     // Update badge count
     if ( [[NSUserDefaults standardUserDefaults] boolForKey:kDCShowIconBadge] )
@@ -557,37 +544,5 @@ typedef NS_ENUM(NSInteger, DCReminderDue) {
     [self performSegueWithIdentifier:@"editReminder" sender:sender];
 }
 
-
-- (CGFloat)tableView:(UITableView *)tableView heightForHeaderInSection:(NSInteger)section
-{
-    if ( [self tableView:tableView numberOfRowsInSection:section] == 0 )
-    {
-        return 0;
-    }
-
-    return 33;
-}
-
-- (UIView *)sectionFiller
-{
-    static UILabel *emptyLabel = nil;
-    if (!emptyLabel) {
-        emptyLabel = [[UILabel alloc] initWithFrame:CGRectZero];
-        emptyLabel.backgroundColor = [UIColor blueColor];
-    }
-    return emptyLabel;
-}
-
-- (UIView *)tableView:(UITableView *)tableView viewForHeaderInSection:(NSInteger)section
-{
-    if ( section == 0 && _overDue == 0 )
-        return [self sectionFiller];
-    if ( section == 1 && _dueSoon == 0 )
-        return [self sectionFiller];
-    if ( section == 2 && _DCDueFuture == 0 )
-        return [self sectionFiller];
-
-    return nil;
-}
 
 @end

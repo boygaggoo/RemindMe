@@ -7,9 +7,10 @@
 //
 
 #import <UIKit/UIKit.h>
+#import "DCHideableSectionViewController.h"
 #import "DCReminder.h"
 
-@interface DCTableViewController : UITableViewController
+@interface DCTableViewController : DCHideableSectionViewController
 
 @property (nonatomic, strong) DCReminder *reminderFromURL;
 
