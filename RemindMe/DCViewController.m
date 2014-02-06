@@ -429,7 +429,7 @@ typedef NS_ENUM(NSInteger, DCReminderDue) {
     }
 }
 
-- (BOOL)swipeableTableViewCellShouldHideUtilityButtonsOnSwipe:(SWTableViewCell *)cell
+- (BOOL)swipeableTableViewCellShouldHideUtilityButtonsImmediatelyOnSwipe:(SWTableViewCell *)cell
 {
     return YES;
 }
