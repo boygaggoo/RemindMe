@@ -507,20 +507,25 @@ typedef NS_ENUM(NSInteger, DCReminderDue) {
     else
         cell.detailTextLabel.textColor = [UIColor blackColor];
     
-    // Configure swipe options
-    NSMutableArray *leftUtilityButtons = [NSMutableArray new];
-    NSMutableArray *rightUtilityButtons = [NSMutableArray new];
+    __weak DCReminderTableViewCell *weekCell = cell;
+    [cell setAppearanceWithBlock:^{
+        
+        // Configure swipe options
+        NSMutableArray *leftUtilityButtons = [NSMutableArray new];
+        NSMutableArray *rightUtilityButtons = [NSMutableArray new];
+        
+        [leftUtilityButtons sw_addUtilityButtonWithColor:[UIColor colorWithRed:0.1f green:0.7f blue:0.2f alpha:1.0f] title:@"Complete"];
+        [rightUtilityButtons sw_addUtilityButtonWithColor:[UIColor colorWithRed:1.0f green:0.231f blue:0.188 alpha:1.0f] title:@"Delete"];
+        
+        weekCell.leftUtilityButtons = leftUtilityButtons;
+        weekCell.rightUtilityButtons = rightUtilityButtons;
+        
+        weekCell.containingTableView = tableView;
+        weekCell.delegate = self;
+        
+    } force:NO];
     
-    [leftUtilityButtons sw_addUtilityButtonWithColor:[UIColor colorWithRed:0.1f green:0.7f blue:0.2f alpha:1.0f] title:@"Complete"];
-    [rightUtilityButtons sw_addUtilityButtonWithColor:[UIColor colorWithRed:1.0f green:0.231f blue:0.188 alpha:1.0f] title:@"Delete"];
-    
-    cell.leftUtilityButtons = leftUtilityButtons;
-    cell.rightUtilityButtons = rightUtilityButtons;
-    
-    cell.containingTableView = tableView;
     [cell setCellHeight:cell.frame.size.height];
-
-    cell.delegate = self;
 
     return cell;
 }
