@@ -10,7 +10,11 @@ PODS:
 DEPENDENCIES:
   - DCHideableSectionViewController
   - FMDB
-  - SWTableViewCell
+  - SWTableViewCell (from `https://github.com/dacohn/SWTableViewCell.git`)
+
+EXTERNAL SOURCES:
+  SWTableViewCell:
+    :git: https://github.com/dacohn/SWTableViewCell.git
 
 SPEC CHECKSUMS:
   DCHideableSectionViewController: 4fcd4ba484a5181d11c281fb07fa8deaff66c200

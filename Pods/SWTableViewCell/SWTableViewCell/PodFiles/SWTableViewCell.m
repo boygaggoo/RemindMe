@@ -106,12 +106,14 @@ static NSString * const kTableViewCellContentView = @"UITableViewCellContentView
     
     UITapGestureRecognizer *tapGestureRecognizer = [[UITapGestureRecognizer alloc] initWithTarget:self
                                                                                            action:@selector(scrollViewUp:)];
+    tapGestureRecognizer.cancelsTouchesInView = NO;
     [cellScrollView addGestureRecognizer:tapGestureRecognizer];
     
     self.tapGestureRecognizer = tapGestureRecognizer;
     
     SWLongPressGestureRecognizer *longPressGestureRecognizer = [[SWLongPressGestureRecognizer alloc] initWithTarget:self
                                                                                                              action:@selector(scrollViewPressed:)];
+    longPressGestureRecognizer.cancelsTouchesInView = NO;
     longPressGestureRecognizer.minimumPressDuration = 0.1;
     [cellScrollView addGestureRecognizer:longPressGestureRecognizer];
     
@@ -241,7 +243,9 @@ static NSString * const kTableViewCellContentView = @"UITableViewCellContentView
         if ([self.containingTableView.delegate respondsToSelector:@selector(tableView:didSelectRowAtIndexPath:)])
         {
             NSIndexPath *cellIndexPath = [self.containingTableView indexPathForCell:self];
+            [self.containingTableView selectRowAtIndexPath:cellIndexPath animated:NO scrollPosition:UITableViewScrollPositionNone];
             [self.containingTableView.delegate tableView:self.containingTableView didSelectRowAtIndexPath:cellIndexPath];
+            [self.containingTableView deselectRowAtIndexPath:cellIndexPath animated:NO];
         }
     }
 }
@@ -255,7 +259,9 @@ static NSString * const kTableViewCellContentView = @"UITableViewCellContentView
         {
             NSIndexPath *cellIndexPath = [self.containingTableView indexPathForCell:self];
             [self setSelected:YES];
+            [self.containingTableView selectRowAtIndexPath:cellIndexPath animated:NO scrollPosition:UITableViewScrollPositionNone];
             [self.containingTableView.delegate tableView:self.containingTableView didSelectRowAtIndexPath:cellIndexPath];
+            [self.containingTableView deselectRowAtIndexPath:cellIndexPath animated:NO];
             // Make the selection visible
             NSTimer *endHighlightTimer = [NSTimer scheduledTimerWithTimeInterval:0.20
                                                                           target:self
@@ -289,6 +295,7 @@ static NSString * const kTableViewCellContentView = @"UITableViewCellContentView
 
 - (void)setBackgroundColor:(UIColor *)backgroundColor
 {
+    [super setBackgroundColor:backgroundColor];
     _scrollViewContentView.backgroundColor = backgroundColor;
 }
 
@@ -353,6 +360,10 @@ static NSString * const kTableViewCellContentView = @"UITableViewCellContentView
 
 - (void)hideUtilityButtonsAnimated:(BOOL)animated
 {
+    // No need to scroll if already centered
+    if ( _cellState == kCellStateCenter )
+        return;
+
     // Scroll back to center
     
     // Force the scroll back to run on the main thread because of weird scroll view bugs
@@ -539,6 +550,16 @@ static NSString * const kTableViewCellContentView = @"UITableViewCellContentView
 - (void)scrollViewDidScroll:(UIScrollView *)scrollView
 {
     self.tapGestureRecognizer.enabled = NO;
+    
+    if ([self.delegate respondsToSelector:@selector(swipeableTableViewCellShouldHideUtilityButtonsImmediatelyOnSwipe:)])
+    {
+        for (SWTableViewCell *cell in [self.containingTableView visibleCells]) {
+            if (cell != self && [cell isKindOfClass:[SWTableViewCell class]] && [self.delegate swipeableTableViewCellShouldHideUtilityButtonsImmediatelyOnSwipe:cell]) {
+                [cell hideUtilityButtonsAnimated:YES];
+            }
+        }
+    }
+    
     if (scrollView.contentOffset.x > [self leftUtilityButtonsWidth])
     {
         if ([self rightUtilityButtonsWidth] > 0)

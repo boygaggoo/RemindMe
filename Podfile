@@ -1,4 +1,4 @@
 platform :ios, '7.0'
 pod 'FMDB'
-pod 'SWTableViewCell'
+pod 'SWTableViewCell', :git => "https://github.com/dacohn/SWTableViewCell.git"
 pod 'DCHideableSectionViewController'
