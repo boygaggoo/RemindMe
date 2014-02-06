@@ -1,17 +1,20 @@
 PODS:
-  - FMDB (2.1):
+  - DCHideableSectionViewController (0.1)
+  - FMDB (2.2):
     - FMDB/standard
-  - FMDB/common (2.1)
-  - FMDB/standard (2.1):
+  - FMDB/common (2.2)
+  - FMDB/standard (2.2):
     - FMDB/common
-  - SWTableViewCell (0.2.2)
+  - SWTableViewCell (0.2.3)
 
 DEPENDENCIES:
+  - DCHideableSectionViewController
   - FMDB
   - SWTableViewCell
 
 SPEC CHECKSUMS:
-  FMDB: 3fd5aaf632ca4ed39e3f101e0398504e6d5b0918
-  SWTableViewCell: b20432962d410c45c25b69e7c519a1296ecce70b
+  DCHideableSectionViewController: 4fcd4ba484a5181d11c281fb07fa8deaff66c200
+  FMDB: 97472cfacf0d9e445e915704fb43b4b142799c36
+  SWTableViewCell: 270c3758a84547b1cad43d70b72203b3003ce27b
 
-COCOAPODS: 0.22.1
+COCOAPODS: 0.29.0

@@ -18,6 +18,8 @@ static NSString * const kTableViewCellContentView = @"UITableViewCellContentView
 {
     SWCellState _cellState; // The state of the cell within the scroll view, can be left, right or middle
     CGFloat additionalRightPadding;
+    
+    dispatch_once_t onceToken;
 }
 
 @property (nonatomic, strong) SWUtilityButtonView *scrollViewButtonViewLeft;
@@ -142,6 +144,7 @@ static NSString * const kTableViewCellContentView = @"UITableViewCellContentView
 
 - (void)layoutSubviews
 {
+
     [super layoutSubviews];
     
     self.cellScrollView.frame = CGRectMake(0, 0, CGRectGetWidth(self.bounds), self.height);
@@ -154,6 +157,7 @@ static NSString * const kTableViewCellContentView = @"UITableViewCellContentView
     self.scrollViewContentView.frame = CGRectMake([self leftUtilityButtonsWidth], 0, CGRectGetWidth(self.bounds), self.height);
     self.cellScrollView.scrollEnabled = YES;
     self.tapGestureRecognizer.enabled = YES;
+    
 }
 
 #pragma mark - Properties
@@ -349,10 +353,6 @@ static NSString * const kTableViewCellContentView = @"UITableViewCellContentView
 
 - (void)hideUtilityButtonsAnimated:(BOOL)animated
 {
-    // No need to scroll if already centered
-    if ( _cellState == kCellStateCenter )
-        return;
-    
     // Scroll back to center
     
     // Force the scroll back to run on the main thread because of weird scroll view bugs
@@ -390,6 +390,20 @@ static NSString * const kTableViewCellContentView = @"UITableViewCellContentView
     return CGPointMake([self.scrollViewButtonViewLeft utilityButtonsWidth], 0);
 }
 
+- (void) setAppearanceWithBlock:(void (^)())appearanceBlock force:(BOOL)force
+{
+    if (force)
+    {
+        appearanceBlock();
+    }
+    else
+    {
+        dispatch_once(&onceToken, ^{
+            appearanceBlock();
+        });
+    }
+}
+
 #pragma mark UIScrollView helpers
 
 - (void)scrollToRight:(inout CGPoint *)targetContentOffset
@@ -403,6 +417,15 @@ static NSString * const kTableViewCellContentView = @"UITableViewCellContentView
     if ([self.delegate respondsToSelector:@selector(swipeableTableViewCell:scrollingToState:)])
     {
         [self.delegate swipeableTableViewCell:self scrollingToState:kCellStateRight];
+    }
+
+    if ([self.delegate respondsToSelector:@selector(swipeableTableViewCellShouldHideUtilityButtonsOnSwipe:)])
+    {
+        for (SWTableViewCell *cell in [self.containingTableView visibleCells]) {
+            if (cell != self && [cell isKindOfClass:[SWTableViewCell class]] && [self.delegate swipeableTableViewCellShouldHideUtilityButtonsOnSwipe:cell]) {
+                [cell hideUtilityButtonsAnimated:YES];
+            }
+        }
     }
 }
 
@@ -432,7 +455,15 @@ static NSString * const kTableViewCellContentView = @"UITableViewCellContentView
     {
         [self.delegate swipeableTableViewCell:self scrollingToState:kCellStateLeft];
     }
-
+    
+    if ([self.delegate respondsToSelector:@selector(swipeableTableViewCellShouldHideUtilityButtonsOnSwipe:)])
+    {
+        for (SWTableViewCell *cell in [self.containingTableView visibleCells]) {
+            if (cell != self && [cell isKindOfClass:[SWTableViewCell class]] && [self.delegate swipeableTableViewCellShouldHideUtilityButtonsOnSwipe:cell]) {
+                [cell hideUtilityButtonsAnimated:YES];
+            }
+        }
+    }
 }
 
 #pragma mark UIScrollViewDelegate
@@ -508,16 +539,6 @@ static NSString * const kTableViewCellContentView = @"UITableViewCellContentView
 - (void)scrollViewDidScroll:(UIScrollView *)scrollView
 {
     self.tapGestureRecognizer.enabled = NO;
-    
-    if ([self.delegate respondsToSelector:@selector(swipeableTableViewCellShouldHideUtilityButtonsOnSwipe:)])
-    {
-        for (SWTableViewCell *cell in [self.containingTableView visibleCells]) {
-            if (cell != self && [self.delegate swipeableTableViewCellShouldHideUtilityButtonsOnSwipe:cell]) {
-                [cell hideUtilityButtonsAnimated:YES];
-            }
-        }
-    }
-
     if (scrollView.contentOffset.x > [self leftUtilityButtonsWidth])
     {
         if ([self rightUtilityButtonsWidth] > 0)

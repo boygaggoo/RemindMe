@@ -7,7 +7,7 @@
 //
 
 #import <UIKit/UIKit.h>
-#import "DCHideableSectionViewController.h"
+#import <DCHideableSectionViewController.h>
 #import "DCReminder.h"
 
 @interface DCTableViewController : DCHideableSectionViewController
