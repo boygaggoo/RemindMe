@@ -204,6 +204,8 @@
         self.navigationItem.rightBarButtonItem.enabled = NO;
     }
     
+    self.reminder.name = newText;
+
     return YES;
 }
 
