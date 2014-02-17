@@ -23,9 +23,13 @@
 @property (nonatomic, strong) NSDateFormatter *dateFormatter;
 @property (weak, nonatomic) IBOutlet UIDatePicker *picker;
 @property (weak, nonatomic) IBOutlet UISwitch *repeatSwitch;
+@property (weak, nonatomic) IBOutlet UISwitch *muteSwitch;
 @property (weak, nonatomic) IBOutlet UILabel *dueLabel;
 @property (weak, nonatomic) IBOutlet UITextField *reminderNameText;
-@property (weak, nonatomic) IBOutlet UILabel *repeatStringLabel;
+
+@property (strong, nonatomic) UILabel *repeatStringLabel;
+@property (strong, nonatomic) UILabel *muteStringLabel;
+
 @end
 
 @implementation DCNewReminderViewController
@@ -45,13 +49,14 @@
     // Uncomment the following line to preserve selection between presentations.
     // self.clearsSelectionOnViewWillAppear = NO;
 
-    self.repeatStringLabel.backgroundColor = [UIColor clearColor];
-    self.repeatStringLabel.textColor = [UIColor darkGrayColor];
-    self.repeatStringLabel.textAlignment = NSTextAlignmentCenter;
-    self.repeatStringLabel.font = [UIFont fontWithName:@"HelveticaNeue-Light" size:14.0f];
-    self.repeatStringLabel.numberOfLines = 0;
-    self.repeatStringLabel.lineBreakMode = NSLineBreakByWordWrapping;
+    self.repeatStringLabel = [[UILabel alloc] initWithFrame:CGRectMake(0, 0, self.view.frame.size.width, 40)];
+    self.muteStringLabel = [[UILabel alloc] initWithFrame:CGRectMake(0, 0, self.view.frame.size.width, 40)];
     
+    [self applyAppearanceToFooterLabel:self.repeatStringLabel];
+    [self applyAppearanceToFooterLabel:self.muteStringLabel];
+
+    self.muteStringLabel.text = @"Muting will disable the reminder.";
+    [self resizeLabel:self.muteStringLabel];
 }
 
 - (void)viewWillAppear:(BOOL)animated
@@ -65,6 +70,16 @@
 {
     [super didReceiveMemoryWarning];
     // Dispose of any resources that can be recreated.
+}
+
+- (void)applyAppearanceToFooterLabel:(UILabel *)label
+{
+    label.backgroundColor = [UIColor clearColor];
+    label.textColor = [UIColor darkGrayColor];
+    label.textAlignment = NSTextAlignmentCenter;
+    label.font = [UIFont fontWithName:@"HelveticaNeue-Light" size:14.0f];
+    label.numberOfLines = 0;
+    label.lineBreakMode = NSLineBreakByWordWrapping;
 }
 
 - (void)populateFields
@@ -83,6 +98,7 @@
         self.reminderNameText.text = self.reminder.name;
         datePicked = YES;
         self.navigationItem.rightBarButtonItem.enabled = YES;
+        self.muteSwitch.on = self.reminder.muted;
     }
     else
     {
@@ -174,19 +190,36 @@
     }
 }
 
+- (IBAction)muteSwitchChanged:(UISwitch *)sender
+{
+    if ( sender.on )
+    {
+        self.reminder.muted = YES;
+    }
+    else
+    {
+        self.reminder.muted = NO;
+    }
+}
+
+
+- (void)resizeLabel:(UILabel *)label
+{
+    CGSize maximumLabelSize = CGSizeMake(label.frame.size.width, 9999);
+    
+    CGSize size = [label.text boundingRectWithSize:maximumLabelSize options:NSStringDrawingUsesLineFragmentOrigin
+                                                         attributes: @{ NSFontAttributeName: label.font } context: nil].size;
+    
+    CGRect frame = label.frame;
+    frame.size.height = size.height;
+    label.frame = frame;
+}
+
 - (void)updateRepeatLabel
 {
     self.repeatStringLabel.text = [self.reminder.repeatingInfo sentenceFormat];
     
-    CGSize maximumLabelSize = CGSizeMake(self.repeatStringLabel.frame.size.width,9999);
-    
-    CGSize size = [self.repeatStringLabel.text boundingRectWithSize:maximumLabelSize options:NSStringDrawingUsesLineFragmentOrigin
-                                                         attributes: @{ NSFontAttributeName: self.repeatStringLabel.font } context: nil].size;
-    
-    CGRect frame = self.repeatStringLabel.frame;
-    frame.size.height = size.height;
-    frame.origin.y = 0;
-    self.repeatStringLabel.frame = frame;
+    [self resizeLabel:self.repeatStringLabel];
 }
 
 #pragma mark - UITextFieldDelegate
@@ -224,6 +257,13 @@
         }
     }
 
+    if ( indexPath.section == 1 )
+    {
+        if ( !self.editingReminder )
+        {
+            return 0;
+        }
+    }
     return [super tableView:tableView heightForRowAtIndexPath:indexPath];
 }
 
@@ -245,10 +285,39 @@
     }
 }
 
-//- (UIView *)tableView:(UITableView *)tableView viewForFooterInSection:(NSInteger)section
-//{
-//    return self.repeatStringLabel;
-//}
+- (UIView *)tableView:(UITableView *)tableView viewForFooterInSection:(NSInteger)section
+{
+    if ( section == 0 )
+    {
+        return self.repeatStringLabel;
+    }
+    if ( section == 1 )
+    {
+        if ( self.editingReminder )
+        {
+            return self.muteStringLabel;
+        }
+    }
+    return nil;
+}
+
+- (CGFloat)tableView:(UITableView *)tableView heightForFooterInSection:(NSInteger)section
+{
+    if ( section == 0 )
+    {
+        return self.repeatStringLabel.frame.size.height;
+    }
+    
+    if ( section == 1 )
+    {
+        if ( self.editingReminder )
+        {
+            return self.muteStringLabel.frame.size.height;
+        }
+    }
+    
+    return [super tableView:tableView heightForFooterInSection:section];
+}
 
 #pragma mark - Navigation
 
