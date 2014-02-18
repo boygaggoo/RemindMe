@@ -34,5 +34,6 @@
 - (NSInteger)numDueBefore:(NSDate *)date;
 - (NSInteger)numDueAfter:(NSDate *)date1 andBefore:(NSDate *)date2;
 - (NSInteger)numDueAfter:(NSDate *)date;
+- (NSInteger)numMuted;
 
 @end

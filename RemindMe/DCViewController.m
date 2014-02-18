@@ -25,10 +25,11 @@ typedef NS_ENUM(NSInteger, DCReminderDue) {
     NSInteger _totalItems;
     NSInteger _dueSoon;
     NSInteger _overDue;
+    NSInteger _muted;
     NSDate *_now;
     NSDate *_soon;
     
-#define _DCDueFuture _totalItems - _overDue - _dueSoon
+#define _DCDueFuture _totalItems - _overDue - _dueSoon - _muted
 }
 
 @property (nonatomic, strong) DataModel *data;
@@ -190,6 +191,7 @@ typedef NS_ENUM(NSInteger, DCReminderDue) {
     _totalItems = [self.data numItems];
     _dueSoon = [self.data numDueAfter:_now andBefore:_soon];
     _overDue = [self.data numDueBefore:_now];
+    _muted = [self.data numMuted];
 }
 
 - (IBAction)createReminder:(id)sender
@@ -229,6 +231,12 @@ typedef NS_ENUM(NSInteger, DCReminderDue) {
     {
         section++;
         row -= _dueSoon;
+    }
+    
+    if ( index >= _overDue + _dueSoon + _DCDueFuture )
+    {
+        section++;
+        row -= _DCDueFuture;
     }
     
     NSIndexPath *indexPath = [NSIndexPath indexPathForRow:row inSection:section];
@@ -312,37 +320,64 @@ typedef NS_ENUM(NSInteger, DCReminderDue) {
         index += _overDue + _dueSoon;
     }
     
+    if ( indexPath.section == 3 )
+    {
+        index += _overDue + _dueSoon + _DCDueFuture;
+    }
+    
     return [self.data reminderAtIndex:index];
 }
 
 - (void)deleteRow:(NSIndexPath *)indexPath withAnimation:(UITableViewRowAnimation)animation
 {
+    BOOL deleteSection = NO;
     NSInteger index = indexPath.row;
 
     if ( indexPath.section == 0 )
     {
         _overDue--;
+        _totalItems--;
+        if ( _overDue == 0 )
+            deleteSection = YES;
     }
     else if ( indexPath.section == 1 )
     {
         index += _overDue;
         _dueSoon--;
+        _totalItems--;
+        if ( _dueSoon == 0 )
+            deleteSection = YES;
     }
     else if ( indexPath.section == 2 )
     {
         index += _overDue + _dueSoon;
+        _totalItems--;
+        if ( _DCDueFuture == 0 )
+            deleteSection = YES;
     }
-    
-    _totalItems--;
-    
+    else if ( indexPath.section == 3 )
+    {
+        index += _overDue + _dueSoon + _DCDueFuture;
+        _muted--;
+        _totalItems--;
+        if ( _muted == 0 )
+            deleteSection = YES;
+    }
+
     // Remove reminder from data model and notification list
     DCReminder *reminder = [self reminderAtIndexPath:indexPath];
     [self.scheduler clearNotificationForReminder:reminder];
     [self.data removeReminderAtIndex:index];
     
+
     // Remove row from table view
     [self.tableView deleteRowsAtIndexPaths:@[ indexPath ] withRowAnimation:animation];
-    
+
+    if ( deleteSection )
+    {
+        // Reload the section when there are no more rows in order to hide the section header/footer
+        [self.tableView reloadSections:[NSIndexSet indexSetWithIndex:indexPath.section] withRowAnimation:animation];
+    }
   
     // Enable the button to add a new task if none exist now
     if ( _totalItems == 0 )
@@ -373,18 +408,27 @@ typedef NS_ENUM(NSInteger, DCReminderDue) {
         _overDue--;
     else if ( originalIndexPath.section == 1 )
         _dueSoon--;
+    else if ( originalIndexPath.section == 3 )
+        _muted--;
 
-    DCReminderDue nowDue = [self reminderDue:reminder];
-    
-    switch ( nowDue )
+    if ( reminder.muted )
     {
-        case DCReminderDueOverdue:
-            _overDue++;
-            break;
-        case DCReminderDueSoon:
-            _dueSoon++;
-        default:
-            break;
+        _muted++;
+    }
+    else
+    {
+        DCReminderDue nowDue = [self reminderDue:reminder];
+        
+        switch ( nowDue )
+        {
+            case DCReminderDueOverdue:
+                _overDue++;
+                break;
+            case DCReminderDueSoon:
+                _dueSoon++;
+            default:
+                break;
+        }
     }
     
     NSIndexPath *newIndexPath = [self indexPathForIndex:to];
@@ -454,7 +498,7 @@ typedef NS_ENUM(NSInteger, DCReminderDue) {
 
 - (NSInteger)numberOfSectionsInTableView:(UITableView *)tableView
 {
-    return 3;
+    return 4;
 }
 
 - (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section
@@ -470,6 +514,10 @@ typedef NS_ENUM(NSInteger, DCReminderDue) {
     else if ( section == 2 )
     {
         return _DCDueFuture;
+    }
+    else if ( section == 3 )
+    {
+        return _muted;
     }
     
     return 0;
@@ -490,6 +538,10 @@ typedef NS_ENUM(NSInteger, DCReminderDue) {
     {
         index += _overDue + _dueSoon;
     }
+    else if ( indexPath.section == 3 )
+    {
+        index += _overDue + _dueSoon + _DCDueFuture;
+    }
     
     DCReminder *reminder = [self.data reminderAtIndex:index];
     
@@ -504,8 +556,15 @@ typedef NS_ENUM(NSInteger, DCReminderDue) {
     else if ( indexPath.section == 1 )
         cell.detailTextLabel.textColor = [UIColor blueColor];
     // If future
-    else
+    else if ( indexPath.section == 2 )
         cell.detailTextLabel.textColor = [UIColor blackColor];
+    // If muted
+    else
+    {
+        cell.textLabel.textColor = [UIColor lightGrayColor];
+        cell.detailTextLabel.text = @"";
+        cell.detailTextLabel.textColor = [UIColor lightGrayColor];
+    }
     
     __weak DCReminderTableViewCell *weekCell = cell;
     [cell setAppearanceWithBlock:^{
@@ -517,13 +576,16 @@ typedef NS_ENUM(NSInteger, DCReminderDue) {
         [leftUtilityButtons sw_addUtilityButtonWithColor:[UIColor colorWithRed:0.1f green:0.7f blue:0.2f alpha:1.0f] title:@"Complete"];
         [rightUtilityButtons sw_addUtilityButtonWithColor:[UIColor colorWithRed:1.0f green:0.231f blue:0.188 alpha:1.0f] title:@"Delete"];
         
-        weekCell.leftUtilityButtons = leftUtilityButtons;
+        if ( indexPath.section != 3 )
+        {
+            weekCell.leftUtilityButtons = leftUtilityButtons;
+        }
         weekCell.rightUtilityButtons = rightUtilityButtons;
         
         weekCell.containingTableView = tableView;
         weekCell.delegate = self;
         
-    } force:NO];
+    } force:YES];
     
     [cell setCellHeight:cell.frame.size.height];
 
@@ -540,7 +602,11 @@ typedef NS_ENUM(NSInteger, DCReminderDue) {
     {
         return @"Due soon";
     }
-    return @"Future";
+    if ( section == 2 )
+    {
+        return @"Future";
+    }
+    return @"Muted";
 }
 
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath

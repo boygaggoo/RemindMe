@@ -212,16 +212,27 @@ static DataModel *dataModelInstance;
                                                   DCReminder *r2 = (DCReminder *)obj2;
                                                   NSDate *date1 = r1.nextDueDate;
                                                   NSDate *date2 = r2.nextDueDate;
-                                                  if ( [date2 timeIntervalSinceDate:date1] > 0 )
+                                                  if ( r1.muted == r2.muted )
+                                                  {
+                                                      if ( [date2 timeIntervalSinceDate:date1] > 0 )
+                                                          return NSOrderedAscending;
+                                                      return NSOrderedDescending;
+                                                  }
+                                                  else
+                                                  {
+                                                      if ( r1.muted )
+                                                      {
+                                                          return NSOrderedDescending;
+                                                      }
                                                       return NSOrderedAscending;
-                                                  return NSOrderedDescending;
+                                                  }
                                               }];
     
     [self.reminderList insertObject:reminder atIndex:insertIndex];
 
     if ( !fromdb )
     {
-        [self.database executeUpdate:@"insert into reminders (reminderName, nextDueDate, muted) values (?, ?, ?)", reminder.name, reminder.nextDueDate, [NSNumber numberWithInt:reminder.repeatingInfo.repeats]];
+        [self.database executeUpdate:@"insert into reminders (reminderName, nextDueDate, muted) values (?, ?, ?)", reminder.name, reminder.nextDueDate, [NSNumber numberWithInt:reminder.muted]];
         reminder.uid = [NSNumber numberWithLongLong:[self.database lastInsertRowId]];
         [self addRecurringInfoForReminder:reminder];
         [self.delegate dataModelInsertedObject:reminder atIndex:insertIndex];
@@ -238,7 +249,7 @@ static DataModel *dataModelInstance;
     NSUInteger originalIndex = [self.reminderList indexOfObject:reminder];
     [self.reminderList removeObjectAtIndex:originalIndex];
     [self addReminder:reminder fromDatabase:YES];
-    [self.database executeUpdate:@"update reminders set reminderName = (?), nextDueDate = (?), muted = (?) where id = (?)", reminder.name, reminder.nextDueDate, [NSNumber numberWithInt:reminder.repeatingInfo.repeats], reminder.uid];
+    [self.database executeUpdate:@"update reminders set reminderName = (?), nextDueDate = (?), muted = (?) where id = (?)", reminder.name, reminder.nextDueDate, [NSNumber numberWithInt:reminder.muted], reminder.uid];
     NSUInteger newIndex = [self.reminderList indexOfObject:reminder];
     [self updateRecurringInfoForReminder:reminder];
     [self.delegate dataModelMovedObject:reminder from:originalIndex toIndex:newIndex];
@@ -303,7 +314,7 @@ static DataModel *dataModelInstance;
 
 - (NSInteger)numDueBefore:(NSDate *)date
 {
-    FMResultSet *results = [self.database executeQuery:@"select count(*) from reminders where nextDueDate < (?);", date];
+    FMResultSet *results = [self.database executeQuery:@"select count(*) from reminders where nextDueDate < (?) and muted == 0;", date];
     [results next];
     NSInteger count = [results intForColumnIndex:0];
     
@@ -312,7 +323,7 @@ static DataModel *dataModelInstance;
 
 - (NSInteger)numDueAfter:(NSDate *)date1 andBefore:(NSDate *)date2
 {
-    FMResultSet *results = [self.database executeQuery:@"select count(*) from reminders where nextDueDate > (?) and nextDueDate < (?);", date1, date2];
+    FMResultSet *results = [self.database executeQuery:@"select count(*) from reminders where nextDueDate > (?) and nextDueDate < (?) and muted == 0;", date1, date2];
     [results next];
     NSInteger count = [results intForColumnIndex:0];
     
@@ -321,7 +332,16 @@ static DataModel *dataModelInstance;
 
 - (NSInteger)numDueAfter:(NSDate *)date
 {
-    FMResultSet *results = [self.database executeQuery:@"select count(*) from reminders where nextDueDate > (?);", date];
+    FMResultSet *results = [self.database executeQuery:@"select count(*) from reminders where nextDueDate > (?) and muted == 0;", date];
+    [results next];
+    NSInteger count = [results intForColumnIndex:0];
+    
+    return count;
+}
+
+- (NSInteger)numMuted
+{
+    FMResultSet *results = [self.database executeQuery:@"select count(*) from reminders where muted == 1;"];
     [results next];
     NSInteger count = [results intForColumnIndex:0];
     
