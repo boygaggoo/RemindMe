@@ -478,6 +478,22 @@ typedef NS_ENUM(NSInteger, DCReminderDue) {
     return YES;
 }
 
+- (BOOL)swipeableTableViewCell:(SWTableViewCell *)cell canSwipeToState:(SWCellState)state
+{
+    NSIndexPath *indexPath = [self.tableView indexPathForCell:cell];
+    DCReminder *reminder = [self reminderAtIndexPath:indexPath];
+    if ( reminder.muted )
+    {
+        if ( state == kCellStateLeft )
+        {
+            return NO;
+        }
+    }
+    
+    return YES;
+}
+
+
 #pragma mark - NewReminderProtocol
 
 - (void)didAddNewReminder:(DCReminder *)newReminder
@@ -575,17 +591,14 @@ typedef NS_ENUM(NSInteger, DCReminderDue) {
         
         [leftUtilityButtons sw_addUtilityButtonWithColor:[UIColor colorWithRed:0.1f green:0.7f blue:0.2f alpha:1.0f] title:@"Complete"];
         [rightUtilityButtons sw_addUtilityButtonWithColor:[UIColor colorWithRed:1.0f green:0.231f blue:0.188 alpha:1.0f] title:@"Delete"];
-        
-        if ( indexPath.section != 3 )
-        {
-            weekCell.leftUtilityButtons = leftUtilityButtons;
-        }
+
+        weekCell.leftUtilityButtons = leftUtilityButtons;
         weekCell.rightUtilityButtons = rightUtilityButtons;
         
         weekCell.containingTableView = tableView;
         weekCell.delegate = self;
-        
-    } force:YES];
+
+    } force:NO];
     
     [cell setCellHeight:cell.frame.size.height];
 
