@@ -563,6 +563,7 @@ typedef NS_ENUM(NSInteger, DCReminderDue) {
     
     // Configure the cell...
     cell.textLabel.text = reminder.name;
+    cell.textLabel.textColor = [UIColor blackColor];
     cell.detailTextLabel.text = [self stringForDate:reminder.nextDueDate];
     
     // If overdue
