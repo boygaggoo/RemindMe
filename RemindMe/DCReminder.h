@@ -16,5 +16,6 @@
 @property (nonatomic, strong) NSNumber *uid;
 @property (nonatomic, strong) DCRecurringInfo *repeatingInfo;
 @property (nonatomic, assign) BOOL muted;
+@property (nonatomic, strong) NSString *notes;
 
 @end

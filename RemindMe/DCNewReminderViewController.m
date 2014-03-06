@@ -13,10 +13,11 @@
 #import "DCRepeatViewController.h"
 #import "DCRecurringInfo.h"
 
-@interface DCNewReminderViewController () <UITextFieldDelegate, NewRepeatInfoProtocol> {
+@interface DCNewReminderViewController () <UITextFieldDelegate, UITextViewDelegate, NewRepeatInfoProtocol> {
     BOOL editingDate;
     DCReminderInfoLabelCell *dateCell;
     BOOL datePicked;
+    BOOL editingNote;
 }
 
 //@property (nonatomic, strong) UITextField *nameTextField;
@@ -30,6 +31,8 @@
 @property (strong, nonatomic) UILabel *repeatStringLabel;
 @property (strong, nonatomic) UILabel *muteStringLabel;
 
+@property (weak, nonatomic) IBOutlet UILabel *noteSummaryLabel;
+@property (weak, nonatomic) IBOutlet UITextView *noteTextView;
 @end
 
 @implementation DCNewReminderViewController
@@ -99,6 +102,8 @@
         datePicked = YES;
         self.navigationItem.rightBarButtonItem.enabled = YES;
         self.muteSwitch.on = self.reminder.muted;
+        self.noteSummaryLabel.text = self.reminder.notes;
+        self.noteTextView.text = self.reminder.notes;
     }
     else
     {
@@ -146,6 +151,7 @@
     
     self.repeatSwitch.on = (self.reminder.repeatingInfo.repeats != DCRecurringInfoRepeatsNever);
     editingDate = NO;
+    editingNote = NO;
 }
 
 - (IBAction)saveNewReminder:(id)sender
@@ -242,6 +248,19 @@
     return YES;
 }
 
+#pragma mark - UITextViewDelegate
+
+- (BOOL)textView:(UITextView *)textView shouldChangeTextInRange:(NSRange)range replacementText:(NSString *)text
+{
+    NSString *newText = [textView.text stringByReplacingCharactersInRange:range withString:text];
+    
+    self.noteSummaryLabel.text = newText;
+    self.reminder.notes = newText;
+    
+    return YES;
+}
+
+#pragma mark - UITableViewDelegate
 
 - (CGFloat)tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath
 {
@@ -267,6 +286,14 @@
         }
     }
 
+    if ( indexPath.section == 2 && indexPath.row == 1 )
+    {
+        if ( !editingNote )
+        {
+            return 0;
+        }
+    }
+
     return [super tableView:tableView heightForRowAtIndexPath:indexPath];
 }
 
@@ -285,6 +312,35 @@
             [self.tableView reloadRowsAtIndexPaths:@[[NSIndexPath indexPathForRow:2 inSection:0]] withRowAnimation:UITableViewRowAnimationFade];
             [self.tableView reloadData];
         }];
+    }
+    else if (indexPath.section == 2 && indexPath.row == 0 )
+    {
+        [tableView deselectRowAtIndexPath:indexPath animated:NO];
+
+        if ( editingNote )
+        {
+            editingNote = NO;
+
+            [UIView animateWithDuration:.4 animations:^{
+                [tableView reloadRowsAtIndexPaths:@[[NSIndexPath indexPathForRow:1 inSection:2]] withRowAnimation:UITableViewRowAnimationFade];
+                [tableView reloadData];
+            } completion:^(BOOL finished) {
+                self.noteSummaryLabel.hidden = NO;
+            }];
+        }
+        else
+        {
+            editingNote = YES;
+
+            
+            [UIView animateWithDuration:.4 animations:^{
+                [tableView reloadRowsAtIndexPaths:@[[NSIndexPath indexPathForRow:1 inSection:2]] withRowAnimation:UITableViewRowAnimationFade];
+                [tableView reloadData];
+            } completion:^(BOOL finished) {
+                [self.noteTextView becomeFirstResponder];
+                self.noteSummaryLabel.hidden = YES;
+            }];
+        }
     }
 }
 

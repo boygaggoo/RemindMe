@@ -42,7 +42,7 @@ static DataModel *dataModelInstance;
 
 - (void)createTables
 {
-    NSNumber *currentVersion = @4;
+    NSNumber *currentVersion = @5;
     [self.database executeUpdate:@"CREATE TABLE IF NOT EXISTS metadata (key text not null, value integer not null)"];
     
     // Get current database version
@@ -63,6 +63,11 @@ static DataModel *dataModelInstance;
     if ( dbversion < 4 )
     {
         [self.database executeUpdate:@"alter table reminders add column muted integer not null default 0"];
+    }
+    
+    if ( dbversion < 5 )
+    {
+        [self.database executeUpdate:@"alter table reminders add column notes text"];
     }
     
     if ( dbversion == 0 )
@@ -113,6 +118,7 @@ static DataModel *dataModelInstance;
         reminder.nextDueDate = [results dateForColumn:@"nextDueDate"];
         reminder.uid = [NSNumber numberWithLongLong:[results intForColumn:@"id"]];
         reminder.muted = [results boolForColumn:@"muted"];
+        reminder.notes = [results stringForColumn:@"notes"];
         
         // Load repeating info
         FMResultSet *results2 = [self.database executeQuery:@"select * from repeats where reminderId = (?)", reminder.uid];
@@ -232,7 +238,7 @@ static DataModel *dataModelInstance;
 
     if ( !fromdb )
     {
-        [self.database executeUpdate:@"insert into reminders (reminderName, nextDueDate, muted) values (?, ?, ?)", reminder.name, reminder.nextDueDate, [NSNumber numberWithInt:reminder.muted]];
+        [self.database executeUpdate:@"insert into reminders (reminderName, nextDueDate, muted, notes) values (?, ?, ?, ?)", reminder.name, reminder.nextDueDate, [NSNumber numberWithInt:reminder.muted], reminder.notes];
         reminder.uid = [NSNumber numberWithLongLong:[self.database lastInsertRowId]];
         [self addRecurringInfoForReminder:reminder];
         [self.delegate dataModelInsertedObject:reminder atIndex:insertIndex];
@@ -249,7 +255,7 @@ static DataModel *dataModelInstance;
     NSUInteger originalIndex = [self.reminderList indexOfObject:reminder];
     [self.reminderList removeObjectAtIndex:originalIndex];
     [self addReminder:reminder fromDatabase:YES];
-    [self.database executeUpdate:@"update reminders set reminderName = (?), nextDueDate = (?), muted = (?) where id = (?)", reminder.name, reminder.nextDueDate, [NSNumber numberWithInt:reminder.muted], reminder.uid];
+    [self.database executeUpdate:@"update reminders set reminderName = (?), nextDueDate = (?), muted = (?), notes = (?) where id = (?)", reminder.name, reminder.nextDueDate, [NSNumber numberWithInt:reminder.muted], reminder.notes, reminder.uid];
     NSUInteger newIndex = [self.reminderList indexOfObject:reminder];
     [self updateRecurringInfoForReminder:reminder];
     [self.delegate dataModelMovedObject:reminder from:originalIndex toIndex:newIndex];
