@@ -259,11 +259,14 @@
 
     if ( indexPath.section == 1 )
     {
+#ifdef DCSupportMute
         if ( !self.editingReminder )
+#endif
         {
             return 0;
         }
     }
+
     return [super tableView:tableView heightForRowAtIndexPath:indexPath];
 }
 
@@ -291,6 +294,8 @@
     {
         return self.repeatStringLabel;
     }
+
+#ifdef DCSupportMute
     if ( section == 1 )
     {
         if ( self.editingReminder )
@@ -298,6 +303,8 @@
             return self.muteStringLabel;
         }
     }
+#endif
+
     return nil;
 }
 
@@ -307,7 +314,8 @@
     {
         return self.repeatStringLabel.frame.size.height;
     }
-    
+
+#ifdef DCSupportMute
     if ( section == 1 )
     {
         if ( self.editingReminder )
@@ -315,6 +323,7 @@
             return self.muteStringLabel.frame.size.height;
         }
     }
+#endif
     
     return [super tableView:tableView heightForFooterInSection:section];
 }

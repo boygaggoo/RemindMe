@@ -29,7 +29,7 @@ typedef NS_ENUM(NSInteger, DCReminderDue) {
     NSDate *_now;
     NSDate *_soon;
     
-#define _DCDueFuture _totalItems - _overDue - _dueSoon - _muted
+#define _DCDueFuture (_totalItems - _overDue - _dueSoon - _muted)
 }
 
 @property (nonatomic, strong) DataModel *data;
