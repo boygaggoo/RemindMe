@@ -602,7 +602,7 @@
 				CURRENT_PROJECT_VERSION = 21;
 				FRAMEWORK_SEARCH_PATHS = (
 					"$(inherited)",
-					/Users/dacohn/Documents/code/RemindMe,
+					"${SRCROOT}/",
 				);
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = "RemindMe/RemindMe-Prefix.pch";
@@ -627,7 +627,7 @@
 				CURRENT_PROJECT_VERSION = 21;
 				FRAMEWORK_SEARCH_PATHS = (
 					"$(inherited)",
-					/Users/dacohn/Documents/code/RemindMe,
+					"${SRCROOT}/",
 				);
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = "RemindMe/RemindMe-Prefix.pch";
